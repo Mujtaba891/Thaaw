@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Center — THAAW</title>
+  <link rel="stylesheet" href="internal.css">
+  <script src="icons.js"></script>
+  <style>
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-box {
+      background: var(--thaaw-surface);
+      border: 1px solid var(--thaaw-border);
+      border-radius: var(--thaaw-radius-md);
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-number {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--thaaw-blue);
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--thaaw-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="page-header">
+      <div style="color: var(--thaaw-orange);">
+        <span data-icon="shield-alert" data-icon-size="36"></span>
+      </div>
+      <div>
+        <h1>THAAW Security Center</h1>
+        <p>Real-time threat mitigation, network protection, and defense-in-depth architecture.</p>
+      </div>
+    </header>
+
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-number" id="threatCount">0</div>
+        <div class="stat-label">Trackers Stopped</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" style="color: var(--thaaw-success);">TLS 1.3</div>
+        <div class="stat-label">Transport Layer</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" style="color: var(--thaaw-success);">SANDBOXED</div>
+        <div class="stat-label">Site Isolation</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" style="color: var(--thaaw-blue);">ACTIVE</div>
+        <div class="stat-label">Anti-Fingerprint</div>
+      </div>
+    </div>
+
+    <!-- Active Defense Subsystems -->
+    <div class="card">
+      <div class="card-title">
+        <span data-icon="shield" data-icon-size="18"></span>
+        <span>Active Defense Subsystems</span>
+      </div>
+      <div class="card-desc">Subsystems protecting current browsing session from untrusted code and surveillance.</div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Strict Site Isolation (Process Boundaries)</div>
+          <div class="setting-description">Every web origin executes in a mutually unprivileged, OS-sandboxed process.</div>
+        </div>
+        <span class="badge badge-green">ENFORCED</span>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Zero-Node Renderer Context</div>
+          <div class="setting-description">Web execution contexts have zero access to Node.js primitives or native system handles.</div>
+        </div>
+        <span class="badge badge-green">ENFORCED</span>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">In-Process "Stop" Request Interceptor</div>
+          <div class="setting-description">Scans outbound HTTP/HTTPS requests and drops trackers prior to socket generation.</div>
+        </div>
+        <span class="badge badge-blue">ACTIVE</span>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">4-W Permission Broker</div>
+          <div class="setting-description">Hardware access requires explicit verification: Who, What, Why, and When.</div>
+        </div>
+        <span class="badge badge-orange">BROKERED</span>
+      </div>
+    </div>
+
+    <!-- Download Threat Security -->
+    <div class="card">
+      <div class="card-title">
+        <span data-icon="download" data-icon-size="18"></span>
+        <span>Download Threat Protection</span>
+      </div>
+      <div class="card-desc">Local pre-download validation examining executable permissions, MIME type consistency, and hidden scripts.</div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Executable & Shell Script Quarantine</div>
+          <div class="setting-description">Flags .sh, .bin, .deb, .AppImage, .exe, and archive formats for user review.</div>
+        </div>
+        <span class="badge badge-orange">MONITORED</span>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">MIME Discrepancy Detection</div>
+          <div class="setting-description">Prevents executable payloads disguised as innocent images or text documents.</div>
+        </div>
+        <span class="badge badge-green">SECURE</span>
+      </div>
+    </div>
+
+    <div style="margin-top: 30px; text-align: center; color: var(--thaaw-text-muted); font-size: 13px;">
+      <strong style="color: var(--thaaw-text);">THAAW</strong> — Stop What Shouldn't Pass.
+    </div>
+  </div>
+
+  <script>
+    'use strict';
+    // Global Theme & Preset Sync
+    if (window.thaawAPI && window.thaawAPI.getTheme) {
+      window.thaawAPI.getTheme().then(res => {
+        if (res) {
+          document.documentElement.setAttribute('data-theme', res.theme);
+          if (res.preset) document.documentElement.setAttribute('data-theme-preset', res.preset);
+        }
+      });
+      window.thaawAPI.onThemeUpdated((data) => {
+        document.documentElement.setAttribute('data-theme', data.theme);
+        if (data.preset) document.documentElement.setAttribute('data-theme-preset', data.preset);
+      });
+    }
+
+    if (window.thaawAPI?.getSecurityStatus) {
+      window.thaawAPI.getSecurityStatus().then(status => {
+        if (status && status.trackersBlockedCount !== undefined) {
+          document.getElementById('threatCount').textContent = String(status.trackersBlockedCount);
+        }
+      });
+    }
+
+    if (window.thaawAPI?.onSecurityStatusUpdated) {
+      window.thaawAPI.onSecurityStatusUpdated(status => {
+        if (status && status.trackersBlockedCount !== undefined) {
+          document.getElementById('threatCount').textContent = String(status.trackersBlockedCount);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+{
+  "dark": [
+    {
+      "id": "midnight",
+      "name": "THAAW Midnight",
+      "description": "The definitive THAAW atmosphere. Deep navy, cyan, and subtle pink accents.",
+      "preview": {
+        "bg": "#050812",
+        "surface": "#0A1020",
+        "accent": "#38BDF8",
+        "accent2": "#FF6FF0"
+      }
+    },
+    {
+      "id": "deep-space",
+      "name": "THAAW Deep Space",
+      "description": "Ultra-deep galactic black with electric cyan and purple nebula accents.",
+      "preview": {
+        "bg": "#02040A",
+        "surface": "#071020",
+        "accent": "#00E5FF",
+        "accent2": "#A855F7"
+      }
+    },
+    {
+      "id": "obsidian",
+      "name": "THAAW Obsidian",
+      "description": "Engineered slate and carbon with high-contrast monochrome and amber.",
+      "preview": {
+        "bg": "#0B0C0E",
+        "surface": "#16191F",
+        "accent": "#38BDF8",
+        "accent2": "#EA580C"
+      }
+    },
+    {
+      "id": "eclipse",
+      "name": "THAAW Eclipse",
+      "description": "Atmospheric violet dusk with vivid crimson and warm solar highlights.",
+      "preview": {
+        "bg": "#09070F",
+        "surface": "#161226",
+        "accent": "#F43F5E",
+        "accent2": "#F59E0B"
+      }
+    }
+  ],
+  "light": [
+    {
+      "id": "white",
+      "name": "THAAW White",
+      "description": "Clean, crisp, modern white with slate typography and deep blue accents.",
+      "preview": {
+        "bg": "#F8FAFC",
+        "surface": "#FFFFFF",
+        "accent": "#0284C7",
+        "accent2": "#E11D48"
+      }
+    },
+    {
+      "id": "frost",
+      "name": "THAAW Frost",
+      "description": "Cool glacial tints with ice cyan and cobalt highlights for sharp clarity.",
+      "preview": {
+        "bg": "#F0F9FF",
+        "surface": "#FFFFFF",
+        "accent": "#0284C7",
+        "accent2": "#2563EB"
+      }
+    },
+    {
+      "id": "pearl",
+      "name": "THAAW Pearl",
+      "description": "Soft warm luster with gentle cream tones and terracotta focus accents.",
+      "preview": {
+        "bg": "#FAF8F5",
+        "surface": "#FFFFFF",
+        "accent": "#D97706",
+        "accent2": "#C2410C"
+      }
+    },
+    {
+      "id": "cloud",
+      "name": "THAAW Cloud",
+      "description": "Misty neutral overcast with soft indigo and gentle slate boundaries.",
+      "preview": {
+        "bg": "#F1F5F9",
+        "surface": "#FFFFFF",
+        "accent": "#4F46E5",
+        "accent2": "#0284C7"
+      }
+    }
+  ]
+}

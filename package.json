@@ -1,0 +1,37 @@
+{
+  "name": "thaaw-browser",
+  "version": "1.0.0-alpha.1",
+  "description": "THAAW — Open-Source Security-First Web Browser. Stop What Shouldn't Pass.",
+  "main": "dist/browser/main/index.js",
+  "scripts": {
+    "build": "tsc && npm run copy-assets",
+    "copy-assets": "node -e \"const fs=require('fs'); fs.cpSync('browser/ui', 'dist/browser/ui', {recursive:true}); fs.cpSync('browser/internal-pages', 'dist/browser/internal-pages', {recursive:true}); fs.cpSync('browser/profiles', 'dist/browser/profiles', {recursive:true}); fs.cpSync('assets', 'dist/assets', {recursive:true});\"",
+    "watch": "tsc -w",
+    "start": "npm run build && electron .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:security": "vitest run tests/unit/ipc-validator.test.ts tests/unit/tracker-blocker.test.ts tests/unit/download-security.test.ts",
+    "lint": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thaaw-browser/thaaw.git"
+  },
+  "keywords": [
+    "browser",
+    "security",
+    "privacy",
+    "anti-tracking",
+    "hardened",
+    "open-source",
+    "chromium"
+  ],
+  "author": "The THAAW Browser Authors",
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "@types/node": "^22.13.0",
+    "electron": "^34.2.0",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  }
+}

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-theme-preset="midnight">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Site Can't Be Reached — THAAW</title>
+  <link rel="stylesheet" href="internal.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 24px;
+      background: var(--thaaw-bg, #0A0D14);
+      color: var(--thaaw-text, #F8FAFC);
+      font-family: var(--thaaw-font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+      box-sizing: border-box;
+    }
+    .error-container {
+      max-width: 620px;
+      width: 100%;
+      background: var(--thaaw-surface, rgba(17, 24, 39, 0.7));
+      border: 1px solid var(--thaaw-border, rgba(255, 255, 255, 0.08));
+      border-radius: var(--thaaw-radius-lg, 16px);
+      padding: 40px;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(16px);
+      animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .error-icon-wrapper {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      color: #EF4444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .error-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--thaaw-text, #FFFFFF);
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+    .error-domain {
+      font-size: 14px;
+      color: var(--thaaw-text-muted, #94A3B8);
+      word-break: break-all;
+      margin-bottom: 24px;
+      font-family: var(--thaaw-font-mono, monospace);
+      background: rgba(0, 0, 0, 0.2);
+      padding: 6px 10px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+    .error-body {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--thaaw-text, #CBD5E1);
+      margin-bottom: 28px;
+    }
+    .error-suggestions {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 28px;
+    }
+    .error-suggestions-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--thaaw-text-muted, #94A3B8);
+      margin-bottom: 10px;
+    }
+    .suggestions-list {
+      margin: 0;
+      padding-left: 20px;
+      font-size: 13px;
+      color: var(--thaaw-text-secondary, #94A3B8);
+    }
+    .suggestions-list li {
+      margin-bottom: 6px;
+    }
+    .suggestions-list li:last-child {
+      margin-bottom: 0;
+    }
+    .error-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    .error-badge {
+      font-family: var(--thaaw-font-mono, monospace);
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(239, 68, 68, 0.15);
+      color: #F87171;
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+    .error-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn-retry {
+      background: var(--thaaw-primary, #0284C7);
+      color: #FFFFFF;
+      border: none;
+      border-radius: var(--thaaw-radius-sm, 8px);
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.15s ease;
+    }
+    .btn-retry:hover {
+      background: var(--thaaw-primary-hover, #0369A1);
+    }
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--thaaw-border, rgba(255, 255, 255, 0.12));
+      color: var(--thaaw-text, #E2E8F0);
+      border-radius: var(--thaaw-radius-sm, 8px);
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.25);
+      color: #FFFFFF;
+    }
+    .connection-banner {
+      margin-bottom: 20px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34D399;
+    }
+  </style>
+</head>
+<body>
+  <div class="error-container">
+    <div class="connection-banner" id="onlineBanner">
+      <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      <span>Internet connection detected! You can retry loading the page.</span>
+    </div>
+
+    <div class="error-icon-wrapper" id="errorIconWrapper">
+      <!-- Network offline / exclamation SVG icon -->
+      <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="1" y1="1" x2="23" y2="23"></line>
+        <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+        <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+        <path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path>
+        <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path>
+        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+        <line x1="12" y1="20" x2="12.01" y2="20"></line>
+      </svg>
+    </div>
+
+    <h1 class="error-title" id="errorTitle">This site can't be reached</h1>
+    <div class="error-domain" id="errorDomain">https://example.com</div>
+
+    <p class="error-body" id="errorExplanation">
+      The server IP address could not be found or took too long to respond.
+    </p>
+
+    <div class="error-suggestions">
+      <div class="error-suggestions-title">Try the following checks</div>
+      <ul class="suggestions-list" id="suggestionsList">
+        <li>Check your Wi-Fi, Ethernet, and network cables</li>
+        <li>Check your DNS server, proxy, and firewall settings</li>
+        <li>Verify that the address was typed correctly</li>
+        <li>Run network diagnostics or contact your network administrator</li>
+      </ul>
+    </div>
+
+    <div class="error-badge-row">
+      <span class="error-badge" id="errorCodeBadge">ERR_NAME_NOT_RESOLVED</span>
+    </div>
+
+    <div class="error-actions">
+      <button type="button" class="btn-retry" id="retryBtn">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+        </svg>
+        Try Again
+      </button>
+
+      <button type="button" class="btn-secondary" id="goBackBtn">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Go Back
+      </button>
+
+      <button type="button" class="btn-secondary" id="homeBtn">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        Return to Home
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const targetUrl = params.get('url') || '';
+    const rawCode = params.get('code') || '';
+    const desc = params.get('desc') || 'ERR_CONNECTION_FAILED';
+
+    const errorTitle = document.getElementById('errorTitle');
+    const errorDomain = document.getElementById('errorDomain');
+    const errorExplanation = document.getElementById('errorExplanation');
+    const errorCodeBadge = document.getElementById('errorCodeBadge');
+    const retryBtn = document.getElementById('retryBtn');
+    const goBackBtn = document.getElementById('goBackBtn');
+    const homeBtn = document.getElementById('homeBtn');
+    const onlineBanner = document.getElementById('onlineBanner');
+
+    let hostname = targetUrl;
+    try {
+      const parsed = new URL(targetUrl);
+      hostname = parsed.hostname || targetUrl;
+    } catch {}
+
+    errorDomain.textContent = targetUrl || 'Unknown destination';
+    errorCodeBadge.textContent = desc || (rawCode ? `Error Code: ${rawCode}` : 'ERR_NETWORK_FAILURE');
+
+    // Human-friendly error breakdown
+    const codeNum = parseInt(rawCode, 10);
+    if (desc.includes('NAME_NOT_RESOLVED') || codeNum === -105) {
+      errorTitle.textContent = `${hostname}’s server IP address could not be found.`;
+      errorExplanation.textContent = 'The domain name does not exist or your DNS server failed to resolve the address.';
+    } else if (desc.includes('CONNECTION_REFUSED') || codeNum === -102) {
+      errorTitle.textContent = `${hostname} refused to connect.`;
+      errorExplanation.textContent = 'The destination server is online but actively refused the connection on this port.';
+    } else if (desc.includes('TIMED_OUT') || codeNum === -118) {
+      errorTitle.textContent = `${hostname} took too long to respond.`;
+      errorExplanation.textContent = 'The connection attempt timed out before the remote server returned a response.';
+    } else if (desc.includes('INTERNET_DISCONNECTED') || codeNum === -106) {
+      errorTitle.textContent = 'No internet connection';
+      errorExplanation.textContent = 'THAAW is unable to reach the network. Your computer appears to be offline.';
+    } else if (desc.includes('CONNECTION_RESET') || codeNum === -101) {
+      errorTitle.textContent = `The connection to ${hostname} was reset.`;
+      errorExplanation.textContent = 'An existing connection was forcibly closed by the remote host or network firewall.';
+    } else if (desc.includes('CERT') || desc.includes('SSL')) {
+      errorTitle.textContent = 'Your connection is not private';
+      errorExplanation.textContent = 'THAAW prevented an insecure or invalid TLS/SSL certificate from compromising your data.';
+    } else {
+      errorTitle.textContent = "This site can't be reached";
+      errorExplanation.textContent = `${hostname} is currently unreachable or encountering network connection issues.`;
+    }
+
+    retryBtn.addEventListener('click', () => {
+      if (targetUrl) {
+        if (window.thaawAPI?.navigate) {
+          window.thaawAPI.navigate(targetUrl);
+        } else {
+          window.location.href = targetUrl;
+        }
+      } else {
+        window.location.reload();
+      }
+    });
+
+    goBackBtn.addEventListener('click', () => {
+      if (window.thaawAPI?.goBack) {
+        window.thaawAPI.goBack();
+      } else {
+        window.history.back();
+      }
+    });
+
+    homeBtn.addEventListener('click', () => {
+      if (window.thaawAPI?.navigate) {
+        window.thaawAPI.navigate('thaaw://newtab');
+      } else {
+        window.location.href = 'thaaw://newtab';
+      }
+    });
+
+    // Detect internet restoration
+    window.addEventListener('online', () => {
+      if (onlineBanner) onlineBanner.style.display = 'flex';
+    });
+  </script>
+</body>
+</html>

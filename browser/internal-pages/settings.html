@@ -1,0 +1,1978 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-theme-preset="midnight">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — THAAW</title>
+  <link rel="stylesheet" href="internal.css">
+  <script src="icons.js"></script>
+</head>
+<body>
+  <!-- 2-Column Glassmorphic Settings Architecture -->
+  <div class="settings-two-col">
+    <!-- Left Navigation Pane -->
+    <aside class="settings-nav-pane" aria-label="Settings Categories">
+      <div class="settings-brand-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <img src="../assets/icons/thaaw-icon.svg" width="22" height="22" alt="THAAW" style="filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); flex-shrink: 0;" />
+          <span class="settings-brand-title">THAAW Settings</span>
+        </div>
+      </div>
+
+      <!-- Real-Time Filter Search -->
+      <div class="settings-search-wrapper">
+        <input type="search" id="settingsSearch" class="settings-search-input" placeholder="Search settings..." aria-label="Search settings" autocomplete="off" />
+      </div>
+
+      <!-- Category Nav Items (All 18 Categories) -->
+      <nav id="settingsNav" style="display: flex; flex-direction: column; gap: 3px;">
+        <button type="button" class="settings-nav-item active" data-category="general">
+          <span data-icon="sliders" data-icon-size="16"></span>
+          <span>General</span>
+        </button>
+        <button type="button" class="settings-nav-item" data-category="appearance">
+          <span data-icon="palette" data-icon-size="16"></span>
+          <span>Appearance</span>
+        </button>
+        <button type="button" class="settings-nav-item" data-category="themes">
+          <span data-icon="sun" data-icon-size="16"></span>
+          <span>Themes</span>
+        </button>
+        <button type="button" class="settings-nav-item" data-category="wallpapers">
+          <span data-icon="image" data-icon-size="16"></span>
+          <span>Wallpapers</span>
+        </button>
+        <button type="button" class="settings-nav-item" data-category="tabs">
+          <span data-icon="tab" data-icon-size="16"></span>
+          <span>Tabs</span>
+        </button>
+        <button type="button" class="settings-nav-item" data-category="search">
+          <span data-icon="search" data-icon-size="16"></span>
+          <span>Search</span>
+        </button>
+        <button type="button" class="settings-nav-item" data-category="privacy">
+          <span data-icon="eye-off" data-icon-size="16"></span>
+          <span>Privacy</span>
+        </button>
+        <button type="button" class="settings-nav-item" data-category="security">
+          <span data-icon="shield-check" data-icon-size="16"></span>
+          <span>Security</span>
+        </button>
+        <button type="button" class="settings-nav-item" data-category="permissions">
+          <span data-icon="lock" data-icon-size="16"></span>
+          <span>Site Permissions</span>
+        </button>
+        <button type="button" class="settings-nav-item" data-category="downloads">
+          <span data-icon="download" data-icon-size="16"></span>
+          <span>Downloads</span>
+        </button>
+        <button type="button" class="settings-nav-item" data-category="bookmarks">
+          <span data-icon="bookmark" data-icon-size="16"></span>
+          <span>Bookmarks</span>
+        </button>
+        <button type="button" class="settings-nav-item" data-category="passwords">
+          <span data-icon="key" data-icon-size="16"></span>
+          <span>Passwords</span>
+        </button>
+        <button type="button" class="settings-nav-item" data-category="history">
+          <span data-icon="clock" data-icon-size="16"></span>
+          <span>History</span>
+        </button>
+        <button type="button" class="settings-nav-item" data-category="news">
+          <span data-icon="newspaper" data-icon-size="16"></span>
+          <span>News & Feeds</span>
+        </button>
+        <button type="button" class="settings-nav-item" data-category="performance">
+          <span data-icon="cpu" data-icon-size="16"></span>
+          <span>Performance</span>
+        </button>
+        <button type="button" class="settings-nav-item" data-category="system">
+          <span data-icon="terminal" data-icon-size="16"></span>
+          <span>System</span>
+        </button>
+        <button type="button" class="settings-nav-item" data-category="profiles">
+          <span data-icon="user" data-icon-size="16"></span>
+          <span>Profiles</span>
+        </button>
+        <button type="button" class="settings-nav-item" data-category="advanced">
+          <span data-icon="refresh-cw" data-icon-size="16"></span>
+          <span>Advanced</span>
+        </button>
+        <button type="button" class="settings-nav-item" data-category="developer">
+          <span data-icon="code" data-icon-size="16"></span>
+          <span>Developer</span>
+        </button>
+        <button type="button" class="settings-nav-item" data-category="adblock">
+          <span data-icon="shield-check" data-icon-size="16"></span>
+          <span>Native Ad Blocker</span>
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Right Settings Content Pane -->
+    <main class="settings-content-pane" id="settingsContent" aria-label="Settings Content">
+      
+      <!-- 1. GENERAL -->
+      <section class="settings-content-section" id="section-general">
+        <h2 class="settings-section-title">General Browser Settings</h2>
+        <div class="settings-card">
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">On Startup</div>
+              <div class="setting-description">Choose what opens when THAAW launches</div>
+            </div>
+            <div class="setting-control">
+              <select id="settingStartup" class="input-select" onchange="updateStartupMode(this.value)">
+                <option value="newtab">Open the New Tab Page</option>
+                <option value="restore">Restore Previous Session</option>
+              </select>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Default Web Browser</div>
+              <div class="setting-description">Make THAAW your default browser for web links and HTML files</div>
+            </div>
+            <div class="setting-control">
+              <button type="button" class="btn btn-secondary btn-sm" id="makeDefaultBtn" onclick="showToast('THAAW is configured as your active browser.')">Make Default</button>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Search Suggestions in Omnibox</div>
+              <div class="setting-description">Show local history, bookmarks, and search suggestions while typing</div>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="searchSuggestionsToggle" checked onchange="updateSettingBool('searchSuggestions', this.checked)" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. APPEARANCE & THEMES -->
+      <section class="settings-content-section hidden" id="section-appearance">
+        <h2 class="settings-section-title">Appearance, Themes & Density</h2>
+        
+        <div class="settings-card">
+          <div class="setting-row" style="flex-direction: column; align-items: flex-start;">
+            <div class="setting-info" style="margin-bottom: 12px;">
+              <div class="setting-label">Theme Mode & Color Presets</div>
+              <div class="setting-description">Select from 4 signature dark and 4 light color presets</div>
+            </div>
+            
+            <!-- Dark Presets Grid -->
+            <div style="font-size: 11px; font-weight: 700; color: var(--thaaw-text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Dark Presets</div>
+            <div class="preset-cards-grid" style="width: 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-bottom: 16px;">
+              <div class="preset-card active" data-theme="dark" data-preset="midnight" onclick="selectThemePreset('dark', 'midnight')">
+                <div class="preset-card-header">
+                  <span class="preset-name">Midnight</span>
+                  <div class="preset-swatches">
+                    <span class="preset-swatch" style="background: #050812;"></span>
+                    <span class="preset-swatch" style="background: #38BDF8;"></span>
+                    <span class="preset-swatch" style="background: #FF6FF0;"></span>
+                  </div>
+                </div>
+                <div class="preset-desc">Navy deep signature with vibrant neon cyan</div>
+              </div>
+              <div class="preset-card" data-theme="dark" data-preset="deep-space" onclick="selectThemePreset('dark', 'deep-space')">
+                <div class="preset-card-header">
+                  <span class="preset-name">Deep Space</span>
+                  <div class="preset-swatches">
+                    <span class="preset-swatch" style="background: #0B0E17;"></span>
+                    <span class="preset-swatch" style="background: #818CF8;"></span>
+                    <span class="preset-swatch" style="background: #C084FC;"></span>
+                  </div>
+                </div>
+                <div class="preset-desc">Cosmic indigo atmosphere with violet accents</div>
+              </div>
+              <div class="preset-card" data-theme="dark" data-preset="obsidian" onclick="selectThemePreset('dark', 'obsidian')">
+                <div class="preset-card-header">
+                  <span class="preset-name">Obsidian</span>
+                  <div class="preset-swatches">
+                    <span class="preset-swatch" style="background: #080A0E;"></span>
+                    <span class="preset-swatch" style="background: #34D399;"></span>
+                    <span class="preset-swatch" style="background: #F59E0B;"></span>
+                  </div>
+                </div>
+                <div class="preset-desc">Volcanic charcoal with emerald luminescence</div>
+              </div>
+              <div class="preset-card" data-theme="dark" data-preset="eclipse" onclick="selectThemePreset('dark', 'eclipse')">
+                <div class="preset-card-header">
+                  <span class="preset-name">Eclipse</span>
+                  <div class="preset-swatches">
+                    <span class="preset-swatch" style="background: #0F0814;"></span>
+                    <span class="preset-swatch" style="background: #FB7185;"></span>
+                    <span class="preset-swatch" style="background: #F43F5E;"></span>
+                  </div>
+                </div>
+                <div class="preset-desc">Corona dark plum with vibrant rose highlights</div>
+              </div>
+            </div>
+
+            <!-- Light Presets Grid -->
+            <div style="font-size: 11px; font-weight: 700; color: var(--thaaw-text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Light Presets</div>
+            <div class="preset-cards-grid" style="width: 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;">
+              <div class="preset-card" data-theme="light" data-preset="white" onclick="selectThemePreset('light', 'white')">
+                <div class="preset-card-header">
+                  <span class="preset-name">White</span>
+                  <div class="preset-swatches">
+                    <span class="preset-swatch" style="background: #FFFFFF;"></span>
+                    <span class="preset-swatch" style="background: #0284C7;"></span>
+                    <span class="preset-swatch" style="background: #E11D48;"></span>
+                  </div>
+                </div>
+                <div class="preset-desc">Luminous, ultra-clean pure paper aesthetic</div>
+              </div>
+              <div class="preset-card" data-theme="light" data-preset="frost" onclick="selectThemePreset('light', 'frost')">
+                <div class="preset-card-header">
+                  <span class="preset-name">Frost</span>
+                  <div class="preset-swatches">
+                    <span class="preset-swatch" style="background: #F0F9FF;"></span>
+                    <span class="preset-swatch" style="background: #0EA5E9;"></span>
+                    <span class="preset-swatch" style="background: #06B6D4;"></span>
+                  </div>
+                </div>
+                <div class="preset-desc">Glacial cool sky with soft cyan accents</div>
+              </div>
+              <div class="preset-card" data-theme="light" data-preset="pearl" onclick="selectThemePreset('light', 'pearl')">
+                <div class="preset-card-header">
+                  <span class="preset-name">Pearl</span>
+                  <div class="preset-swatches">
+                    <span class="preset-swatch" style="background: #FFFBEB;"></span>
+                    <span class="preset-swatch" style="background: #D97706;"></span>
+                    <span class="preset-swatch" style="background: #B45309;"></span>
+                  </div>
+                </div>
+                <div class="preset-desc">Warm ivory with elegant amber glow</div>
+              </div>
+              <div class="preset-card" data-theme="light" data-preset="cloud" onclick="selectThemePreset('light', 'cloud')">
+                <div class="preset-card-header">
+                  <span class="preset-name">Cloud</span>
+                  <div class="preset-swatches">
+                    <span class="preset-swatch" style="background: #F5F3FF;"></span>
+                    <span class="preset-swatch" style="background: #7C3AED;"></span>
+                    <span class="preset-swatch" style="background: #A855F7;"></span>
+                  </div>
+                </div>
+                <div class="preset-desc">Soft daylight lavender morning tone</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Interface Density</div>
+              <div class="setting-description">Controls vertical padding of tabs bar, URL bar, and omnibox</div>
+            </div>
+            <div class="setting-control">
+              <select id="densitySelect" class="input-select" onchange="applyDensity(this.value)">
+                <option value="comfortable">Comfortable (Default)</option>
+                <option value="compact">Compact (Saves Vertical Space)</option>
+                <option value="spacious">Spacious</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Tab Strip Corner Style</div>
+              <div class="setting-description">Choose how browser tab borders are rounded</div>
+            </div>
+            <div class="setting-control">
+              <select id="tabStyleSelect" class="input-select" onchange="updateSettingString('tabStyle', this.value)">
+                <option value="rounded">Modern Rounded (Default)</option>
+                <option value="minimal">Minimal Straight</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- THEMES -->
+      <section class="settings-content-section hidden" id="section-themes">
+        <h2 class="settings-section-title">Theme Presets & Brand Identity</h2>
+        <div class="settings-card">
+          <div class="setting-info" style="margin-bottom: 14px;">
+            <div class="setting-label">Global Theme Engine</div>
+            <div class="setting-description">Select from 4 signature dark and 4 first-class light themes. Theme changes instantly propagate across the omnibox, tabs, sidebar, and all internal pages.</div>
+          </div>
+
+          <!-- Dark Presets Grid -->
+          <div style="font-size: 11px; font-weight: 700; color: var(--thaaw-text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Dark Themes (4 Presets)</div>
+          <div class="preset-cards-grid" style="width: 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-bottom: 18px;">
+            <div class="preset-card active" data-theme="dark" data-preset="midnight" onclick="selectThemePreset('dark', 'midnight')">
+              <div class="preset-card-header">
+                <span class="preset-name">THAAW Midnight</span>
+                <div class="preset-swatches">
+                  <span class="preset-swatch" style="background: #07111F;"></span>
+                  <span class="preset-swatch" style="background: #38BDF8;"></span>
+                  <span class="preset-swatch" style="background: #FF6FF0;"></span>
+                </div>
+              </div>
+              <div class="preset-desc">Original signature navy with cyan & pink accents</div>
+            </div>
+            <div class="preset-card" data-theme="dark" data-preset="deep-space" onclick="selectThemePreset('dark', 'deep-space')">
+              <div class="preset-card-header">
+                <span class="preset-name">THAAW Deep Space</span>
+                <div class="preset-swatches">
+                  <span class="preset-swatch" style="background: #030712;"></span>
+                  <span class="preset-swatch" style="background: #818CF8;"></span>
+                  <span class="preset-swatch" style="background: #C084FC;"></span>
+                </div>
+              </div>
+              <div class="preset-desc">Ultra deep space void with cosmic indigo</div>
+            </div>
+            <div class="preset-card" data-theme="dark" data-preset="obsidian" onclick="selectThemePreset('dark', 'obsidian')">
+              <div class="preset-card-header">
+                <span class="preset-name">THAAW Obsidian</span>
+                <div class="preset-swatches">
+                  <span class="preset-swatch" style="background: #0F1117;"></span>
+                  <span class="preset-swatch" style="background: #34D399;"></span>
+                  <span class="preset-swatch" style="background: #6EE7B7;"></span>
+                </div>
+              </div>
+              <div class="preset-desc">Volcanic basalt black with emerald highlights</div>
+            </div>
+            <div class="preset-card" data-theme="dark" data-preset="eclipse" onclick="selectThemePreset('dark', 'eclipse')">
+              <div class="preset-card-header">
+                <span class="preset-name">THAAW Eclipse</span>
+                <div class="preset-swatches">
+                  <span class="preset-swatch" style="background: #120E16;"></span>
+                  <span class="preset-swatch" style="background: #FB7185;"></span>
+                  <span class="preset-swatch" style="background: #F43F5E;"></span>
+                </div>
+              </div>
+              <div class="preset-desc">Solar corona purple and rose gold</div>
+            </div>
+          </div>
+
+          <!-- Light Presets Grid -->
+          <div style="font-size: 11px; font-weight: 700; color: var(--thaaw-text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Light Themes (4 Presets)</div>
+          <div class="preset-cards-grid" style="width: 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;">
+            <div class="preset-card" data-theme="light" data-preset="white" onclick="selectThemePreset('light', 'white')">
+              <div class="preset-card-header">
+                <span class="preset-name">THAAW White</span>
+                <div class="preset-swatches">
+                  <span class="preset-swatch" style="background: #F8FAFC;"></span>
+                  <span class="preset-swatch" style="background: #0284C7;"></span>
+                  <span class="preset-swatch" style="background: #D946EF;"></span>
+                </div>
+              </div>
+              <div class="preset-desc">Crisp, luminous clean slate</div>
+            </div>
+            <div class="preset-card" data-theme="light" data-preset="frost" onclick="selectThemePreset('light', 'frost')">
+              <div class="preset-card-header">
+                <span class="preset-name">THAAW Frost</span>
+                <div class="preset-swatches">
+                  <span class="preset-swatch" style="background: #F1F5F9;"></span>
+                  <span class="preset-swatch" style="background: #0EA5E9;"></span>
+                  <span class="preset-swatch" style="background: #38BDF8;"></span>
+                </div>
+              </div>
+              <div class="preset-desc">Glacial cool blue atmospheric mist</div>
+            </div>
+            <div class="preset-card" data-theme="light" data-preset="pearl" onclick="selectThemePreset('light', 'pearl')">
+              <div class="preset-card-header">
+                <span class="preset-name">THAAW Pearl</span>
+                <div class="preset-swatches">
+                  <span class="preset-swatch" style="background: #FAF9F6;"></span>
+                  <span class="preset-swatch" style="background: #D97706;"></span>
+                  <span class="preset-swatch" style="background: #B45309;"></span>
+                </div>
+              </div>
+              <div class="preset-desc">Warm mineral ivory with amber notes</div>
+            </div>
+            <div class="preset-card" data-theme="light" data-preset="cloud" onclick="selectThemePreset('light', 'cloud')">
+              <div class="preset-card-header">
+                <span class="preset-name">THAAW Cloud</span>
+                <div class="preset-swatches">
+                  <span class="preset-swatch" style="background: #F3F4F6;"></span>
+                  <span class="preset-swatch" style="background: #6366F1;"></span>
+                  <span class="preset-swatch" style="background: #8B5CF6;"></span>
+                </div>
+              </div>
+              <div class="preset-desc">Soft overcast lavender morning tone</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- WALLPAPERS -->
+      <section class="settings-content-section hidden" id="section-wallpapers">
+        <h2 class="settings-section-title">Browser Wallpapers (30 Curated Themes)</h2>
+        <div class="settings-card">
+          <div class="setting-info" style="margin-bottom: 12px;">
+            <div class="setting-label">Atmospheric Wallpapers</div>
+            <div class="setting-description">15 signature dark and 15 first-class light wallpapers. Rendered inside miniature browser preview frames with zero fake cards.</div>
+          </div>
+
+          <!-- Wallpaper Filter Tabs -->
+          <div class="wallpaper-filter-tabs" role="tablist" aria-label="Filter wallpapers" style="margin-bottom: 14px;">
+            <button type="button" class="filter-tab active" id="settingsWpFilterAll" onclick="filterSettingsWallpapers('all')">All (30)</button>
+            <button type="button" class="filter-tab" id="settingsWpFilterDark" onclick="filterSettingsWallpapers('dark')">Dark (15)</button>
+            <button type="button" class="filter-tab" id="settingsWpFilterLight" onclick="filterSettingsWallpapers('light')">Light (15)</button>
+          </div>
+
+          <!-- Wallpaper Preview Grid -->
+          <div id="settingsWallpaperGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; max-height: 480px; overflow-y: auto; padding-right: 4px;">
+            <!-- Dynamically populated -->
+          </div>
+
+          <div class="wallpaper-actions-row" style="margin-top: 16px;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="applySettingsWallpaper('none')">Solid Background</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="applySettingsWallpaper('default')">Reset to Default</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROFILES & WORKSPACES -->
+      <section class="settings-content-section hidden" id="section-profiles">
+        <h2 class="settings-section-title">Account & Profiles</h2>
+
+        <!-- Account Authentication Card -->
+        <div class="settings-card" style="margin-bottom: 24px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+            <div>
+              <h3 style="font-size: 15px; font-weight: 600; color: var(--thaaw-text); margin-bottom: 4px;">Browser Account</h3>
+              <p style="font-size: 12px; color: var(--thaaw-text-muted);">Sign in to synchronize preferences, passwords, and manage your developer profile.</p>
+            </div>
+            <span id="authStatusBadge" class="badge-tag" style="font-size: 11px;">Checking...</span>
+          </div>
+
+          <!-- Signed-In View -->
+          <div id="authSignedInContainer" class="hidden" style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px; background: rgba(255,255,255,0.03); border: 1px solid var(--thaaw-border); border-radius: var(--thaaw-radius-md);">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <div id="authAvatar" style="width: 44px; height: 44px; border-radius: 50%; background: var(--thaaw-cyan); color: #000; font-weight: 700; font-size: 18px; display: flex; align-items: center; justify-content: center;">U</div>
+                <div>
+                  <div id="authName" style="font-size: 15px; font-weight: 600; color: var(--thaaw-text);">User</div>
+                  <div id="authEmail" style="font-size: 12px; color: var(--thaaw-text-muted); font-family: var(--thaaw-font-mono);">user@example.com</div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEditProfile()">Edit Profile</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="handleSignOut()" style="color: #EF4444; border-color: rgba(239, 68, 68, 0.3);">Sign Out</button>
+              </div>
+            </div>
+
+            <!-- Inline Edit Profile Panel -->
+            <div id="editProfilePanel" class="hidden" style="padding: 16px; background: rgba(0,0,0,0.25); border: 1px solid var(--thaaw-border); border-radius: var(--thaaw-radius-md); display: flex; flex-direction: column; gap: 12px;">
+              <h4 style="font-size: 13px; font-weight: 600; color: var(--thaaw-text);">Edit Profile & Credentials</h4>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                  <label style="font-size: 11px; color: var(--thaaw-text-muted); display: block; margin-bottom: 4px;">Display Name</label>
+                  <input type="text" id="editNameInput" style="width: 100%; padding: 7px 10px; background: var(--thaaw-bg-card); border: 1px solid var(--thaaw-border); border-radius: var(--thaaw-radius-sm); color: var(--thaaw-text); font-size: 12px;" />
+                </div>
+                <div>
+                  <label style="font-size: 11px; color: var(--thaaw-text-muted); display: block; margin-bottom: 4px;">Avatar Color</label>
+                  <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
+                    <input type="color" id="editAvatarColorInput" value="#00F0FF" style="border: none; width: 32px; height: 28px; border-radius: 4px; cursor: pointer; background: transparent;" />
+                    <span style="font-size: 11px; color: var(--thaaw-text-muted);">Pick profile theme accent</span>
+                  </div>
+                </div>
+              </div>
+              <div style="border-top: 1px solid var(--thaaw-border); padding-top: 12px; margin-top: 4px;">
+                <h5 style="font-size: 12px; font-weight: 600; color: var(--thaaw-text); margin-bottom: 8px;">Change Password</h5>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                  <input type="password" id="currentPasswordInput" placeholder="Current password..." style="padding: 7px 10px; background: var(--thaaw-bg-card); border: 1px solid var(--thaaw-border); border-radius: var(--thaaw-radius-sm); color: var(--thaaw-text); font-size: 12px;" />
+                  <input type="password" id="newPasswordInput" placeholder="New password (min 8 chars)..." style="padding: 7px 10px; background: var(--thaaw-bg-card); border: 1px solid var(--thaaw-border); border-radius: var(--thaaw-radius-sm); color: var(--thaaw-text); font-size: 12px;" />
+                </div>
+              </div>
+              <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEditProfile()">Cancel</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="handleSaveProfile()">Save Changes</button>
+              </div>
+              <div id="editProfileMsg" style="font-size: 11px; display: none;"></div>
+            </div>
+          </div>
+
+          <!-- Signed-Out View -->
+          <div id="authSignedOutContainer" style="display: flex; flex-direction: column; gap: 14px;">
+            <div style="display: flex; gap: 8px; border-bottom: 1px solid var(--thaaw-border); padding-bottom: 8px;">
+              <button type="button" id="tabSignInBtn" class="btn btn-primary btn-sm" onclick="showAuthTab('signin')">Sign In</button>
+              <button type="button" id="tabCreateAccBtn" class="btn btn-secondary btn-sm" onclick="showAuthTab('create')">Create Account</button>
+            </div>
+
+            <!-- Sign In Form -->
+            <div id="formSignIn" style="display: flex; flex-direction: column; gap: 10px; max-width: 400px;">
+              <div>
+                <label style="font-size: 11px; color: var(--thaaw-text-muted); display: block; margin-bottom: 4px;">Email Address</label>
+                <input type="email" id="signInEmail" placeholder="developer@example.com" style="width: 100%; padding: 8px 10px; background: var(--thaaw-bg-card); border: 1px solid var(--thaaw-border); border-radius: var(--thaaw-radius-sm); color: var(--thaaw-text); font-size: 12px;" />
+              </div>
+              <div>
+                <label style="font-size: 11px; color: var(--thaaw-text-muted); display: block; margin-bottom: 4px;">Password</label>
+                <input type="password" id="signInPassword" placeholder="••••••••" style="width: 100%; padding: 8px 10px; background: var(--thaaw-bg-card); border: 1px solid var(--thaaw-border); border-radius: var(--thaaw-radius-sm); color: var(--thaaw-text); font-size: 12px;" />
+              </div>
+              <div style="margin-top: 4px;">
+                <button type="button" class="btn btn-primary btn-sm" onclick="handleSignIn()">Sign In</button>
+              </div>
+            </div>
+
+            <!-- Create Account Form -->
+            <div id="formCreateAcc" class="hidden" style="display: flex; flex-direction: column; gap: 10px; max-width: 400px;">
+              <div>
+                <label style="font-size: 11px; color: var(--thaaw-text-muted); display: block; margin-bottom: 4px;">Full Name / Display Name</label>
+                <input type="text" id="createAccName" placeholder="Ada Lovelace" style="width: 100%; padding: 8px 10px; background: var(--thaaw-bg-card); border: 1px solid var(--thaaw-border); border-radius: var(--thaaw-radius-sm); color: var(--thaaw-text); font-size: 12px;" />
+              </div>
+              <div>
+                <label style="font-size: 11px; color: var(--thaaw-text-muted); display: block; margin-bottom: 4px;">Email Address</label>
+                <input type="email" id="createAccEmail" placeholder="developer@example.com" style="width: 100%; padding: 8px 10px; background: var(--thaaw-bg-card); border: 1px solid var(--thaaw-border); border-radius: var(--thaaw-radius-sm); color: var(--thaaw-text); font-size: 12px;" />
+              </div>
+              <div>
+                <label style="font-size: 11px; color: var(--thaaw-text-muted); display: block; margin-bottom: 4px;">Password (minimum 8 characters)</label>
+                <input type="password" id="createAccPassword" placeholder="••••••••" style="width: 100%; padding: 8px 10px; background: var(--thaaw-bg-card); border: 1px solid var(--thaaw-border); border-radius: var(--thaaw-radius-sm); color: var(--thaaw-text); font-size: 12px;" />
+              </div>
+              <div style="margin-top: 4px;">
+                <button type="button" class="btn btn-primary btn-sm" onclick="handleCreateAccount()">Create Account</button>
+              </div>
+            </div>
+
+            <div id="authAlertMsg" style="font-size: 12px; padding: 8px 12px; border-radius: 6px; display: none;"></div>
+          </div>
+        </div>
+
+        <!-- Profiles & Isolation Card -->
+        <div class="settings-card">
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Show Profile Picker on Startup</div>
+              <div class="setting-description">Display profile selection screen when the browser launches</div>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="startupProfilePickerToggle" onchange="handleToggleStartupPicker(this.checked)" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-row" style="flex-direction: column; align-items: flex-start;">
+            <div class="setting-info" style="margin-bottom: 10px;">
+              <div class="setting-label">Available Profiles</div>
+              <div class="setting-description">Each profile has an isolated Chromium partition, cookies, history, and cache</div>
+            </div>
+            <div id="settingsProfileList" style="width: 100%; display: flex; flex-direction: column; gap: 6px;">
+              <!-- Populated dynamically via ProfileManager -->
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Add New Profile</div>
+              <div class="setting-description">Create an isolated browsing workspace (e.g. Work, Research, Personal)</div>
+            </div>
+            <div class="setting-control" style="display: flex; gap: 8px;">
+              <input type="text" id="newProfileNameInput" placeholder="Profile name..." style="padding: 6px 10px; background: var(--thaaw-bg-card); border: 1px solid var(--thaaw-border); border-radius: var(--thaaw-radius-sm); color: var(--thaaw-text); font-size: 12px; outline: none; width: 140px;" />
+              <button type="button" class="btn btn-primary btn-sm" onclick="addNewProfile()">Add</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. TABS & WINDOWS -->
+      <section class="settings-content-section hidden" id="section-tabs">
+        <h2 class="settings-section-title">Tabs & Window Management</h2>
+        <div class="settings-card">
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Tab Audio Mute Indicator</div>
+              <div class="setting-description">Show interactive speaker icon on tabs playing media to toggle audio instantly</div>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="tabAudioToggle" checked onchange="updateSettingBool('audioIndicator', this.checked)" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Quick Tab Switcher Shortcut</div>
+              <div class="setting-description">Press Ctrl+Shift+A anywhere to search and jump to open tabs</div>
+            </div>
+            <div class="setting-control">
+              <span class="badge-tag" style="font-family: var(--thaaw-font-mono); font-size: 11px;">Ctrl + Shift + A</span>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Tab Pinning & Context Menu</div>
+              <div class="setting-description">Right-click any tab to pin to the left, duplicate, mute, or close other tabs</div>
+            </div>
+            <div class="setting-control">
+              <span class="badge-tag" style="font-size: 11px;">Enabled</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. SEARCH PROVIDER & SHORTCUTS -->
+      <section class="settings-content-section hidden" id="section-search">
+        <h2 class="settings-section-title">Default Search Provider & Bangs</h2>
+        <div class="settings-card">
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Default Omnibox Engine</div>
+              <div class="setting-description">The search engine used when queries are entered directly in the URL bar</div>
+            </div>
+            <div class="setting-control" style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
+              <select id="defaultSearchEngine" class="input-select" onchange="handleEngineSelect(this.value)">
+                <option value="duckduckgo">DuckDuckGo (Private, Default)</option>
+                <option value="google">Google</option>
+                <option value="brave">Brave Search</option>
+                <option value="bing">Bing</option>
+                <option value="custom">Custom Search (%s URL)</option>
+              </select>
+              <input type="text" id="customSearchUrlInput" class="settings-search-input" placeholder="https://kagi.com/search?q=%s" style="display: none; width: 280px; font-size: 12px; padding: 6px 10px;" onchange="handleCustomSearchUrl(this.value)" />
+            </div>
+          </div>
+          <div class="setting-row" style="flex-direction: column; align-items: flex-start;">
+            <div class="setting-info" style="margin-bottom: 10px;">
+              <div class="setting-label">Instant Search Bangs</div>
+              <div class="setting-description">Prefix queries in the URL bar to target specific engines instantly</div>
+            </div>
+            <div style="width: 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px;">
+              <div style="background: var(--thaaw-bg-card); padding: 8px 12px; border-radius: var(--thaaw-radius-sm); border: 1px solid var(--thaaw-border); font-size: 12px;">
+                <span style="font-weight: 700; color: var(--thaaw-cyan); font-family: var(--thaaw-font-mono);">!g &lt;query&gt;</span>
+                <div style="color: var(--thaaw-text-muted); font-size: 11px;">Google Search</div>
+              </div>
+              <div style="background: var(--thaaw-bg-card); padding: 8px 12px; border-radius: var(--thaaw-radius-sm); border: 1px solid var(--thaaw-border); font-size: 12px;">
+                <span style="font-weight: 700; color: var(--thaaw-cyan); font-family: var(--thaaw-font-mono);">!ddg &lt;query&gt;</span>
+                <div style="color: var(--thaaw-text-muted); font-size: 11px;">DuckDuckGo</div>
+              </div>
+              <div style="background: var(--thaaw-bg-card); padding: 8px 12px; border-radius: var(--thaaw-radius-sm); border: 1px solid var(--thaaw-border); font-size: 12px;">
+                <span style="font-weight: 700; color: var(--thaaw-cyan); font-family: var(--thaaw-font-mono);">!b &lt;query&gt;</span>
+                <div style="color: var(--thaaw-text-muted); font-size: 11px;">Brave Search</div>
+              </div>
+              <div style="background: var(--thaaw-bg-card); padding: 8px 12px; border-radius: var(--thaaw-radius-sm); border: 1px solid var(--thaaw-border); font-size: 12px;">
+                <span style="font-weight: 700; color: var(--thaaw-cyan); font-family: var(--thaaw-font-mono);">!yt &lt;query&gt;</span>
+                <div style="color: var(--thaaw-text-muted); font-size: 11px;">YouTube Search</div>
+              </div>
+              <div style="background: var(--thaaw-bg-card); padding: 8px 12px; border-radius: var(--thaaw-radius-sm); border: 1px solid var(--thaaw-border); font-size: 12px;">
+                <span style="font-weight: 700; color: var(--thaaw-cyan); font-family: var(--thaaw-font-mono);">!gh &lt;query&gt;</span>
+                <div style="color: var(--thaaw-text-muted); font-size: 11px;">GitHub Code & Repos</div>
+              </div>
+              <div style="background: var(--thaaw-bg-card); padding: 8px 12px; border-radius: var(--thaaw-radius-sm); border: 1px solid var(--thaaw-border); font-size: 12px;">
+                <span style="font-weight: 700; color: var(--thaaw-cyan); font-family: var(--thaaw-font-mono);">!w &lt;query&gt;</span>
+                <div style="color: var(--thaaw-text-muted); font-size: 11px;">Wikipedia</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. PRIVACY & SHIELDS -->
+      <section class="settings-content-section hidden" id="section-privacy">
+        <h2 class="settings-section-title">Privacy & Tracking Shields</h2>
+        <div class="settings-card">
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">THAAW Shield Protection Tier</div>
+              <div class="setting-description">Balanced blocks cross-site trackers; Strict adds fingerprint protection</div>
+            </div>
+            <div class="setting-control">
+              <select id="protectionLevelSelect" class="input-select" onchange="updateProtectionTier(this.value)">
+                <option value="balanced">Balanced (Recommended)</option>
+                <option value="strict">Strict (Hardened Telemetry Block)</option>
+                <option value="maximum">Maximum (Block 3rd Party Scripts)</option>
+              </select>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Third-Party Cookie Partitioning</div>
+              <div class="setting-description">Isolated client storage prevents advertising networks from tracking you across websites</div>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" checked disabled />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Clear Browsing Data</div>
+              <div class="setting-description">Permanently remove cookies, cache, site storage, and browsing history</div>
+            </div>
+            <div class="setting-control">
+              <button type="button" class="btn btn-danger btn-sm" onclick="clearBrowsingData()">Clear All Data</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. SECURITY & ENCRYPTION -->
+      <section class="settings-content-section hidden" id="section-security">
+        <h2 class="settings-section-title">Security & Encryption</h2>
+        <div class="settings-card">
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">HTTPS-First Mode</div>
+              <div class="setting-description">Automatically upgrade all web connections to secure, TLS-encrypted HTTPS</div>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="httpsFirstToggle" checked onchange="updateSettingBool('httpsFirst', this.checked)" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">DNS-over-HTTPS (DoH)</div>
+              <div class="setting-description">Encrypt domain resolution lookups using Quad9 & Cloudflare secure DNS</div>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="dohToggle" checked onchange="updateSettingBool('doH', this.checked)" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Download Threat Inspection</div>
+              <div class="setting-description">Pre-inspect executable files, shell scripts, and binaries locally before running</div>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" checked disabled />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. SITE PERMISSIONS -->
+      <section class="settings-content-section hidden" id="section-permissions">
+        <h2 class="settings-section-title">Site Permissions & 4-W Model</h2>
+        <div class="settings-card">
+          <div style="font-size: 12px; color: var(--thaaw-text-muted); margin-bottom: 8px;">
+            THAAW enforces the 4-W permission model (Who requests, What resource, Why needed, and When granted).
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Camera</div>
+              <div class="setting-description">Prompt when a web app requests camera access</div>
+            </div>
+            <div class="setting-control">
+              <select class="input-select"><option>Ask Every Time (Default)</option><option>Block All</option></select>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Microphone</div>
+              <div class="setting-description">Prompt when a web app requests microphone access</div>
+            </div>
+            <div class="setting-control">
+              <select class="input-select"><option>Ask Every Time (Default)</option><option>Block All</option></select>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Geolocation</div>
+              <div class="setting-description">Prompt when a web app requests physical location</div>
+            </div>
+            <div class="setting-control">
+              <select class="input-select"><option>Ask Every Time (Default)</option><option>Block All</option></select>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Desktop Notifications</div>
+              <div class="setting-description">Prompt before showing desktop alert popups</div>
+            </div>
+            <div class="setting-control">
+              <select class="input-select"><option>Ask Every Time (Default)</option><option>Block All</option></select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. PASSWORDS & VAULT -->
+      <section class="settings-content-section hidden" id="section-passwords">
+        <h2 class="settings-section-title">Passwords & Hardware Vault</h2>
+        <div class="settings-card">
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Hardware-Encrypted Password Storage</div>
+              <div class="setting-description">Manage passwords locally encrypted with Electron safeStorage system keyrings</div>
+            </div>
+            <div class="setting-control">
+              <button type="button" class="btn btn-primary btn-sm" onclick="navigateTo('thaaw://passwords')">Open Password Vault</button>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Autofill Logins & Passwords</div>
+              <div class="setting-description">Suggest matching saved credentials on secure login fields</div>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" checked onchange="localStorage.setItem('thaaw_autofill', this.checked)" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10. BOOKMARKS -->
+      <section class="settings-content-section hidden" id="section-bookmarks">
+        <h2 class="settings-section-title">Bookmarks Management</h2>
+        <div class="settings-card">
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Bookmarks Manager</div>
+              <div class="setting-description">Organize folders, search bookmarks, and export to Netscape HTML format</div>
+            </div>
+            <div class="setting-control">
+              <button type="button" class="btn btn-primary btn-sm" onclick="navigateTo('thaaw://bookmarks')">Open Bookmarks Manager</button>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Show Bookmarks Bar</div>
+              <div class="setting-description">Always display bookmarked links underneath the toolbar</div>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="settingShowBookmarksBar" onchange="toggleBookmarksBarSetting(this.checked)" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 11. BROWSING HISTORY -->
+      <section class="settings-content-section hidden" id="section-history">
+        <h2 class="settings-section-title">Browsing History & Retention</h2>
+        <div class="settings-card">
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Browsing History Timeline</div>
+              <div class="setting-description">View, search, and delete entries from your chronological browsing history</div>
+            </div>
+            <div class="setting-control">
+              <button type="button" class="btn btn-primary btn-sm" onclick="navigateTo('thaaw://history')">Open History Timeline</button>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Clear Browsing Records</div>
+              <div class="setting-description">Quickly erase history entries and page cache</div>
+            </div>
+            <div class="setting-control">
+              <button type="button" class="btn btn-danger btn-sm" onclick="clearBrowsingData()">Clear History</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 12. DOWNLOADS -->
+      <section class="settings-content-section hidden" id="section-downloads">
+        <h2 class="settings-section-title">Downloads Configuration</h2>
+        <div class="settings-card">
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Download Directory</div>
+              <div class="setting-description">Location where completed downloads are saved by default</div>
+            </div>
+            <div class="setting-control">
+              <span class="badge-tag" style="font-family: var(--thaaw-font-mono); font-size: 11px;">~/Downloads</span>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Prompt for Download Destination</div>
+              <div class="setting-description">Ask where to save each file before starting the download</div>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="askDownloadToggle" onchange="localStorage.setItem('thaaw_ask_download', this.checked)" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 12. NEWS & FEEDS -->
+      <section class="settings-content-section hidden" id="section-news">
+        <h2 class="settings-section-title">News Reader & Feed Subscriptions</h2>
+        <div class="settings-card">
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Show News Feed</div>
+              <div class="setting-description">Display curated live news stories and discussions on the New Tab page</div>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="settingShowNews" checked onchange="localStorage.setItem('thaaw_show_news', this.checked)" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Personalized For You Feed</div>
+              <div class="setting-description">Use local browsing signals to order stories without sending data to external servers</div>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="settingForYou" checked onchange="localStorage.setItem('thaaw_for_you', this.checked)" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Story Clustering</div>
+              <div class="setting-description">Group related coverage from multiple legitimate sources into single event clusters</div>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="settingStoryClustering" checked onchange="localStorage.setItem('thaaw_clustering', this.checked)" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Feed Refresh Frequency</div>
+              <div class="setting-description">How frequently background cached news stories are updated</div>
+            </div>
+            <div class="setting-control">
+              <select id="settingNewsRefresh" class="input-select" onchange="localStorage.setItem('thaaw_news_refresh', this.value)">
+                <option value="15m">Every 15 minutes</option>
+                <option value="30m">Every 30 minutes</option>
+                <option value="1h">Every hour</option>
+              </select>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Custom RSS Feeds</div>
+              <div class="setting-description">Add and manage custom RSS and Atom subscriptions</div>
+            </div>
+            <div class="setting-control">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="navigateTo('thaaw://newtab#news')">Manage RSS Subscriptions</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 13. PERFORMANCE & MEMORY -->
+      <section class="settings-content-section hidden" id="section-performance">
+        <h2 class="settings-section-title">System Performance & Memory</h2>
+        <div class="settings-card">
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">GPU Hardware Acceleration</div>
+              <div class="setting-description">Use GPU rendering hardware when available for fluid page scrolling and video playback</div>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="hardwareAccelToggle" checked onchange="updateSettingBool('hardwareAcceleration', this.checked)" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Automatic Memory Saver</div>
+              <div class="setting-description">Frees RAM by discarding inactive background tabs after 60 minutes</div>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="memorySaverToggle" checked onchange="updateSettingBool('memorySaver', this.checked)" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SYSTEM & NATIVE INTEGRATION -->
+      <section class="settings-content-section hidden" id="section-system">
+        <h2 class="settings-section-title">System & Native Environment</h2>
+        <div class="settings-card">
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Hardware Acceleration</div>
+              <div class="setting-description">Use system GPU hardware acceleration when available for smooth graphics and video playback</div>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="systemHwAccelToggle" checked onchange="updateSettingBool('hardwareAcceleration', this.checked)" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Process Model & Multi-Threading</div>
+              <div class="setting-description">Runs tabs and extensions in strictly isolated child processes with sandboxed privileges</div>
+            </div>
+            <div class="setting-control">
+              <span class="badge-tag" style="color: var(--thaaw-success); background: var(--thaaw-success-subtle); padding: 4px 8px; font-size: 11px;">Sandboxed &bull; Isolated</span>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Clear Cache & Temporary Files</div>
+              <div class="setting-description">Delete cached web assets, network request caches, and temporary profile data</div>
+            </div>
+            <div class="setting-control">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="handleClearData()">Clear Cache</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DEVELOPER TOOLS -->
+      <section class="settings-content-section hidden" id="section-developer">
+        <h2 class="settings-section-title">Developer & Diagnostic Tools</h2>
+        <div class="settings-card">
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Chromium DevTools Inspector</div>
+              <div class="setting-description">Allow opening web inspector on any tab via F12 or right-click Inspect</div>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="devToolsToggle" checked onchange="localStorage.setItem('thaaw_devtools_enabled', this.checked)" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Engine Diagnostic Verbosity</div>
+              <div class="setting-description">Level of terminal log output emitted by THAAW core process</div>
+            </div>
+            <div class="setting-control">
+              <select class="input-select">
+                <option value="warn">Warnings & Errors (Default)</option>
+                <option value="debug">Verbose Debug</option>
+                <option value="error">Errors Only</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 15. BACKUP & RESET -->
+      <section class="settings-content-section hidden" id="section-advanced">
+        <h2 class="settings-section-title">Customization Profile Backup & Reset</h2>
+        <div class="settings-card">
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Export Browser Customization JSON</div>
+              <div class="setting-description">Export your themes, presets, shortcuts, and preferences to a backup file</div>
+            </div>
+            <div class="setting-control">
+              <button type="button" class="btn btn-primary btn-sm" onclick="exportCustomization()">Export JSON</button>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Import Customization JSON</div>
+              <div class="setting-description">Restore your saved shortcuts, theme presets, and settings</div>
+            </div>
+            <div class="setting-control">
+              <input type="file" id="importJsonInput" style="display: none;" accept=".json" onchange="importCustomization(event)" />
+              <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('importJsonInput').click()">Import JSON</button>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Reset Appearance & Theme</div>
+              <div class="setting-description">Restores Midnight dark theme, comfortable density, and rounded tabs</div>
+            </div>
+            <div class="setting-control">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="resetAppearance()">Reset Appearance</button>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Reset Search & Privacy</div>
+              <div class="setting-description">Restores DuckDuckGo default engine, Balanced protection shield, and DoH</div>
+            </div>
+            <div class="setting-control">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="resetSearchAndPrivacy()">Reset Search & Privacy</button>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Reset All Browser Preferences</div>
+              <div class="setting-description">Revert all profile settings to factory defaults without deleting passwords or bookmarks</div>
+            </div>
+            <div class="setting-control">
+              <button type="button" class="btn btn-danger btn-sm" onclick="resetAllPreferences()">Reset All Settings</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 19. NATIVE AD BLOCKER -->
+      <section class="settings-content-section hidden" id="section-adblock">
+        <h2 class="settings-section-title">Native Ad Blocker</h2>
+        
+        <!-- Ad Blocker Engine Card -->
+        <div class="settings-card">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span data-icon="shield-check" data-icon-size="22" style="color: var(--thaaw-cyan);"></span>
+              <div>
+                <h3 style="margin: 0; font-size: 15px; font-weight: 600; color: var(--thaaw-text);">Native Ad Blocker Engine</h3>
+                <p style="margin: 2px 0 0; font-size: 12px; color: var(--thaaw-text-muted);">High-performance network blocking and cosmetic filtering</p>
+              </div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="adblockGlobalToggle" checked onchange="toggleAdBlockerGlobal(this.checked)" />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 16px;">
+            <div style="background: var(--thaaw-surface-hover); padding: 12px 14px; border-radius: var(--thaaw-radius-md); border: 1px solid var(--thaaw-border);">
+              <div style="font-size: 11px; color: var(--thaaw-text-muted); text-transform: uppercase; font-weight: 600;">Blocked Ads</div>
+              <div id="adblockTotalBlocked" style="font-size: 22px; font-weight: 700; color: var(--thaaw-cyan); margin-top: 4px;">0</div>
+            </div>
+            <div style="background: var(--thaaw-surface-hover); padding: 12px 14px; border-radius: var(--thaaw-radius-md); border: 1px solid var(--thaaw-border);">
+              <div style="font-size: 11px; color: var(--thaaw-text-muted); text-transform: uppercase; font-weight: 600;">Engine Status</div>
+              <div style="font-size: 14px; font-weight: 600; color: var(--thaaw-success); margin-top: 8px;">Active &bull; Filtering</div>
+            </div>
+            <div style="background: var(--thaaw-surface-hover); padding: 12px 14px; border-radius: var(--thaaw-radius-md); border: 1px solid var(--thaaw-border);">
+              <div style="font-size: 11px; color: var(--thaaw-text-muted); text-transform: uppercase; font-weight: 600;">Filter Rules</div>
+              <div style="font-size: 14px; font-weight: 600; color: var(--thaaw-text); margin-top: 8px;">150+ Domains & CSS</div>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">YouTube Video Ad Auto-Skipper</div>
+              <div class="setting-description">Automatically detects and fast-forwards through non-skippable and skippable YouTube ads</div>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="ytAdSkipperToggle" checked onchange="localStorage.setItem('thaaw_yt_adskipper', this.checked)" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Cosmetic Element Hiding</div>
+              <div class="setting-description">Hides empty ad placeholder containers, promotional banners, and sticky overlays</div>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="cosmeticHidingToggle" checked onchange="localStorage.setItem('thaaw_cosmetic_hiding', this.checked)" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    // 1. Navigation Switcher with Hash Routing Support
+    const navItems = document.querySelectorAll('.settings-nav-item');
+    const sections = document.querySelectorAll('.settings-content-section');
+
+    function selectCategory(cat) {
+      if (!cat) cat = 'general';
+      cat = cat.replace(/^#/, '').toLowerCase();
+      if (cat === 'adblock' || cat === 'ad-blocker' || cat === 'extensions') {
+        cat = 'adblock';
+      }
+
+      let navTarget = document.querySelector(`.settings-nav-item[data-category="${cat}"]`);
+      if (!navTarget) {
+        cat = 'general';
+        navTarget = document.querySelector('.settings-nav-item[data-category="general"]');
+      }
+
+      navItems.forEach(n => n.classList.remove('active'));
+      sections.forEach(s => s.classList.add('hidden'));
+
+      navTarget?.classList.add('active');
+      const targetSection = document.getElementById(`section-${cat}`);
+      if (targetSection) targetSection.classList.remove('hidden');
+
+      if (window.location.hash.replace(/^#/, '') !== cat) {
+        window.history.replaceState(null, '', `#${cat}`);
+      }
+    }
+
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const cat = item.getAttribute('data-category') || 'general';
+        selectCategory(cat);
+      });
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const initialHash = window.location.hash ? window.location.hash.slice(1) : '';
+      if (initialHash) {
+        selectCategory(initialHash);
+      }
+      refreshAdblockStats();
+    });
+
+    window.addEventListener('hashchange', () => {
+      const hash = window.location.hash ? window.location.hash.slice(1) : '';
+      selectCategory(hash);
+    });
+
+    function toggleExtensionDevMode(enabled) {
+      const actions = document.getElementById('extDevActions');
+      if (actions) actions.style.display = enabled ? 'flex' : 'none';
+    }
+
+    async function toggleAdBlockerGlobal(enabled) {
+      try {
+        if (window.thaawAPI?.toggleAdBlocker) {
+          await window.thaawAPI.toggleAdBlocker(enabled);
+        }
+        showToast(enabled ? 'Native Ad Blocker enabled.' : 'Native Ad Blocker paused.');
+        refreshAdblockStats();
+      } catch {
+        showToast('Ad blocker setting updated.');
+      }
+    }
+
+    async function refreshAdblockStats() {
+      try {
+        if (window.thaawAPI?.getAdBlockerStatus) {
+          const status = await window.thaawAPI.getAdBlockerStatus();
+          const totalEl = document.getElementById('adblockTotalBlocked');
+          if (totalEl && status?.totalBlockedCount !== undefined) {
+            totalEl.textContent = status.totalBlockedCount.toLocaleString();
+          }
+          const toggle = document.getElementById('adblockGlobalToggle');
+          if (toggle && status?.enabled !== undefined) {
+            toggle.checked = status.enabled;
+          }
+        }
+      } catch {}
+    }
+
+    // 2. Real-Time Settings Search Filter
+    const searchInput = document.getElementById('settingsSearch');
+    const settingsContent = document.getElementById('settingsContent');
+    let noResultsEl = document.getElementById('settingsNoResults');
+    if (!noResultsEl && settingsContent) {
+      noResultsEl = document.createElement('div');
+      noResultsEl.id = 'settingsNoResults';
+      noResultsEl.className = 'glass-card hidden';
+      noResultsEl.style.cssText = 'padding: 48px 24px; text-align: center; margin-top: 24px; border-radius: var(--thaaw-radius-lg);';
+      noResultsEl.innerHTML = `
+        <div style="color: var(--thaaw-text-muted); margin-bottom: 12px;"><span data-icon="search" data-icon-size="32"></span></div>
+        <h3 style="font-size: 16px; margin: 0 0 6px; color: var(--thaaw-text); font-weight: 600;">No matching settings found</h3>
+        <p style="font-size: 13px; color: var(--thaaw-text-muted); margin: 0;">Try searching with a different keyword or browse categories on the left.</p>
+      `;
+      settingsContent.appendChild(noResultsEl);
+      if (window.getSvgIcon) {
+        noResultsEl.querySelectorAll('[data-icon]').forEach(el => {
+          el.innerHTML = window.getSvgIcon('search', 32);
+        });
+      }
+    }
+
+    searchInput?.addEventListener('input', () => {
+      const q = searchInput.value.toLowerCase().trim();
+      if (!q) {
+        // Return to active nav category
+        if (noResultsEl) noResultsEl.classList.add('hidden');
+        const activeNav = document.querySelector('.settings-nav-item.active');
+        if (activeNav) {
+          sections.forEach(s => s.classList.add('hidden'));
+          const cat = activeNav.getAttribute('data-category');
+          document.getElementById(`section-${cat}`)?.classList.remove('hidden');
+        }
+        document.querySelectorAll('.setting-row').forEach(r => r.style.display = 'flex');
+        return;
+      }
+
+      let totalMatches = 0;
+      sections.forEach(s => {
+        const rows = s.querySelectorAll('.setting-row');
+        let sectionMatches = 0;
+        rows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          const matches = text.includes(q);
+          row.style.display = matches ? 'flex' : 'none';
+          if (matches) sectionMatches++;
+        });
+
+        if (sectionMatches > 0) {
+          s.classList.remove('hidden');
+          totalMatches += sectionMatches;
+        } else {
+          s.classList.add('hidden');
+        }
+      });
+
+      if (noResultsEl) {
+        noResultsEl.classList.toggle('hidden', totalMatches > 0);
+      }
+    });
+
+    function showToast(msg) {
+      let tc = document.getElementById('settingsToastContainer');
+      if (!tc) {
+        tc = document.createElement('div');
+        tc.id = 'settingsToastContainer';
+        tc.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;';
+        document.body.appendChild(tc);
+      }
+      const t = document.createElement('div');
+      t.style.cssText = 'padding:10px 16px;background:rgba(10,16,32,0.96);border:1px solid var(--thaaw-border);border-radius:8px;color:var(--thaaw-text);font-size:12px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,0.5);pointer-events:auto;';
+      t.textContent = msg;
+      tc.appendChild(t);
+      setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 200); }, 3000);
+    }
+
+    async function toggleBookmarksBarSetting(checked) {
+      if (window.thaawAPI && window.thaawAPI.toggleBookmarksBar) {
+        await window.thaawAPI.toggleBookmarksBar(checked);
+        showToast(checked ? 'Bookmarks bar enabled.' : 'Bookmarks bar hidden.');
+      }
+    }
+
+    if (window.thaawAPI && window.thaawAPI.getSettings) {
+      window.thaawAPI.getSettings().then(s => {
+        if (s && typeof s.showBookmarksBar === 'boolean') {
+          const el = document.getElementById('settingShowBookmarksBar');
+          if (el) el.checked = s.showBookmarksBar;
+        }
+      });
+    }
+
+    // 3. Theme & Preset Application
+    function selectThemePreset(theme, preset) {
+      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.setAttribute('data-theme-preset', preset);
+      
+      document.querySelectorAll('.preset-card').forEach(card => {
+        const isMatch = card.dataset.theme === theme && card.dataset.preset === preset;
+        card.classList.toggle('active', isMatch);
+      });
+
+      if (window.thaawAPI?.setTheme) {
+        window.thaawAPI.setTheme(theme, preset);
+      }
+    }
+
+    function applyDensity(density) {
+      document.documentElement.setAttribute('data-density', density);
+      if (window.thaawAPI?.updateSettings) {
+        window.thaawAPI.updateSettings({ density });
+      }
+      showToast('Interface density updated.');
+    }
+
+    function updateStartupMode(val) {
+      if (window.thaawAPI?.updateSettings) {
+        window.thaawAPI.updateSettings({ startupMode: val });
+      }
+      showToast('Startup mode updated.');
+    }
+
+    function updateSettingBool(key, val) {
+      if (window.thaawAPI?.updateSettings) {
+        window.thaawAPI.updateSettings({ [key]: val });
+      }
+      showToast('Setting updated.');
+    }
+
+    function updateSettingString(key, val) {
+      if (window.thaawAPI?.updateSettings) {
+        window.thaawAPI.updateSettings({ [key]: val });
+      }
+      showToast('Setting updated.');
+    }
+
+    function handleEngineSelect(engine) {
+      const customInput = document.getElementById('customSearchUrlInput');
+      if (customInput) {
+        customInput.style.display = (engine === 'custom') ? 'block' : 'none';
+      }
+      const customUrl = customInput ? customInput.value.trim() : '';
+      if (window.thaawAPI?.updateSettings) {
+        window.thaawAPI.updateSettings({ defaultSearchEngine: engine, customSearchUrl: customUrl });
+      }
+      showToast(`Default search set to ${engine}.`);
+    }
+
+    function handleCustomSearchUrl(url) {
+      if (window.thaawAPI?.updateSettings) {
+        window.thaawAPI.updateSettings({ customSearchUrl: url });
+      }
+      showToast('Custom search template updated.');
+    }
+
+    function updateProtectionTier(level) {
+      if (window.thaawAPI?.setProtectionLevel) {
+        window.thaawAPI.setProtectionLevel(level);
+      }
+      if (window.thaawAPI?.updateSettings) {
+        window.thaawAPI.updateSettings({ protectionLevel: level });
+      }
+      showToast(`Protection tier set to ${level}.`);
+    }
+
+    function navigateTo(url) {
+      if (window.thaawAPI?.createTab) {
+        window.thaawAPI.createTab(url);
+      } else {
+        window.location.href = url;
+      }
+    }
+
+    async function clearBrowsingData() {
+      if (confirm('Clear all browsing cookies, history, and cached site data?')) {
+        if (window.thaawAPI?.clearBrowsingData) {
+          await window.thaawAPI.clearBrowsingData();
+        }
+        showToast('Browsing data cleared successfully.');
+      }
+    }
+
+    // 4. Profiles & Authentication Management
+    let currentUserAccount = null;
+
+    async function loadAuth() {
+      const signedInContainer = document.getElementById('authSignedInContainer');
+      const signedOutContainer = document.getElementById('authSignedOutContainer');
+      const authBadge = document.getElementById('authStatusBadge');
+
+      if (!window.thaawAPI?.getCurrentUser) {
+        if (authBadge) authBadge.textContent = 'Guest Mode';
+        return;
+      }
+
+      try {
+        currentUserAccount = await window.thaawAPI.getCurrentUser();
+        if (currentUserAccount) {
+          if (authBadge) {
+            authBadge.textContent = 'Signed In';
+            authBadge.style.background = 'rgba(16, 185, 129, 0.2)';
+            authBadge.style.color = '#10B981';
+          }
+          if (signedInContainer) signedInContainer.classList.remove('hidden');
+          if (signedOutContainer) signedOutContainer.classList.add('hidden');
+
+          const nameEl = document.getElementById('authName');
+          const emailEl = document.getElementById('authEmail');
+          const avatarEl = document.getElementById('authAvatar');
+          const editName = document.getElementById('editNameInput');
+          const editColor = document.getElementById('editAvatarColorInput');
+
+          if (nameEl) nameEl.textContent = currentUserAccount.name || 'THAAW User';
+          if (emailEl) emailEl.textContent = currentUserAccount.email;
+          if (avatarEl) {
+            avatarEl.textContent = (currentUserAccount.name || 'U').charAt(0).toUpperCase();
+            if (currentUserAccount.avatarColor) avatarEl.style.background = currentUserAccount.avatarColor;
+          }
+          if (editName) editName.value = currentUserAccount.name || '';
+          if (editColor && currentUserAccount.avatarColor) editColor.value = currentUserAccount.avatarColor;
+        } else {
+          if (authBadge) {
+            authBadge.textContent = 'Not Signed In';
+            authBadge.style.background = 'rgba(255, 255, 255, 0.05)';
+            authBadge.style.color = 'var(--thaaw-text-muted)';
+          }
+          if (signedInContainer) signedInContainer.classList.add('hidden');
+          if (signedOutContainer) signedOutContainer.classList.remove('hidden');
+        }
+      } catch (err) {
+        console.error('Failed to load auth account:', err);
+      }
+    }
+
+    function showAuthTab(tab) {
+      const formSignIn = document.getElementById('formSignIn');
+      const formCreateAcc = document.getElementById('formCreateAcc');
+      const btnIn = document.getElementById('tabSignInBtn');
+      const btnUp = document.getElementById('tabCreateAccBtn');
+      const alertBox = document.getElementById('authAlertMsg');
+      if (alertBox) alertBox.style.display = 'none';
+
+      if (tab === 'signin') {
+        formSignIn?.classList.remove('hidden');
+        formCreateAcc?.classList.add('hidden');
+        btnIn?.classList.replace('btn-secondary', 'btn-primary');
+        btnUp?.classList.replace('btn-primary', 'btn-secondary');
+      } else {
+        formSignIn?.classList.add('hidden');
+        formCreateAcc?.classList.remove('hidden');
+        btnUp?.classList.replace('btn-secondary', 'btn-primary');
+        btnIn?.classList.replace('btn-primary', 'btn-secondary');
+      }
+    }
+
+    async function handleSignIn() {
+      const email = document.getElementById('signInEmail')?.value.trim();
+      const password = document.getElementById('signInPassword')?.value;
+
+      if (!email || !password) {
+        showAuthAlert('Please enter both email and password.', 'error');
+        return;
+      }
+
+      try {
+        const res = await window.thaawAPI.signIn({ email, password });
+        if (res.success) {
+          showAuthAlert('Signed in successfully!', 'success');
+          await loadAuth();
+          await loadProfiles();
+        } else {
+          showAuthAlert(res.error || 'Authentication failed.', 'error');
+        }
+      } catch (err) {
+        showAuthAlert(err.message || 'Error signing in.', 'error');
+      }
+    }
+
+    async function handleCreateAccount() {
+      const name = document.getElementById('createAccName')?.value.trim();
+      const email = document.getElementById('createAccEmail')?.value.trim();
+      const password = document.getElementById('createAccPassword')?.value;
+
+      if (!name || !email || !password) {
+        showAuthAlert('Please fill in all fields.', 'error');
+        return;
+      }
+      if (password.length < 8) {
+        showAuthAlert('Password must be at least 8 characters.', 'error');
+        return;
+      }
+
+      try {
+        const res = await window.thaawAPI.createAccount({ name, email, password });
+        if (res.success) {
+          showAuthAlert('Account created successfully!', 'success');
+          await loadAuth();
+          await loadProfiles();
+        } else {
+          showAuthAlert(res.error || 'Could not create account.', 'error');
+        }
+      } catch (err) {
+        showAuthAlert(err.message || 'Error creating account.', 'error');
+      }
+    }
+
+    async function handleSignOut() {
+      try {
+        await window.thaawAPI.signOut();
+        await loadAuth();
+        await loadProfiles();
+      } catch (err) {
+        console.error('Sign out error:', err);
+      }
+    }
+
+    function toggleEditProfile() {
+      const panel = document.getElementById('editProfilePanel');
+      panel?.classList.toggle('hidden');
+      const msg = document.getElementById('editProfileMsg');
+      if (msg) msg.style.display = 'none';
+    }
+
+    async function handleSaveProfile() {
+      const name = document.getElementById('editNameInput')?.value.trim();
+      const avatarColor = document.getElementById('editAvatarColorInput')?.value;
+      const currentPassword = document.getElementById('currentPasswordInput')?.value;
+      const newPassword = document.getElementById('newPasswordInput')?.value;
+      const msg = document.getElementById('editProfileMsg');
+
+      const patch = {};
+      if (name) patch.name = name;
+      if (avatarColor) patch.avatarColor = avatarColor;
+      if (newPassword) {
+        if (!currentPassword) {
+          if (msg) {
+            msg.textContent = 'Current password is required to change password.';
+            msg.style.color = '#EF4444';
+            msg.style.display = 'block';
+          }
+          return;
+        }
+        patch.currentPassword = currentPassword;
+        patch.newPassword = newPassword;
+      }
+
+      try {
+        const res = await window.thaawAPI.updateProfile(patch);
+        if (res.success) {
+          if (msg) {
+            msg.textContent = 'Profile updated successfully!';
+            msg.style.color = '#10B981';
+            msg.style.display = 'block';
+          }
+          setTimeout(() => {
+            toggleEditProfile();
+            loadAuth();
+          }, 1000);
+        } else {
+          if (msg) {
+            msg.textContent = res.error || 'Failed to update profile.';
+            msg.style.color = '#EF4444';
+            msg.style.display = 'block';
+          }
+        }
+      } catch (err) {
+        if (msg) {
+          msg.textContent = err.message || 'Failed to update profile.';
+          msg.style.color = '#EF4444';
+          msg.style.display = 'block';
+        }
+      }
+    }
+
+    function showAuthAlert(text, type) {
+      const alertBox = document.getElementById('authAlertMsg');
+      if (!alertBox) return;
+      alertBox.textContent = text;
+      alertBox.style.display = 'block';
+      if (type === 'success') {
+        alertBox.style.background = 'rgba(16, 185, 129, 0.15)';
+        alertBox.style.color = '#10B981';
+        alertBox.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+      } else {
+        alertBox.style.background = 'rgba(239, 68, 68, 0.15)';
+        alertBox.style.color = '#EF4444';
+        alertBox.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+      }
+    }
+
+    async function handleToggleStartupPicker(checked) {
+      if (window.thaawAPI?.setStartupPickerPreference) {
+        await window.thaawAPI.setStartupPickerPreference(checked);
+      }
+    }
+
+    async function loadProfiles() {
+      const container = document.getElementById('settingsProfileList');
+      if (!container) return;
+      try {
+        const active = await window.thaawAPI?.getActiveProfile?.();
+        const profiles = await window.thaawAPI?.listProfiles?.() || [];
+        const startupPref = await window.thaawAPI?.getStartupPickerPreference?.();
+
+        const toggle = document.getElementById('startupProfilePickerToggle');
+        if (toggle && typeof startupPref === 'boolean') {
+          toggle.checked = startupPref;
+        }
+
+        container.innerHTML = '';
+        profiles.forEach(p => {
+          const isCurrent = active && active.id === p.id;
+          const row = document.createElement('div');
+          row.style.display = 'flex';
+          row.style.alignItems = 'center';
+          row.style.justifyContent = 'space-between';
+          row.style.padding = '10px 14px';
+          row.style.background = 'var(--thaaw-bg-card)';
+          row.style.borderRadius = 'var(--thaaw-radius-sm)';
+          row.style.border = '1px solid var(--thaaw-border)';
+          row.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="width: 28px; height: 28px; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; background: ${p.avatarColor || 'var(--thaaw-cyan)'}; color: #000; border-radius: 50%; font-weight: 700;">${p.name.charAt(0).toUpperCase()}</span>
+              <div>
+                <div style="font-size: 13px; font-weight: 600; color: var(--thaaw-text);">${p.name}</div>
+                <div style="font-size: 11px; color: var(--thaaw-text-muted); font-family: var(--thaaw-font-mono);">Partition: persist:thaaw_profile_${p.id}</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              ${isCurrent ? '<span class="badge-tag" style="font-size: 9px; padding: 2px 6px;">ACTIVE</span>' : `<button type="button" class="btn btn-secondary btn-sm" style="font-size: 11px; padding: 3px 8px;" onclick="switchProfile('${p.id}')">Switch</button>`}
+            </div>
+          `;
+          container.appendChild(row);
+        });
+      } catch (_e) {}
+    }
+
+    async function switchProfile(id) {
+      if (window.thaawAPI?.setActiveProfile) {
+        await window.thaawAPI.setActiveProfile(id);
+        await loadProfiles();
+        await loadAuth();
+      }
+    }
+
+    async function addNewProfile() {
+      const input = document.getElementById('newProfileNameInput');
+      const name = input?.value.trim();
+      if (!name) return;
+      if (window.thaawAPI?.createProfile) {
+        await window.thaawAPI.createProfile(name);
+        input.value = '';
+        await loadProfiles();
+      }
+    }
+
+    // 5. Backup & Import
+    function exportCustomization() {
+      const config = {
+        theme: document.documentElement.getAttribute('data-theme') || 'dark',
+        preset: document.documentElement.getAttribute('data-theme-preset') || 'midnight',
+        density: localStorage.getItem('thaaw_density') || 'comfortable',
+        shortcuts: JSON.parse(localStorage.getItem('thaaw_user_shortcuts') || '[]'),
+        exportedAt: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'thaaw-settings-backup.json';
+      a.click();
+    }
+
+    function importCustomization(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const data = JSON.parse(event.target.result);
+          if (data.theme && data.preset) selectThemePreset(data.theme, data.preset);
+          if (data.density) applyDensity(data.density);
+          if (data.shortcuts) localStorage.setItem('thaaw_user_shortcuts', JSON.stringify(data.shortcuts));
+          showToast('Customization imported successfully!');
+        } catch (err) {
+          showToast('Invalid JSON file format.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    async function resetAppearance() {
+      selectThemePreset('dark', 'midnight');
+      applyDensity('comfortable');
+      const tabStyleEl = document.getElementById('tabStyleSelect');
+      if (tabStyleEl) tabStyleEl.value = 'rounded';
+      if (window.thaawAPI?.updateSettings) {
+        await window.thaawAPI.updateSettings({ theme: 'dark', themePreset: 'midnight', density: 'comfortable', tabStyle: 'rounded' });
+      }
+      showToast('Appearance restored to factory default.');
+    }
+
+    async function resetSearchAndPrivacy() {
+      const engineEl = document.getElementById('defaultSearchEngine');
+      if (engineEl) engineEl.value = 'duckduckgo';
+      const customInput = document.getElementById('customSearchUrlInput');
+      if (customInput) { customInput.value = ''; customInput.style.display = 'none'; }
+      const protEl = document.getElementById('protectionLevelSelect');
+      if (protEl) protEl.value = 'balanced';
+      const httpsEl = document.getElementById('httpsFirstToggle');
+      if (httpsEl) httpsEl.checked = true;
+      const dohEl = document.getElementById('dohToggle');
+      if (dohEl) dohEl.checked = true;
+
+      if (window.thaawAPI?.setProtectionLevel) window.thaawAPI.setProtectionLevel('balanced');
+      if (window.thaawAPI?.updateSettings) {
+        await window.thaawAPI.updateSettings({
+          defaultSearchEngine: 'duckduckgo',
+          customSearchUrl: '',
+          protectionLevel: 'balanced',
+          httpsFirst: true,
+          doH: true
+        });
+      }
+      showToast('Search & Privacy settings restored to defaults.');
+    }
+
+    async function resetAllPreferences() {
+      if (confirm('Revert all THAAW browser settings to factory defaults? Your saved passwords and bookmarks will remain intact.')) {
+        await resetAppearance();
+        await resetSearchAndPrivacy();
+        const startupEl = document.getElementById('settingStartup');
+        if (startupEl) startupEl.value = 'newtab';
+        const suggestionsEl = document.getElementById('searchSuggestionsToggle');
+        if (suggestionsEl) suggestionsEl.checked = true;
+        const memoryEl = document.getElementById('memorySaverToggle');
+        if (memoryEl) memoryEl.checked = true;
+        const gpuEl = document.getElementById('hardwareAccelToggle');
+        if (gpuEl) gpuEl.checked = true;
+
+        if (window.thaawAPI?.updateSettings) {
+          await window.thaawAPI.updateSettings({
+            startupMode: 'newtab',
+            searchSuggestions: true,
+            memorySaver: true,
+            hardwareAcceleration: true,
+            audioIndicator: true
+          });
+        }
+        showToast('All browser preferences reset to defaults.');
+      }
+    }
+
+    // 30-Wallpaper System in Settings (15 Dark + 15 Light)
+    const WALLPAPERS_30 = [
+      // 15 Dark Wallpapers
+      { id: 'midnight-mountains', name: 'Midnight Mountains', mode: 'dark', file: 'thaaw-midnight-mountains.webp', thumb: 'thumbs/thaaw-midnight-mountains.webp' },
+      { id: 'blue-horizon', name: 'Blue Horizon', mode: 'dark', file: 'thaaw-blue-horizon.webp', thumb: 'thumbs/thaaw-blue-horizon.webp' },
+      { id: 'orange-dusk', name: 'Orange Dusk', mode: 'dark', file: 'thaaw-orange-dusk.webp', thumb: 'thumbs/thaaw-orange-dusk.webp' },
+      { id: 'cyan-mist', name: 'Cyan Mist', mode: 'dark', file: 'thaaw-cyan-mist.webp', thumb: 'thumbs/thaaw-cyan-mist.webp' },
+      { id: 'pink-night', name: 'Pink Night', mode: 'dark', file: 'thaaw-pink-night.webp', thumb: 'thumbs/thaaw-pink-night.webp' },
+      { id: 'dark-ocean', name: 'Dark Ocean', mode: 'dark', file: 'thaaw-dark-ocean.webp', thumb: 'thumbs/thaaw-dark-ocean.webp' },
+      { id: 'abstract-flow', name: 'Abstract Flow', mode: 'dark', file: 'thaaw-abstract-flow.webp', thumb: 'thumbs/thaaw-abstract-flow.webp' },
+      { id: 'night-forest', name: 'Night Forest', mode: 'dark', file: 'thaaw-night-forest.webp', thumb: 'thumbs/thaaw-night-forest.webp' },
+      { id: 'modern-architecture', name: 'Modern Architecture', mode: 'dark', file: 'thaaw-modern-architecture.webp', thumb: 'thumbs/thaaw-modern-architecture.webp' },
+      { id: 'deep-space', name: 'Deep Space', mode: 'dark', file: 'thaaw-deep-space.webp', thumb: 'thumbs/thaaw-deep-space.webp' },
+      { id: 'mist-valley', name: 'Mist Valley', mode: 'dark', file: 'thaaw-mist-valley.webp', thumb: 'thumbs/thaaw-mist-valley.webp' },
+      { id: 'abstract-geometry', name: 'Abstract Geometry', mode: 'dark', file: 'thaaw-abstract-geometry.webp', thumb: 'thumbs/thaaw-abstract-geometry.webp' },
+      { id: 'night-city', name: 'Night City', mode: 'dark', file: 'thaaw-night-city.webp', thumb: 'thumbs/thaaw-night-city.webp' },
+      { id: 'polar-mist', name: 'Polar Mist', mode: 'dark', file: 'thaaw-polar-mist.webp', thumb: 'thumbs/thaaw-polar-mist.webp' },
+      { id: 'thaaw-signature', name: 'THAAW Signature', mode: 'dark', file: 'thaaw-signature.webp', thumb: 'thumbs/thaaw-signature.webp' },
+      // 15 Light Wallpapers
+      { id: 'light-01', name: 'Luminous Geometries', mode: 'light', file: 'light/light-01.webp', thumb: 'thumbs/light-01.webp' },
+      { id: 'light-02', name: 'Metropolis Sunrise', mode: 'light', file: 'light/light-02.webp', thumb: 'thumbs/light-02.webp' },
+      { id: 'light-03', name: 'Prismatic Sanctuary', mode: 'light', file: 'light/light-03.webp', thumb: 'thumbs/light-03.webp' },
+      { id: 'light-04', name: 'Mediterranean Cliffside', mode: 'light', file: 'light/light-04.webp', thumb: 'thumbs/light-04.webp' },
+      { id: 'light-05', name: 'Sculptural Curves', mode: 'light', file: 'light/light-05.webp', thumb: 'thumbs/light-05.webp' },
+      { id: 'light-06', name: 'Twilight Skyscraper Terrace', mode: 'light', file: 'light/light-06.webp', thumb: 'thumbs/light-06.webp' },
+      { id: 'light-07', name: 'Botanical Bloom', mode: 'light', file: 'light/light-07.webp', thumb: 'thumbs/light-07.webp' },
+      { id: 'light-08', name: 'Coastal Tide', mode: 'light', file: 'light/light-08.webp', thumb: 'thumbs/light-08.webp' },
+      { id: 'light-09', name: 'Aegean Rotunda', mode: 'light', file: 'light/light-09.webp', thumb: 'thumbs/light-09.webp' },
+      { id: 'light-10', name: 'Pastel Ribbon Flow', mode: 'light', file: 'light/light-10.webp', thumb: 'thumbs/light-10.webp' },
+      { id: 'light-11', name: 'Azure Horizon Terrace', mode: 'light', file: 'light/light-11.webp', thumb: 'thumbs/light-11.webp' },
+      { id: 'light-12', name: 'Minimalist Architecture', mode: 'light', file: 'light/light-12.webp', thumb: 'thumbs/light-12.webp' },
+      { id: 'light-13', name: 'Seaside Villa', mode: 'light', file: 'light/light-13.webp', thumb: 'thumbs/light-13.webp' },
+      { id: 'light-14', name: 'Nordic Forest Mist', mode: 'light', file: 'light/light-14.webp', thumb: 'thumbs/light-14.webp' },
+      { id: 'light-15', name: 'Solar Zenith Architecture', mode: 'light', file: 'light/light-15.webp', thumb: 'thumbs/light-15.webp' }
+    ];
+
+    let currentSettingsWpFilter = 'all';
+
+    function renderSettingsWallpapers() {
+      const container = document.getElementById('settingsWallpaperGrid');
+      if (!container) return;
+      container.innerHTML = '';
+      const activeWp = localStorage.getItem('thaaw_active_wallpaper') || 'default';
+      const list = WALLPAPERS_30.filter(w => currentSettingsWpFilter === 'all' || w.mode === currentSettingsWpFilter);
+
+      list.forEach(wp => {
+        const card = document.createElement('div');
+        card.className = `wallpaper-card-15 ${activeWp === wp.id ? 'active' : ''}`;
+        card.dataset.wallpaperId = wp.id;
+        card.dataset.mode = wp.mode;
+        card.title = `${wp.name} (${wp.mode})`;
+        card.innerHTML = `
+          <div class="wallpaper-mini-browser">
+            <div class="mini-browser-chrome">
+              <span class="mini-dot red"></span>
+              <span class="mini-dot yellow"></span>
+              <span class="mini-dot green"></span>
+              <span class="mini-address-pill"></span>
+            </div>
+            <img class="wallpaper-thumb-img" src="../assets/wallpapers/${wp.thumb}" alt="${wp.name}" loading="lazy" />
+          </div>
+          <div class="wallpaper-title-overlay">${wp.name}</div>
+        `;
+        card.addEventListener('click', () => {
+          applySettingsWallpaper(wp.id);
+        });
+        container.appendChild(card);
+      });
+    }
+
+    function filterSettingsWallpapers(mode) {
+      currentSettingsWpFilter = mode;
+      document.querySelectorAll('#section-wallpapers .filter-tab').forEach(t => t.classList.remove('active'));
+      const activeBtn = document.getElementById(`settingsWpFilter${mode.charAt(0).toUpperCase() + mode.slice(1)}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      renderSettingsWallpapers();
+    }
+
+    function applySettingsWallpaper(wpId) {
+      localStorage.setItem('thaaw_active_wallpaper', wpId);
+      document.querySelectorAll('#settingsWallpaperGrid .wallpaper-card-15').forEach(card => {
+        card.classList.toggle('active', card.dataset.wallpaperId === wpId);
+      });
+      showToast(wpId === 'none' ? 'Wallpaper set to solid background.' : wpId === 'default' ? 'Wallpaper reset to default.' : 'Wallpaper applied.');
+    }
+
+    // 6. Bootstrap Initial State
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProfiles();
+      loadAuth();
+      renderSettingsWallpapers();
+      if (window.thaawAPI?.getTheme) {
+        window.thaawAPI.getTheme().then(t => {
+          if (t) selectThemePreset(t.theme, t.preset || 'midnight');
+        }).catch(() => {});
+      }
+      if (window.thaawAPI?.getSettings) {
+        window.thaawAPI.getSettings().then(s => {
+          if (!s) return;
+          if (s.startupMode) {
+            const startupEl = document.getElementById('settingStartup');
+            if (startupEl) startupEl.value = s.startupMode;
+          }
+          if (s.searchSuggestions !== undefined) {
+            const suggEl = document.getElementById('searchSuggestionsToggle');
+            if (suggEl) suggEl.checked = Boolean(s.searchSuggestions);
+          }
+          if (s.tabStyle) {
+            const tabStyleEl = document.getElementById('tabStyleSelect');
+            if (tabStyleEl) tabStyleEl.value = s.tabStyle;
+          }
+          if (s.audioIndicator !== undefined) {
+            const audioEl = document.getElementById('tabAudioToggle');
+            if (audioEl) audioEl.checked = Boolean(s.audioIndicator);
+          }
+          if (s.defaultSearchEngine) {
+            const engineEl = document.getElementById('defaultSearchEngine');
+            if (engineEl) engineEl.value = s.defaultSearchEngine;
+            const customInput = document.getElementById('customSearchUrlInput');
+            if (customInput) {
+              customInput.style.display = (s.defaultSearchEngine === 'custom') ? 'block' : 'none';
+              if (s.customSearchUrl) customInput.value = s.customSearchUrl;
+            }
+          }
+          if (s.httpsFirst !== undefined) {
+            const httpsEl = document.getElementById('httpsFirstToggle');
+            if (httpsEl) httpsEl.checked = Boolean(s.httpsFirst);
+          }
+          if (s.doH !== undefined) {
+            const dohEl = document.getElementById('dohToggle');
+            if (dohEl) dohEl.checked = Boolean(s.doH);
+          }
+          if (s.hardwareAcceleration !== undefined) {
+            const gpuEl = document.getElementById('hardwareAccelToggle');
+            if (gpuEl) gpuEl.checked = Boolean(s.hardwareAcceleration);
+          }
+          if (s.memorySaver !== undefined) {
+            const memEl = document.getElementById('memorySaverToggle');
+            if (memEl) memEl.checked = Boolean(s.memorySaver);
+          }
+          if (s.density) {
+            const sel = document.getElementById('densitySelect');
+            if (sel) sel.value = s.density;
+          }
+          if (s.protectionLevel) {
+            const prot = document.getElementById('protectionLevelSelect');
+            if (prot) prot.value = s.protectionLevel;
+          }
+        }).catch(() => {});
+      }
+    });
+  </script>
+</body>
+</html>

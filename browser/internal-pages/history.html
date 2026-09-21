@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>History — THAAW</title>
+  <link rel="stylesheet" href="internal.css">
+  <script src="icons.js"></script>
+  <script src="favicon-resolver.js"></script>
+</head>
+<body class="internal-page-body">
+  <div class="container" style="max-width: 980px; margin: 24px auto; padding: 0 20px;">
+    <header class="page-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <span data-icon="clock" data-icon-size="28" style="color: var(--thaaw-primary);"></span>
+        <div>
+          <h1 style="font-size: 22px; font-weight: 700; color: var(--thaaw-text); margin: 0;">Browsing History</h1>
+          <p style="font-size: 12px; color: var(--thaaw-text-muted); margin: 4px 0 0;">Stored privately on device. Never synced to cloud.</p>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input type="search" id="historySearchInput" placeholder="Search history..." style="width: 220px; padding: 8px 12px; background: var(--thaaw-surface); border: 1px solid var(--thaaw-border); border-radius: var(--thaaw-radius-sm); color: var(--thaaw-text); font-size: 13px;" />
+        <select id="clearRangeSelect" style="padding: 7px 10px; background: var(--thaaw-surface); border: 1px solid var(--thaaw-border); border-radius: var(--thaaw-radius-sm); color: var(--thaaw-text); font-size: 12px;">
+          <option value="hour">Last hour</option>
+          <option value="day">Last 24 hours</option>
+          <option value="week">Last 7 days</option>
+          <option value="month">Last 4 weeks</option>
+          <option value="all" selected>All time</option>
+        </select>
+        <button id="clearHistoryRangeBtn" class="btn btn-danger btn-sm">Clear History</button>
+      </div>
+    </header>
+
+    <!-- History Timeline List -->
+    <div id="historyTimelineContainer" style="display: flex; flex-direction: column; gap: 20px;">
+      <!-- Populated dynamically -->
+    </div>
+  </div>
+
+  <script>
+    'use strict';
+
+    let allHistory = [];
+
+    // Global Theme Sync
+    if (window.thaawAPI && window.thaawAPI.getTheme) {
+      window.thaawAPI.getTheme().then(res => {
+        if (res) {
+          document.documentElement.setAttribute('data-theme', res.theme);
+          if (res.preset) document.documentElement.setAttribute('data-theme-preset', res.preset);
+        }
+      });
+      window.thaawAPI.onThemeUpdated((data) => {
+        document.documentElement.setAttribute('data-theme', data.theme);
+        if (data.preset) document.documentElement.setAttribute('data-theme-preset', data.preset);
+      });
+    }
+
+    async function loadHistory(query = '') {
+      const container = document.getElementById('historyTimelineContainer');
+      container.innerHTML = '<div style="text-align: center; color: var(--thaaw-text-muted); padding: 40px;">Loading history records...</div>';
+
+      try {
+        if (window.thaawAPI && window.thaawAPI.getHistory) {
+          allHistory = await window.thaawAPI.getHistory(query);
+        } else {
+          allHistory = [];
+        }
+        renderHistory(allHistory);
+      } catch (err) {
+        container.innerHTML = '<div style="text-align: center; color: var(--thaaw-text-muted); padding: 40px;">Could not load history.</div>';
+      }
+    }
+
+    function renderHistory(items) {
+      const container = document.getElementById('historyTimelineContainer');
+      container.innerHTML = '';
+
+      if (!items || items.length === 0) {
+        container.innerHTML = `
+          <div class="card" style="text-align: center; padding: 40px; color: var(--thaaw-text-muted);">
+            <span data-icon="clock" data-icon-size="32" style="color: var(--thaaw-text-muted); margin-bottom: 12px; display: inline-block;"></span>
+            <div style="font-size: 14px; font-weight: 600; color: var(--thaaw-text);">No browsing history found</div>
+            <p style="font-size: 12px; margin-top: 4px;">Pages you visit will appear here organized by timeline.</p>
+          </div>
+        `;
+        if (window.getSvgIcon) {
+          container.querySelectorAll('[data-icon]').forEach(el => el.innerHTML = window.getSvgIcon('clock', 32));
+        }
+        return;
+      }
+
+      // Group into Today, Yesterday, and Older
+      const now = new Date();
+      const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+      const yesterdayDate = todayDate - 86400000;
+
+      const groups = {
+        'Today': [],
+        'Yesterday': [],
+        'Older': []
+      };
+
+      items.forEach(item => {
+        const itemTime = item.visitedAt || item.timestamp || 0;
+        if (itemTime >= todayDate) {
+          groups['Today'].push(item);
+        } else if (itemTime >= yesterdayDate) {
+          groups['Yesterday'].push(item);
+        } else {
+          groups['Older'].push(item);
+        }
+      });
+
+      for (const [groupName, groupItems] of Object.entries(groups)) {
+        if (groupItems.length === 0) continue;
+
+        const groupCard = document.createElement('div');
+        groupCard.className = 'card';
+        groupCard.style.padding = '16px';
+        groupCard.style.marginBottom = '0';
+
+        const groupTitle = document.createElement('div');
+        groupTitle.style.fontSize = '11px';
+        groupTitle.style.fontWeight = '700';
+        groupTitle.style.textTransform = 'uppercase';
+        groupTitle.style.letterSpacing = '0.5px';
+        groupTitle.style.color = 'var(--thaaw-text-muted)';
+        groupTitle.style.paddingBottom = '10px';
+        groupTitle.style.borderBottom = '1px solid var(--thaaw-border)';
+        groupTitle.style.marginBottom = '10px';
+        groupTitle.textContent = `${groupName} (${groupItems.length})`;
+        groupCard.appendChild(groupTitle);
+
+        const listDiv = document.createElement('div');
+        listDiv.style.display = 'flex';
+        listDiv.style.flexDirection = 'column';
+        listDiv.style.gap = '8px';
+
+        groupItems.forEach(item => {
+          const row = document.createElement('div');
+          row.style.display = 'flex';
+          row.style.alignItems = 'center';
+          row.style.justifyContent = 'space-between';
+          row.style.padding = '8px';
+          row.style.borderRadius = 'var(--thaaw-radius-sm)';
+          row.style.transition = 'background 0.15s ease';
+
+          row.addEventListener('mouseenter', () => { row.style.background = 'var(--thaaw-surface-hover)'; });
+          row.addEventListener('mouseleave', () => { row.style.background = 'transparent'; });
+
+          // Left info
+          const infoDiv = document.createElement('div');
+          infoDiv.style.display = 'flex';
+          infoDiv.style.alignItems = 'center';
+          infoDiv.style.gap = '12px';
+          infoDiv.style.flex = '1';
+          infoDiv.style.minWidth = '0';
+
+          if (window.FaviconResolver) {
+            const fav = window.FaviconResolver.renderFaviconElement(item.url, item.title, 18);
+            infoDiv.appendChild(fav);
+          }
+
+          const textWrap = document.createElement('div');
+          textWrap.style.minWidth = '0';
+
+          const titleLink = document.createElement('a');
+          titleLink.textContent = item.title || item.url;
+          titleLink.href = item.url;
+          titleLink.style.fontSize = '13px';
+          titleLink.style.fontWeight = '600';
+          titleLink.style.color = 'var(--thaaw-text)';
+          titleLink.style.textDecoration = 'none';
+          titleLink.style.display = 'block';
+          titleLink.style.whiteSpace = 'nowrap';
+          titleLink.style.overflow = 'hidden';
+          titleLink.style.textOverflow = 'ellipsis';
+          titleLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (window.thaawAPI && window.thaawAPI.navigate) {
+              window.thaawAPI.navigate(item.url);
+            } else {
+              window.location.href = item.url;
+            }
+          });
+
+          const urlSpan = document.createElement('div');
+          urlSpan.textContent = item.url;
+          urlSpan.style.fontSize = '11px';
+          urlSpan.style.color = 'var(--thaaw-text-muted)';
+          urlSpan.style.whiteSpace = 'nowrap';
+          urlSpan.style.overflow = 'hidden';
+          urlSpan.style.textOverflow = 'ellipsis';
+
+          textWrap.appendChild(titleLink);
+          textWrap.appendChild(urlSpan);
+          infoDiv.appendChild(textWrap);
+          row.appendChild(infoDiv);
+
+          // Right actions
+          const actions = document.createElement('div');
+          actions.style.display = 'flex';
+          actions.style.alignItems = 'center';
+          actions.style.gap = '6px';
+          actions.style.flexShrink = '0';
+
+          const timeSpan = document.createElement('span');
+          timeSpan.style.fontSize = '11px';
+          timeSpan.style.color = 'var(--thaaw-text-muted)';
+          timeSpan.style.marginRight = '8px';
+          const d = new Date(item.visitedAt || item.timestamp);
+          timeSpan.textContent = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          actions.appendChild(timeSpan);
+
+          const openTabBtn = document.createElement('button');
+          openTabBtn.className = 'btn btn-secondary btn-sm';
+          openTabBtn.title = 'Open in New Tab';
+          openTabBtn.innerHTML = window.getSvgIcon ? window.getSvgIcon('external-link', 12) : 'Open';
+          openTabBtn.addEventListener('click', () => {
+            if (window.thaawAPI && window.thaawAPI.createTab) {
+              window.thaawAPI.createTab(item.url);
+            } else {
+              window.open(item.url, '_blank');
+            }
+          });
+          actions.appendChild(openTabBtn);
+
+          const delBtn = document.createElement('button');
+          delBtn.className = 'btn btn-secondary btn-sm';
+          delBtn.style.color = 'var(--thaaw-danger, #EF4444)';
+          delBtn.title = 'Delete from history';
+          delBtn.innerHTML = window.getSvgIcon ? window.getSvgIcon('trash', 12) : 'Delete';
+          delBtn.addEventListener('click', async () => {
+            if (window.thaawAPI && window.thaawAPI.deleteHistoryItem) {
+              await window.thaawAPI.deleteHistoryItem(item.id);
+              loadHistory(document.getElementById('historySearchInput').value.trim());
+            }
+          });
+          actions.appendChild(delBtn);
+
+          row.appendChild(actions);
+          listDiv.appendChild(row);
+        });
+
+        groupCard.appendChild(listDiv);
+        container.appendChild(groupCard);
+      }
+    }
+
+    // Search filter
+    let searchDebounce = null;
+    document.getElementById('historySearchInput').addEventListener('input', (e) => {
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(() => {
+        loadHistory(e.target.value.trim());
+      }, 250);
+    });
+
+    // Clear history by selected range
+    const clearBtn = document.getElementById('clearHistoryRangeBtn');
+    const rangeSelect = document.getElementById('clearRangeSelect');
+    if (clearBtn && rangeSelect) {
+      clearBtn.addEventListener('click', async () => {
+        const range = rangeSelect.value;
+        let since = 0;
+        let label = 'all time';
+
+        if (range === 'hour') {
+          since = Date.now() - 3600000;
+          label = 'the last hour';
+        } else if (range === 'day') {
+          since = Date.now() - 86400000;
+          label = 'the last 24 hours';
+        } else if (range === 'week') {
+          since = Date.now() - 7 * 86400000;
+          label = 'the last 7 days';
+        } else if (range === 'month') {
+          since = Date.now() - 28 * 86400000;
+          label = 'the last 4 weeks';
+        }
+
+        if (confirm(`Permanently clear browsing history from ${label}?`)) {
+          if (range === 'all') {
+            if (window.thaawAPI && window.thaawAPI.clearHistory) {
+              await window.thaawAPI.clearHistory();
+            }
+          } else {
+            if (window.thaawAPI && window.thaawAPI.clearHistoryRange) {
+              await window.thaawAPI.clearHistoryRange(since);
+            } else if (window.thaawAPI && window.thaawAPI.clearHistory) {
+              await window.thaawAPI.clearHistory();
+            }
+          }
+          loadHistory(document.getElementById('historySearchInput').value.trim());
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadHistory();
+    });
+  </script>
+</body>
+</html>

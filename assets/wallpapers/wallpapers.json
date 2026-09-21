@@ -1,0 +1,272 @@
+[
+  {
+    "id": "midnight-mountains",
+    "name": "Midnight Mountains",
+    "mode": "dark",
+    "filename": "thaaw-midnight-mountains.webp",
+    "image": "assets/wallpapers/thaaw-midnight-mountains.webp",
+    "thumb": "thumbs/thaaw-midnight-mountains.webp",
+    "description": "Dark cinematic mountain range with subtle cyan moonlight and warm horizon glow."
+  },
+  {
+    "id": "blue-horizon",
+    "name": "Blue Horizon",
+    "mode": "dark",
+    "filename": "thaaw-blue-horizon.webp",
+    "image": "assets/wallpapers/thaaw-blue-horizon.webp",
+    "thumb": "thumbs/thaaw-blue-horizon.webp",
+    "description": "Calm atmospheric horizon with soft cyan gradient and serene negative space."
+  },
+  {
+    "id": "orange-dusk",
+    "name": "Orange Dusk",
+    "mode": "dark",
+    "filename": "thaaw-orange-dusk.webp",
+    "image": "assets/wallpapers/thaaw-orange-dusk.webp",
+    "thumb": "thumbs/thaaw-orange-dusk.webp",
+    "description": "Dramatic mountain silhouette with burnt orange sunset transition."
+  },
+  {
+    "id": "cyan-mist",
+    "name": "Cyan Mist",
+    "mode": "dark",
+    "filename": "thaaw-cyan-mist.webp",
+    "image": "assets/wallpapers/thaaw-cyan-mist.webp",
+    "thumb": "thumbs/thaaw-cyan-mist.webp",
+    "description": "Dark abstract mountains draped in luminous cyan fog."
+  },
+  {
+    "id": "pink-night",
+    "name": "Pink Night",
+    "mode": "dark",
+    "filename": "thaaw-pink-night.webp",
+    "image": "assets/wallpapers/thaaw-pink-night.webp",
+    "thumb": "thumbs/thaaw-pink-night.webp",
+    "description": "Atmospheric nighttime skies illuminated by soft magenta clouds."
+  },
+  {
+    "id": "dark-ocean",
+    "name": "Dark Ocean",
+    "mode": "dark",
+    "filename": "thaaw-dark-ocean.webp",
+    "image": "assets/wallpapers/thaaw-dark-ocean.webp",
+    "thumb": "thumbs/thaaw-dark-ocean.webp",
+    "description": "Peaceful nocturnal ocean with subtle cyan water reflections."
+  },
+  {
+    "id": "abstract-flow",
+    "name": "Abstract Flow",
+    "mode": "dark",
+    "filename": "thaaw-abstract-flow.webp",
+    "image": "assets/wallpapers/thaaw-abstract-flow.webp",
+    "thumb": "thumbs/thaaw-abstract-flow.webp",
+    "description": "Minimal flowing curves of cyan and pink across deep navy."
+  },
+  {
+    "id": "night-forest",
+    "name": "Night Forest",
+    "mode": "dark",
+    "filename": "thaaw-night-forest.webp",
+    "image": "assets/wallpapers/thaaw-night-forest.webp",
+    "thumb": "thumbs/thaaw-night-forest.webp",
+    "description": "Minimal pine forest silhouettes beneath cyan atmospheric haze."
+  },
+  {
+    "id": "modern-architecture",
+    "name": "Modern Architecture",
+    "mode": "dark",
+    "filename": "thaaw-modern-architecture.webp",
+    "image": "assets/wallpapers/thaaw-modern-architecture.webp",
+    "thumb": "thumbs/thaaw-modern-architecture.webp",
+    "description": "Geometric night structures with clean cyan and warm orange illumination."
+  },
+  {
+    "id": "deep-space",
+    "name": "Deep Space",
+    "mode": "dark",
+    "filename": "thaaw-deep-space.webp",
+    "image": "assets/wallpapers/thaaw-deep-space.webp",
+    "thumb": "thumbs/thaaw-deep-space.webp",
+    "description": "Quiet galactic nebula with understated stellar accents."
+  },
+  {
+    "id": "mist-valley",
+    "name": "Mist Valley",
+    "mode": "dark",
+    "filename": "thaaw-mist-valley.webp",
+    "image": "assets/wallpapers/thaaw-mist-valley.webp",
+    "thumb": "thumbs/thaaw-mist-valley.webp",
+    "description": "Cinematic valley surrounded by misty slopes and subtle horizon light."
+  },
+  {
+    "id": "abstract-geometry",
+    "name": "Abstract Geometry",
+    "mode": "dark",
+    "filename": "thaaw-abstract-geometry.webp",
+    "image": "assets/wallpapers/thaaw-abstract-geometry.webp",
+    "thumb": "thumbs/thaaw-abstract-geometry.webp",
+    "description": "Isometric planes with crisp cyan and magenta edge highlights."
+  },
+  {
+    "id": "night-city",
+    "name": "Night City",
+    "mode": "dark",
+    "filename": "thaaw-night-city.webp",
+    "image": "assets/wallpapers/thaaw-night-city.webp",
+    "thumb": "thumbs/thaaw-night-city.webp",
+    "description": "Distant quiet city skyline at night with delicate cyan and amber lights."
+  },
+  {
+    "id": "polar-mist",
+    "name": "Polar Mist",
+    "mode": "dark",
+    "filename": "thaaw-polar-mist.webp",
+    "image": "assets/wallpapers/thaaw-polar-mist.webp",
+    "thumb": "thumbs/thaaw-polar-mist.webp",
+    "description": "Glacial ice ridges covered in soft arctic mist."
+  },
+  {
+    "id": "signature",
+    "name": "THAAW Signature",
+    "mode": "dark",
+    "filename": "thaaw-signature.webp",
+    "image": "assets/wallpapers/thaaw-signature.webp",
+    "thumb": "thumbs/thaaw-signature.webp",
+    "description": "Original abstract boundary and flow composition representing the THAAW protective shield."
+  },
+  {
+    "id": "light-01",
+    "name": "Luminous Geometries",
+    "mode": "light",
+    "filename": "light/light-01.webp",
+    "image": "assets/wallpapers/light/light-01.webp",
+    "thumb": "thumbs/light-01.webp",
+    "description": "Soft translucent geometric forms in sunlit pastel peach and cerulean blue."
+  },
+  {
+    "id": "light-02",
+    "name": "Metropolis Sunrise",
+    "mode": "light",
+    "filename": "light/light-02.webp",
+    "image": "assets/wallpapers/light/light-02.webp",
+    "thumb": "thumbs/light-02.webp",
+    "description": "Radiant sunrise casting golden light over modern glass skyscraper towers and peaceful river waters."
+  },
+  {
+    "id": "light-03",
+    "name": "Prismatic Sanctuary",
+    "mode": "light",
+    "filename": "light/light-03.webp",
+    "image": "assets/wallpapers/light/light-03.webp",
+    "thumb": "thumbs/light-03.webp",
+    "description": "Crystal glass podiums and refractive prisms scattering pure morning spectral light."
+  },
+  {
+    "id": "light-04",
+    "name": "Mediterranean Cliffside",
+    "mode": "light",
+    "filename": "light/light-04.webp",
+    "image": "assets/wallpapers/light/light-04.webp",
+    "thumb": "thumbs/light-04.webp",
+    "description": "Sun-drenched architectural villa terrace with infinity pool overlooking limestone sea cliffs."
+  },
+  {
+    "id": "light-05",
+    "name": "Sculptural Curves",
+    "mode": "light",
+    "filename": "light/light-05.webp",
+    "image": "assets/wallpapers/light/light-05.webp",
+    "thumb": "thumbs/light-05.webp",
+    "description": "Minimalist organic architectural curves and floating spheres with gentle pastel shadows."
+  },
+  {
+    "id": "light-06",
+    "name": "Twilight Skyscraper Terrace",
+    "mode": "light",
+    "filename": "light/light-06.webp",
+    "image": "assets/wallpapers/light/light-06.webp",
+    "thumb": "thumbs/light-06.webp",
+    "description": "Elevated modern terrace overlooking a breathtaking city river skyline at golden hour."
+  },
+  {
+    "id": "light-07",
+    "name": "Botanical Bloom",
+    "mode": "light",
+    "filename": "light/light-07.webp",
+    "image": "assets/wallpapers/light/light-07.webp",
+    "thumb": "thumbs/light-07.webp",
+    "description": "Delicate botanical watercolor illustration with wild flowers, sage leaves, and warm parchment accents."
+  },
+  {
+    "id": "light-08",
+    "name": "Coastal Tide",
+    "mode": "light",
+    "filename": "light/light-08.webp",
+    "image": "assets/wallpapers/light/light-08.webp",
+    "thumb": "thumbs/light-08.webp",
+    "description": "Pristine aerial view of turquoise ocean waves gently breaking over soft white sands."
+  },
+  {
+    "id": "light-09",
+    "name": "Aegean Rotunda",
+    "mode": "light",
+    "filename": "light/light-09.webp",
+    "image": "assets/wallpapers/light/light-09.webp",
+    "thumb": "thumbs/light-09.webp",
+    "description": "Sculptural white stone rotunda with circular portal framing the endless Mediterranean blue."
+  },
+  {
+    "id": "light-10",
+    "name": "Pastel Ribbon Flow",
+    "mode": "light",
+    "filename": "light/light-10.webp",
+    "image": "assets/wallpapers/light/light-10.webp",
+    "thumb": "thumbs/light-10.webp",
+    "description": "Flowing silk ribbons undulating in soothing shades of pastel sky blue, lilac, and peach."
+  },
+  {
+    "id": "light-11",
+    "name": "Riviera Alley",
+    "mode": "light",
+    "filename": "light/light-11.webp",
+    "image": "assets/wallpapers/light/light-11.webp",
+    "thumb": "thumbs/light-11.webp",
+    "description": "Sunlit Mediterranean cobblestone lane adorned with blossoming jasmine overlooking a calm azure cove."
+  },
+  {
+    "id": "light-12",
+    "name": "Terracotta Dunes",
+    "mode": "light",
+    "filename": "light/light-12.webp",
+    "image": "assets/wallpapers/light/light-12.webp",
+    "thumb": "thumbs/light-12.webp",
+    "description": "Serene architectural stage composition featuring terracotta sun disc, papercraft dunes, and reflecting pool."
+  },
+  {
+    "id": "light-13",
+    "name": "Seaside Villa",
+    "mode": "light",
+    "filename": "light/light-13.webp",
+    "image": "assets/wallpapers/light/light-13.webp",
+    "thumb": "thumbs/light-13.webp",
+    "description": "Luminous modern seaside villa living room with panoramic glass wall overlooking coastal waters."
+  },
+  {
+    "id": "light-14",
+    "name": "Harmonic Resonance",
+    "mode": "light",
+    "filename": "light/light-14.webp",
+    "image": "assets/wallpapers/light/light-14.webp",
+    "thumb": "thumbs/light-14.webp",
+    "description": "Graceful fine-line frequency waves undulating across a warm ivory canvas in cyan, pink, and violet."
+  },
+  {
+    "id": "light-15",
+    "name": "Emerald Valley Skyline",
+    "mode": "light",
+    "filename": "light/light-15.webp",
+    "image": "assets/wallpapers/light/light-15.webp",
+    "thumb": "thumbs/light-15.webp",
+    "description": "Panoramic mountain viewpoint over morning mist, winding lake, and soaring modern city architecture."
+  }
+]

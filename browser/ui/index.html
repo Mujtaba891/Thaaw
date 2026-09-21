@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-density="comfortable">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THAAW</title>
+  <link rel="stylesheet" href="theme/tokens.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" class="browser-chrome">
+    <!-- Atmospheric Wallpaper Layer for Chrome Translucency -->
+    <div id="chromeWallpaperLayer" class="chrome-wallpaper-layer default-bg"></div>
+    <div id="tabSnapshotLayer" class="tab-snapshot-layer hidden"></div>
+
+    <!-- Top Tab Strip -->
+    <div class="tab-strip-container">
+      <div class="brand-glyph" id="brandHomeBtn" title="THAAW — Stop What Shouldn't Pass">
+        <img src="../../assets/icons/thaaw-icon.svg" class="brand-symbol-img" width="22" height="22" alt="THAAW" style="display: block; object-fit: contain;" />
+      </div>
+
+      <div id="tabStrip" class="tab-strip">
+        <!-- Rendered dynamically by renderer.ts -->
+        <button id="newTabBtn" class="chrome-btn tab-action-btn" title="New Tab (Ctrl+T)" aria-label="New Tab">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+      </div>
+
+      <button id="tabSearchBtn" class="chrome-btn tab-action-btn" title="Search Tabs (Ctrl+Shift+A)" aria-label="Search Tabs">
+        <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </button>
+
+      <div class="window-drag-spacer"></div>
+
+      <!-- Right Window Title & Caption Controls (Matching Reference) -->
+      <div class="window-caption-controls">
+        <span class="window-caption-title">THAAW</span>
+        <button id="minBtn" class="window-caption-btn" title="Minimize" aria-label="Minimize">
+          <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+        <button id="maxBtn" class="window-caption-btn" title="Maximize" aria-label="Maximize">
+          <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2" fill="none"><rect x="4" y="4" width="16" height="16" rx="1"></rect></svg>
+        </button>
+        <button id="closeBtn" class="window-caption-btn close-btn" title="Close" aria-label="Close">
+          <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation & Omnibox Toolbar -->
+    <div class="toolbar">
+      <button id="sidebarToggleBtn" class="chrome-btn" title="Toggle Sidebar (Ctrl+B)" aria-label="Toggle Sidebar">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="9" y1="3" x2="9" y2="21"></line>
+        </svg>
+      </button>
+
+      <div class="nav-controls">
+        <button id="backBtn" class="chrome-btn" title="Back (Alt+Left)" aria-label="Back">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+        </button>
+        <button id="forwardBtn" class="chrome-btn" title="Forward (Alt+Right)" aria-label="Forward">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+        <button id="reloadBtn" class="chrome-btn" title="Reload (Ctrl+R)" aria-label="Reload">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Primary Omnibox -->
+      <div class="omnibox-container">
+        <!-- Site Security Indicator Button -->
+        <button id="securityIndicatorBtn" class="security-indicator" title="View Site Security & Permissions" aria-label="Site Security">
+          <span id="securityLockIcon" class="sec-icon-wrap">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </span>
+          <span id="shieldBlockedBadge" class="shield-badge" style="display: none;">0</span>
+        </button>
+
+        <!-- Search Engine Prefix Badge & Dropdown -->
+        <div class="engine-badge-wrapper" style="position: relative; display: inline-flex; align-items: center;">
+          <button type="button" id="engineBadge" class="engine-badge" title="Select default search engine" style="cursor: pointer; border: none;">DDG</button>
+          <div id="engineMenu" class="dropdown-menu hidden" style="position: absolute; top: calc(100% + 6px); left: 0; min-width: 140px; z-index: 1000;">
+            <div class="menu-item" data-engine="duckduckgo">DuckDuckGo</div>
+            <div class="menu-item" data-engine="google">Google</div>
+            <div class="menu-item" data-engine="bing">Bing</div>
+            <div class="menu-item" data-engine="brave">Brave Search</div>
+          </div>
+        </div>
+
+        <!-- Input Field -->
+        <input 
+          type="text" 
+          id="urlInput" 
+          class="url-input" 
+          placeholder="Search DuckDuckGo or enter address..."
+          autocomplete="off"
+          spellcheck="false"
+        />
+
+        <div class="omnibox-tail-actions">
+          <button id="pwaInstallBtn" class="chrome-btn-sm pwa-install-btn hidden" title="Install App" aria-label="Install web application">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+              <line x1="12" y1="17" x2="12" y2="21"></line>
+              <polyline points="9 9 12 12 15 9"></polyline>
+              <line x1="12" y1="6" x2="12" y2="12"></line>
+            </svg>
+          </button>
+          <button id="passwordKeyBtn" class="chrome-btn-sm password-key-btn" title="Site passwords & credential vault" aria-label="Password options">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
+            </svg>
+          </button>
+          <button id="bookmarkCurrentBtn" class="chrome-btn-sm" title="Bookmark this page (Ctrl+D)">
+            <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+          </button>
+          <button id="quickShieldBtn" class="chrome-btn-sm shield-toggle-btn active" title="THAAW Shield: Active for this site">
+            <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- URL Bar Autocomplete Suggestions Dropdown -->
+        <div id="omniboxAutocompleteDropdown" class="omnibox-autocomplete-dropdown hidden" role="listbox" aria-label="Search suggestions and history">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Right Toolbar Utility Actions -->
+      <div class="toolbar-actions">
+        <div class="download-btn-wrapper" style="position: relative; display: inline-flex;">
+          <button id="downloadsBtn" class="chrome-btn" title="Downloads (Ctrl+J)" aria-label="Downloads">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span id="downloadBadge" class="download-badge hidden">0</span>
+          </button>
+
+          <!-- Custom Download Toolbar Popover (Latest 5 downloads) -->
+          <div id="downloadPopover" class="download-popover hidden">
+            <div class="dl-popover-header">
+              <div class="dl-popover-title">
+                <svg viewBox="0 0 24 24" width="15" height="15" stroke="var(--thaaw-cyan)" stroke-width="2" fill="none">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>Downloads</span>
+                <span id="dlActiveCountBadge" class="badge-tag" style="display: none;">0 active</span>
+              </div>
+              <button id="downloadClearBtn" class="dl-clear-btn" title="Clear completed downloads">Clear</button>
+            </div>
+
+            <div id="downloadPopoverList" class="dl-popover-list">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <div id="downloadPopoverEmpty" class="dl-popover-empty">
+              <svg viewBox="0 0 24 24" width="28" height="28" stroke="var(--thaaw-text-muted)" stroke-width="1.5" fill="none">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>No recent downloads</span>
+            </div>
+
+            <div class="dl-popover-footer">
+              <button id="downloadShowMoreBtn" class="dl-show-more-btn">
+                <span>Show more</span>
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-btn-wrapper" style="position: relative; display: inline-flex;">
+          <button id="profileBtn" class="chrome-btn profile-btn" title="Profile Switcher" aria-label="Profile menu" aria-haspopup="true">
+            <span class="profile-avatar" id="topProfileAvatar">P</span>
+          </button>
+          <!-- Top Profile Menu Flyout -->
+          <div id="profileMenu" class="dropdown-menu profile-popover hidden" role="menu" aria-label="Profile menu">
+            <div class="profile-dropdown-header" style="padding: 14px 16px; border-bottom: 1px solid var(--thaaw-border); display: flex; align-items: center; gap: 12px;">
+              <div class="profile-popover-avatar" id="popoverProfileAvatar" style="width: 40px; height: 40px; border-radius: 50%; background: var(--thaaw-cyan); color: #000; font-weight: 700; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35);">P</div>
+              <div style="flex: 1; min-width: 0;">
+                <div id="topProfileName" style="font-weight: 600; font-size: 13.5px; color: var(--thaaw-text); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">Personal Profile</div>
+                <div id="topProfileEmail" style="font-size: 11.5px; color: var(--thaaw-text-muted); text-overflow: ellipsis; overflow: hidden; white-space: nowrap; margin-top: 1px;">Local workspace</div>
+                <div style="display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; color: #22c55e; background: rgba(34, 197, 94, 0.12); border: 1px solid rgba(34, 197, 94, 0.25); padding: 1px 7px; border-radius: 10px; margin-top: 4px;">
+                  <span style="width: 5px; height: 5px; border-radius: 50%; background: #22c55e; display: inline-block;"></span>
+                  <span>Active &bull; Isolated</span>
+                </div>
+              </div>
+            </div>
+            <div style="padding: 8px 4px;">
+              <div style="padding: 4px 12px 6px; font-size: 10.5px; font-weight: 700; color: var(--thaaw-text-muted); text-transform: uppercase; letter-spacing: 0.6px;">Switch Profile</div>
+              <div id="topProfileList" style="display: flex; flex-direction: column; gap: 2px;">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+            <div style="border-top: 1px solid var(--thaaw-border); padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; background: rgba(255, 255, 255, 0.02);">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                <button id="editCurrentProfileBtn" class="btn btn-secondary btn-sm" style="font-size: 11.5px; justify-content: center; gap: 6px; padding: 6px 8px;">
+                  <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  <span>Edit</span>
+                </button>
+                <button id="createProfileBtn" class="btn btn-secondary btn-sm" style="font-size: 11.5px; justify-content: center; gap: 6px; padding: 6px 8px;">
+                  <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  <span>Create</span>
+                </button>
+              </div>
+              <button id="openProfileSettingsBtn" class="btn btn-primary btn-sm" style="width: 100%; font-size: 11.5px; justify-content: center; gap: 6px; padding: 7px 10px;">
+                <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <span>Manage All Profiles</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <button id="commandPaletteBtn" class="chrome-btn" title="Command Palette (Ctrl+Shift+P)">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4 17 10 11 4 5"></polyline>
+            <line x1="12" y1="19" x2="20" y2="19"></line>
+          </svg>
+        </button>
+        <div class="menu-btn-wrapper" style="position: relative; display: inline-flex;">
+          <button id="menuBtn" class="chrome-btn" title="Customize and control THAAW" aria-label="Main menu">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="1.5"></circle>
+              <circle cx="12" cy="5" r="1.5"></circle>
+              <circle cx="12" cy="19" r="1.5"></circle>
+            </svg>
+          </button>
+          <!-- Authentic THAAW Main Menu Dropdown -->
+          <div id="mainMenu" class="dropdown-menu main-menu hidden" style="min-width: 260px;" role="menu" aria-label="Main menu">
+            <div class="menu-item" data-action="new-tab">
+              <span class="menu-item-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              </span>
+              <span class="menu-item-text">New Tab</span>
+              <span class="menu-item-shortcut">Ctrl+T</span>
+            </div>
+            <div class="menu-item" data-action="new-window">
+              <span class="menu-item-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+              </span>
+              <span class="menu-item-text">New Window</span>
+              <span class="menu-item-shortcut">Ctrl+N</span>
+            </div>
+            <div class="menu-item" data-action="new-private-window">
+              <span class="menu-item-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              </span>
+              <span class="menu-item-text">New Private Window</span>
+              <span class="menu-item-shortcut">Ctrl+Shift+N</span>
+            </div>
+            <div class="menu-divider"></div>
+            <!-- Zoom Controls Row -->
+            <div class="menu-zoom-row" style="display: flex; align-items: center; justify-content: space-between; padding: 6px 12px;">
+              <span class="zoom-label" style="font-size: 13px; color: var(--thaaw-text);">Zoom</span>
+              <div class="zoom-controls" style="display: flex; align-items: center; gap: 4px;">
+                <button id="zoomOutBtn" class="zoom-btn chrome-btn-sm" title="Zoom out" aria-label="Zoom out" style="padding: 3px 6px; border: 1px solid var(--thaaw-border); background: var(--thaaw-surface-hover); border-radius: 4px; color: var(--thaaw-text); cursor: pointer;">
+                  <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
+                <span id="zoomLevelDisplay" class="zoom-level" style="font-size: 11px; font-weight: 600; min-width: 36px; text-align: center; color: var(--thaaw-text);">100%</span>
+                <button id="zoomInBtn" class="zoom-btn chrome-btn-sm" title="Zoom in" aria-label="Zoom in" style="padding: 3px 6px; border: 1px solid var(--thaaw-border); background: var(--thaaw-surface-hover); border-radius: 4px; color: var(--thaaw-text); cursor: pointer;">
+                  <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
+                <button id="zoomResetBtn" class="zoom-btn-text" title="Reset zoom" style="padding: 3px 6px; font-size: 11px; border: 1px solid var(--thaaw-border); background: transparent; border-radius: 4px; color: var(--thaaw-text-muted); cursor: pointer;">100%</button>
+                <button id="fullscreenToggleBtn" class="zoom-btn chrome-btn-sm" title="Toggle full screen" aria-label="Full screen" style="padding: 3px 6px; border: 1px solid var(--thaaw-border); background: var(--thaaw-surface-hover); border-radius: 4px; color: var(--thaaw-text); cursor: pointer;">
+                  <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                </button>
+              </div>
+            </div>
+            <div class="menu-divider"></div>
+            <div class="menu-item" data-action="open-history">
+              <span class="menu-item-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              </span>
+              <span class="menu-item-text">History</span>
+              <span class="menu-item-shortcut">Ctrl+H</span>
+            </div>
+            <div class="menu-item" data-action="open-downloads">
+              <span class="menu-item-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              </span>
+              <span class="menu-item-text">Downloads</span>
+              <span class="menu-item-shortcut">Ctrl+J</span>
+            </div>
+            <div class="menu-item" data-action="open-bookmarks">
+              <span class="menu-item-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+              </span>
+              <span class="menu-item-text">Bookmarks</span>
+              <span class="menu-item-shortcut">Ctrl+D</span>
+            </div>
+            <div class="menu-item" data-action="open-passwords">
+              <span class="menu-item-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              </span>
+              <span class="menu-item-text">Passwords & Vault</span>
+            </div>
+            <div class="menu-divider"></div>
+            <div class="menu-item" data-action="print">
+              <span class="menu-item-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              </span>
+              <span class="menu-item-text">Print...</span>
+              <span class="menu-item-shortcut">Ctrl+P</span>
+            </div>
+            <div class="menu-item" data-action="save-page">
+              <span class="menu-item-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+              </span>
+              <span class="menu-item-text">Save Page As...</span>
+              <span class="menu-item-shortcut">Ctrl+S</span>
+            </div>
+            <div class="menu-item" data-action="share-link">
+              <span class="menu-item-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              </span>
+              <span class="menu-item-text">Copy Link</span>
+            </div>
+            <div class="menu-item" data-action="qr-code">
+              <span class="menu-item-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+              </span>
+              <span class="menu-item-text">Create QR Code</span>
+            </div>
+            <div class="menu-divider"></div>
+            <div class="menu-item" data-action="open-settings">
+              <span class="menu-item-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+              </span>
+              <span class="menu-item-text">Settings</span>
+            </div>
+            <div class="menu-item" data-action="open-about">
+              <span class="menu-item-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              </span>
+              <span class="menu-item-text">About THAAW</span>
+            </div>
+            <div class="menu-item" data-action="exit">
+              <span class="menu-item-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--thaaw-red)" stroke-width="2" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              </span>
+              <span class="menu-item-text" style="color: var(--thaaw-red);">Exit THAAW</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bookmarks Bar (Below Navigation Bar, Theme-Aware, Real Bookmarks) -->
+    <div id="bookmarksBar" class="bookmarks-bar hidden" role="toolbar" aria-label="Bookmarks Bar">
+      <div id="bookmarksBarItems" class="bookmarks-bar-items">
+        <!-- Rendered dynamically -->
+      </div>
+      <div id="bookmarksBarOverflow" class="bookmarks-bar-overflow hidden">
+        <button id="bookmarksOverflowBtn" class="bookmarks-bar-btn" title="More bookmarks" aria-label="More bookmarks">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+        <div id="bookmarksOverflowMenu" class="dropdown-menu hidden"></div>
+      </div>
+    </div>
+
+    <!-- Bookmark Item Context Menu -->
+    <div id="bookmarkContextMenu" class="dropdown-menu bookmark-context-menu hidden" role="menu" aria-label="Bookmark Options">
+      <button class="dropdown-item" id="bmCtxOpen">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        <span>Open</span>
+      </button>
+      <button class="dropdown-item" id="bmCtxOpenNewTab">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>Open in New Tab</span>
+      </button>
+      <button class="dropdown-item" id="bmCtxCopyUrl">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        <span>Copy Link Address</span>
+      </button>
+      <div class="dropdown-divider"></div>
+      <button class="dropdown-item text-danger" id="bmCtxDelete">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        <span>Delete Bookmark</span>
+      </button>
+    </div>
+
+    <!-- Floating Folder Contents Popover -->
+    <div id="bookmarkFolderPopup" class="bookmark-folder-popup hidden" role="menu" aria-label="Folder Bookmarks"></div>
+
+    <!-- Password Save / Update Browser-Owned Popover (Never injected into web page) -->
+    <div id="passwordSavePrompt" class="password-save-popover hidden" role="dialog" aria-labelledby="passwordPromptTitle">
+      <div class="pwd-popover-header">
+        <div class="pwd-popover-title-row">
+          <div class="pwd-icon-wrap">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--thaaw-cyan)" stroke-width="2" fill="none">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+          <span id="passwordPromptTitle" class="pwd-popover-title">Save password?</span>
+        </div>
+        <button id="pwdPromptCloseBtn" class="chrome-btn-sm" aria-label="Close">
+          <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="pwd-popover-body">
+        <div class="pwd-field-row">
+          <span class="pwd-field-label">Website:</span>
+          <span id="pwdPromptOrigin" class="pwd-field-val">example.com</span>
+        </div>
+        <div class="pwd-field-row">
+          <span class="pwd-field-label">Username:</span>
+          <span id="pwdPromptUsername" class="pwd-field-val">user@example.com</span>
+        </div>
+        <div class="pwd-field-row">
+          <span class="pwd-field-label">Password:</span>
+          <div class="pwd-field-val-wrap">
+            <span id="pwdPromptMasked" class="pwd-field-val">••••••••</span>
+            <span id="pwdPromptPlain" class="pwd-field-val hidden"></span>
+            <button id="pwdPromptToggleBtn" type="button" class="pwd-eye-btn" title="Toggle password visibility" aria-label="Toggle password visibility">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="pwd-popover-actions">
+        <button id="pwdPromptNotNowBtn" class="btn btn-secondary btn-sm">Not Now</button>
+        <button id="pwdPromptSaveBtn" class="btn btn-primary btn-sm">Save</button>
+      </div>
+    </div>
+
+    <!-- PWA Install Browser Popover -->
+    <div id="pwaInstallModal" class="pwa-install-popover hidden" role="dialog" aria-labelledby="pwaModalTitle">
+      <div class="pwa-popover-header">
+        <div class="pwa-popover-title-row">
+          <div class="pwa-header-icon-wrap">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--thaaw-cyan)" stroke-width="2" fill="none">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+              <line x1="12" y1="17" x2="12" y2="21"></line>
+              <polyline points="9 9 12 12 15 9"></polyline>
+              <line x1="12" y1="6" x2="12" y2="12"></line>
+            </svg>
+          </div>
+          <span id="pwaModalTitle" class="pwa-popover-title">Install App</span>
+        </div>
+        <button id="pwaModalCloseBtn" class="chrome-btn-sm" aria-label="Close">
+          <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="pwa-popover-body">
+        <div class="pwa-icon-container">
+          <img id="pwaModalIcon" class="pwa-modal-icon" src="" alt="App Icon" />
+        </div>
+        <div class="pwa-modal-info">
+          <div id="pwaModalName" class="pwa-modal-name">Web Application</div>
+          <div id="pwaModalOrigin" class="pwa-modal-origin">https://example.com</div>
+          <div id="pwaModalDesc" class="pwa-modal-desc"></div>
+        </div>
+      </div>
+      <div class="pwa-popover-actions">
+        <button id="pwaCancelBtn" class="btn btn-secondary btn-sm">Cancel</button>
+        <button id="pwaConfirmInstallBtn" class="btn btn-primary btn-sm">Install</button>
+      </div>
+    </div>
+
+    <!-- Glowing Top Loading Progress Bar -->
+    <div id="loadingProgressBar" class="loading-progress-bar"></div>
+
+    <!-- Authentic Browser Navigation Sidebar (Collapsible, Theme-Aware) -->
+    <aside id="browserSidebar" class="browser-sidebar collapsed" aria-label="Browser Navigation Sidebar">
+      <div class="sidebar-nav-group primary-nav">
+        <button class="sidebar-nav-item active" id="navItemHome" data-nav="home" data-route="thaaw://newtab" title="Home (New Tab)">
+          <span class="nav-item-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          </span>
+          <span class="nav-item-label">Home</span>
+        </button>
+
+        <button class="sidebar-nav-item" id="navItemTabs" data-nav="tabs" title="Tab Manager & Search">
+          <span class="nav-item-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          </span>
+          <span class="nav-item-label">Tabs</span>
+        </button>
+
+        <button class="sidebar-nav-item" id="navItemHistory" data-nav="history" data-route="thaaw://history" title="History">
+          <span class="nav-item-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          </span>
+          <span class="nav-item-label">History</span>
+        </button>
+
+        <button class="sidebar-nav-item" id="navItemBookmarks" data-nav="bookmarks" data-route="thaaw://bookmarks" title="Bookmarks">
+          <span class="nav-item-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+          </span>
+          <span class="nav-item-label">Bookmarks</span>
+        </button>
+
+        <button class="sidebar-nav-item" id="navItemDownloads" data-nav="downloads" data-route="thaaw://downloads" title="Downloads">
+          <span class="nav-item-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          </span>
+          <span class="nav-item-label">Downloads</span>
+        </button>
+
+        <button class="sidebar-nav-item" id="navItemPasswords" data-nav="passwords" data-route="thaaw://passwords" title="Password Vault">
+          <span class="nav-item-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+          </span>
+          <span class="nav-item-label">Passwords</span>
+        </button>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-nav-group secondary-nav">
+        <button class="sidebar-nav-item" id="navItemPrivacy" data-nav="privacy" data-route="thaaw://privacy" title="Privacy Shield">
+          <span class="nav-item-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          </span>
+          <span class="nav-item-label">Privacy</span>
+        </button>
+
+        <button class="sidebar-nav-item" id="navItemSecurity" data-nav="security" data-route="thaaw://security" title="Security Center">
+          <span class="nav-item-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          </span>
+          <span class="nav-item-label">Security</span>
+        </button>
+
+
+      </div>
+
+      <div class="sidebar-spacer"></div>
+
+      <div class="sidebar-nav-group utility-nav">
+        <button class="sidebar-nav-item" id="navItemSettings" data-nav="settings" data-route="thaaw://settings" title="Settings">
+          <span class="nav-item-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          </span>
+          <span class="nav-item-label">Settings</span>
+        </button>
+
+        <button class="sidebar-collapse-toggle-btn" id="sidebarCollapseToggleBtn" title="Expand / Collapse Sidebar">
+          <svg class="collapse-icon-expand" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>
+          <svg class="collapse-icon-collapse" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline></svg>
+          <span class="nav-item-label">Collapse</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Dropdown: Site Information Panel (Flyout) -->
+    <div id="securityPanel" class="flyout-panel hidden">
+      <div class="panel-header">
+        <div class="panel-title">
+          <svg class="panel-icon" viewBox="0 0 24 24" width="18" height="18" stroke="var(--thaaw-blue)" stroke-width="2" fill="none">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <polyline points="9 12 11 14 15 10"></polyline>
+          </svg>
+          <span>Site Security & Privacy</span>
+        </div>
+        <span id="panelProtectionBadge" class="badge-tag">BALANCED</span>
+      </div>
+      <div class="panel-domain" id="panelDomain">example.com</div>
+      
+      <div class="panel-metrics">
+        <div class="panel-stat">
+          <div class="panel-stat-num" id="panelBlockedCount">0</div>
+          <div class="panel-stat-label">Trackers Stopped</div>
+        </div>
+        <div class="panel-stat">
+          <div class="panel-stat-num" id="panelHttpsStatus">TLS 1.3</div>
+          <div class="panel-stat-label">Connection</div>
+        </div>
+      </div>
+
+      <div class="panel-row">
+        <div class="panel-row-info">
+          <div class="panel-row-title">THAAW Shield</div>
+          <div class="panel-row-desc">Stop cross-site trackers & telemetry scripts</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="shieldToggle" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <!-- Origin Permissions Quick Toggles -->
+      <div class="panel-permissions-section">
+        <div class="section-title">Site Permissions</div>
+        <div class="perm-row">
+          <span>Camera</span>
+          <button class="perm-toggle-btn" data-perm="media:camera">Ask</button>
+        </div>
+        <div class="perm-row">
+          <span>Microphone</span>
+          <button class="perm-toggle-btn" data-perm="media:microphone">Ask</button>
+        </div>
+        <div class="perm-row">
+          <span>Location</span>
+          <button class="perm-toggle-btn" data-perm="geolocation">Ask</button>
+        </div>
+        <div class="perm-row">
+          <span>Notifications</span>
+          <button class="perm-toggle-btn" data-perm="notifications">Ask</button>
+        </div>
+      </div>
+
+      <div class="panel-footer">
+        <button id="clearSiteDataBtn" class="btn btn-secondary btn-sm">Clear Cookies & Data</button>
+        <button id="openSecurityCenterBtn" class="btn btn-primary btn-sm">Open Security Center</button>
+      </div>
+    </div>
+
+    <!-- Premium Modal: Site Control Center (Security, Shield & Vault) -->
+    <div id="siteControlModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="siteControlDomain">
+      <div class="site-control-card">
+        <!-- Header: Origin, Security Badge, Close -->
+        <div class="site-control-header">
+          <div class="site-control-identity">
+            <div class="site-control-favicon-wrap" id="siteControlFaviconWrap">
+              <img id="siteControlFavicon" class="site-control-favicon hidden" alt="" />
+              <div id="siteControlFaviconFallback" class="site-control-favicon-fallback">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="2" y1="12" x2="22" y2="12"></line>
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="site-control-title-box">
+              <div class="site-control-domain-row">
+                <h3 id="siteControlDomain" class="site-control-domain">example.com</h3>
+                <span id="siteControlSecBadge" class="site-sec-badge secure">SECURE</span>
+              </div>
+              <div class="site-control-url-row">
+                <span id="siteControlFullUrl" class="site-control-url">https://example.com</span>
+                <button type="button" id="siteControlCopyUrlBtn" class="site-mini-btn" title="Copy site address" aria-label="Copy site address">
+                  <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <button type="button" id="closeSiteControlBtn" class="chrome-btn site-close-btn" title="Close (ESC)" aria-label="Close modal">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Premium Tab Switcher: Lock (Security) | Shield (Privacy) | Key (Vault) -->
+        <div class="site-control-tabs" role="tablist">
+          <button type="button" id="siteTabLockBtn" class="site-tab-btn active" role="tab" aria-selected="true" data-tab="lock">
+            <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <span>Connection & Security</span>
+          </button>
+          <button type="button" id="siteTabShieldBtn" class="site-tab-btn" role="tab" aria-selected="false" data-tab="shield">
+            <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <span>THAAW Shield & Privacy</span>
+            <span id="siteTabShieldBadge" class="tab-pill-counter">0</span>
+          </button>
+          <button type="button" id="siteTabKeyBtn" class="site-tab-btn" role="tab" aria-selected="false" data-tab="key">
+            <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
+            </svg>
+            <span>Credentials & Vault</span>
+            <span id="siteTabKeyBadge" class="tab-pill-counter hidden">0</span>
+          </button>
+        </div>
+
+        <!-- Body with 3 Tab Panels -->
+        <div class="site-control-body">
+          <!-- Panel 1: Lock / Connection & Security -->
+          <div id="sitePanelLock" class="site-tab-panel active">
+            <!-- TLS Info Card -->
+            <div class="site-info-card">
+              <div class="site-info-card-header">
+                <div class="site-info-icon-title">
+                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--thaaw-green, #10b981)" stroke-width="2" fill="none">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                  <span id="siteSecCertStatus">Valid & Encrypted Connection</span>
+                </div>
+                <span id="siteSecProtocolBadge" class="badge-tag">TLS 1.3</span>
+              </div>
+              <p id="siteSecCertDesc" class="site-info-card-desc">
+                Your connection to this site is encrypted with modern cryptography. Information you submit (such as passwords or payment details) is private and cannot be intercepted.
+              </p>
+              <div class="site-tech-specs">
+                <div class="spec-item">
+                  <span class="spec-label">Cipher:</span>
+                  <span class="spec-val" id="siteSecCipher">TLS_AES_256_GCM_SHA384</span>
+                </div>
+                <div class="spec-item">
+                  <span class="spec-label">HSTS:</span>
+                  <span class="spec-val" id="siteSecHsts">Enforced</span>
+                </div>
+                <div class="spec-item">
+                  <span class="spec-label">Protocol:</span>
+                  <span class="spec-val" id="siteSecProtocol">HTTP/2 over TLS</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Site Permissions Section -->
+            <div class="site-section-title">Site Permissions</div>
+            <div class="site-perms-list" id="sitePermsList">
+              <div class="site-perm-item" data-perm="media:camera">
+                <div class="site-perm-name">
+                  <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                    <circle cx="12" cy="13" r="4"></circle>
+                  </svg>
+                  <span>Camera</span>
+                </div>
+                <div class="perm-segment" data-perm="media:camera">
+                  <button type="button" class="perm-seg-btn" data-val="allow">Allow</button>
+                  <button type="button" class="perm-seg-btn active" data-val="prompt">Ask</button>
+                  <button type="button" class="perm-seg-btn" data-val="deny">Block</button>
+                </div>
+              </div>
+
+              <div class="site-perm-item" data-perm="media:microphone">
+                <div class="site-perm-name">
+                  <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                    <line x1="8" y1="23" x2="16" y2="23"></line>
+                  </svg>
+                  <span>Microphone</span>
+                </div>
+                <div class="perm-segment" data-perm="media:microphone">
+                  <button type="button" class="perm-seg-btn" data-val="allow">Allow</button>
+                  <button type="button" class="perm-seg-btn active" data-val="prompt">Ask</button>
+                  <button type="button" class="perm-seg-btn" data-val="deny">Block</button>
+                </div>
+              </div>
+
+              <div class="site-perm-item" data-perm="geolocation">
+                <div class="site-perm-name">
+                  <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none">
+                    <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                  <span>Location</span>
+                </div>
+                <div class="perm-segment" data-perm="geolocation">
+                  <button type="button" class="perm-seg-btn" data-val="allow">Allow</button>
+                  <button type="button" class="perm-seg-btn active" data-val="prompt">Ask</button>
+                  <button type="button" class="perm-seg-btn" data-val="deny">Block</button>
+                </div>
+              </div>
+
+              <div class="site-perm-item" data-perm="notifications">
+                <div class="site-perm-name">
+                  <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                  </svg>
+                  <span>Notifications</span>
+                </div>
+                <div class="perm-segment" data-perm="notifications">
+                  <button type="button" class="perm-seg-btn" data-val="allow">Allow</button>
+                  <button type="button" class="perm-seg-btn active" data-val="prompt">Ask</button>
+                  <button type="button" class="perm-seg-btn" data-val="deny">Block</button>
+                </div>
+              </div>
+
+              <div class="site-perm-item" data-perm="clipboard-read">
+                <div class="site-perm-name">
+                  <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none">
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                  </svg>
+                  <span>Clipboard Access</span>
+                </div>
+                <div class="perm-segment" data-perm="clipboard-read">
+                  <button type="button" class="perm-seg-btn" data-val="allow">Allow</button>
+                  <button type="button" class="perm-seg-btn active" data-val="prompt">Ask</button>
+                  <button type="button" class="perm-seg-btn" data-val="deny">Block</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Site Data / Storage Bar -->
+            <div class="site-storage-bar">
+              <div class="site-storage-info">
+                <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none">
+                  <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                  <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                  <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                </svg>
+                <span>Site Storage: <strong id="siteStorageCookiesCount">0</strong> cookies stored</span>
+              </div>
+              <button type="button" id="siteClearDataBtn" class="btn btn-secondary btn-sm">Clear Cookies & Cache</button>
+            </div>
+          </div>
+
+          <!-- Panel 2: Shield / THAAW Shield & Privacy -->
+          <div id="sitePanelShield" class="site-tab-panel hidden">
+            <!-- Master Shield Toggle Row -->
+            <div class="site-shield-toggle-card">
+              <div class="shield-toggle-info">
+                <div class="shield-toggle-title-row">
+                  <span class="shield-toggle-title">THAAW Shield</span>
+                  <span id="siteShieldActiveLabel" class="shield-status-tag active">ACTIVE</span>
+                </div>
+                <span class="shield-toggle-desc">Blocks cross-site trackers, invasive telemetry, fingerprinting scripts, and ads</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="siteMasterShieldToggle" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <!-- Shield Metrics 4-Box Grid -->
+            <div class="site-metrics-grid">
+              <div class="metric-card">
+                <div class="metric-num" id="siteMetricTrackers">0</div>
+                <div class="metric-label">Trackers Blocked</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-num" id="siteMetricAds">0</div>
+                <div class="metric-label">Ads Intercepted</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-num highlight" id="siteMetricFingerprint">Active</div>
+                <div class="metric-label">Anti-Fingerprinting</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-num" id="siteMetricHttps">Upgraded</div>
+                <div class="metric-label">HTTPS Upgrade</div>
+              </div>
+            </div>
+
+            <!-- Protection Level Selector -->
+            <div class="site-section-title">Protection Level</div>
+            <div class="protection-level-grid">
+              <div class="level-card active" data-level="balanced" id="levelCardBalanced">
+                <div class="level-card-header">
+                  <span class="level-title">Balanced</span>
+                  <span class="level-check">
+                    <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </span>
+                </div>
+                <p class="level-desc">Blocks trackers & ads. Minimal site breakage.</p>
+              </div>
+              <div class="level-card" data-level="strict" id="levelCardStrict">
+                <div class="level-card-header">
+                  <span class="level-title">Strict</span>
+                  <span class="level-check">
+                    <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </span>
+                </div>
+                <p class="level-desc">Blocks social widgets, beacons, and all known trackers.</p>
+              </div>
+              <div class="level-card" data-level="maximum" id="levelCardMaximum">
+                <div class="level-card-header">
+                  <span class="level-title">Maximum</span>
+                  <span class="level-check">
+                    <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </span>
+                </div>
+                <p class="level-desc">Strict fingerprinting resistance and aggressive blocking.</p>
+              </div>
+            </div>
+
+            <!-- Live Blocked Trackers List -->
+            <div class="site-section-title">Blocked Resources on Current Page</div>
+            <div class="site-blocked-stream" id="siteBlockedStream">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Panel 3: Key / Credentials & Password Vault -->
+          <div id="sitePanelKey" class="site-tab-panel hidden">
+            <!-- Matched Credentials Section -->
+            <div class="site-section-title">Saved Credentials for This Site</div>
+            <div id="siteMatchedCredsList" class="site-creds-list">
+              <!-- Dynamically rendered -->
+            </div>
+
+            <!-- Quick Add Credential Form -->
+            <div class="site-section-title">Save New Credential</div>
+            <form id="siteAddCredForm" class="site-cred-form">
+              <div class="cred-form-row">
+                <input type="text" id="siteCredUsername" class="site-input" placeholder="Username / Email" autocomplete="off" />
+                <div class="cred-pwd-input-wrap">
+                  <input type="password" id="siteCredPassword" class="site-input" placeholder="Password" autocomplete="off" />
+                  <button type="button" id="siteCredTogglePwd" class="site-mini-btn site-pwd-toggle" title="Show/hide password" aria-label="Show or hide password">
+                    <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm">Save</button>
+              </div>
+            </form>
+
+            <!-- Password Generator Section -->
+            <div class="site-section-title">Cryptographic Password Generator</div>
+            <div class="site-generator-card">
+              <div class="generator-preview-row">
+                <input type="text" id="siteGenResult" class="site-input gen-output" readonly value="" />
+                <div class="gen-preview-actions">
+                  <button type="button" id="siteGenRefreshBtn" class="site-mini-btn" title="Generate New Password" aria-label="Generate new password">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                      <polyline points="23 4 23 10 17 10"></polyline>
+                      <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                    </svg>
+                  </button>
+                  <button type="button" id="siteGenCopyBtn" class="btn btn-secondary btn-sm">Copy</button>
+                  <button type="button" id="siteGenUseBtn" class="btn btn-primary btn-sm">Use & Fill</button>
+                </div>
+              </div>
+              <div class="generator-strength-bar-wrap">
+                <div id="siteGenStrengthBar" class="gen-strength-bar"></div>
+                <span id="siteGenStrengthText" class="gen-strength-text">Very Strong (128 bits)</span>
+              </div>
+              <div class="generator-controls">
+                <div class="gen-slider-row">
+                  <label for="siteGenLengthSlider">Length: <span id="siteGenLengthVal">16</span></label>
+                  <input type="range" id="siteGenLengthSlider" min="8" max="48" value="16" />
+                </div>
+                <div class="gen-options-row">
+                  <label class="gen-check"><input type="checkbox" id="siteGenUpper" checked /> Upper (A-Z)</label>
+                  <label class="gen-check"><input type="checkbox" id="siteGenLower" checked /> Lower (a-z)</label>
+                  <label class="gen-check"><input type="checkbox" id="siteGenNumbers" checked /> Numbers (0-9)</label>
+                  <label class="gen-check"><input type="checkbox" id="siteGenSymbols" checked /> Symbols (!@#$)</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Search Open Tabs (Ctrl+Shift+A) -->
+    <div id="tabSearchModal" class="modal-backdrop hidden">
+      <div class="tab-search-card">
+        <div class="search-modal-header">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--thaaw-blue)" stroke-width="2" fill="none">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="tabSearchInput" placeholder="Search open tabs by title or URL..." autofocus />
+          <span class="shortcut-tag">ESC to close</span>
+        </div>
+        <div id="tabSearchResults" class="tab-search-results">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: 4-W Permission Prompt Dialog -->
+    <div id="permissionModal" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <span class="modal-badge">PERMISSION REQUEST</span>
+          <h3 id="permModalTitle">Camera Access</h3>
+        </div>
+        <div class="modal-body">
+          <div class="w-item">
+            <span class="w-label">WHO:</span>
+            <span class="w-value" id="permWho">https://example.com</span>
+          </div>
+          <div class="w-item">
+            <span class="w-label">WHAT:</span>
+            <span class="w-value" id="permWhat">Capture video from your camera</span>
+          </div>
+          <div class="w-item">
+            <span class="w-label">WHY:</span>
+            <span class="w-value" id="permWhy">Requested by the web application</span>
+          </div>
+          <div class="w-item">
+            <span class="w-label">WHEN:</span>
+            <span class="w-value">Choose Allow Once (This session) or Allow (Permanent)</span>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button id="permDenyBtn" class="btn btn-danger">Deny</button>
+          <button id="permAllowOnceBtn" class="btn btn-secondary">Allow Once</button>
+          <button id="permAllowBtn" class="btn btn-primary">Allow Always</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Download Security Warning -->
+    <div id="downloadModal" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <span class="modal-badge badge-warning">SECURITY WARNING</span>
+          <h3 id="dlFilename">untrusted_file.sh</h3>
+        </div>
+        <div class="modal-body">
+          <p id="dlWarningMessage" class="dl-warning-text">
+            Executable or script file can run arbitrary code on your system.
+          </p>
+          <p class="dl-subtext">
+            THAAW stopped this download to protect your system. Only continue if you trust the source.
+          </p>
+        </div>
+        <div class="modal-actions">
+          <button id="dlCancelBtn" class="btn btn-danger">Discard File</button>
+          <button id="dlAcceptBtn" class="btn btn-secondary">Keep & Download</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Download Item Actions -->
+    <div id="downloadActionsModal" class="modal-backdrop download-actions-modal hidden">
+      <div class="modal-card">
+        <div class="download-menu-header">
+          <div id="dlMenuIcon" class="download-item-icon" style="width: 28px; height: 28px;"></div>
+          <div id="dlMenuFilename" class="download-menu-filename">file.zip</div>
+        </div>
+        <div class="download-menu-list">
+          <button id="dlActionOpen" class="download-menu-option">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            <span>Open File</span>
+          </button>
+          <button id="dlActionFolder" class="download-menu-option">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            <span>Show in Folder</span>
+          </button>
+          <button id="dlActionCopyLink" class="download-menu-option">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+            <span>Copy Download Link</span>
+          </button>
+          <div class="download-menu-divider"></div>
+          <button id="dlActionRemove" class="download-menu-option">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <span>Remove from Downloads</span>
+          </button>
+          <button id="dlActionDelete" class="download-menu-option danger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            <span>Delete File</span>
+          </button>
+          <div class="download-menu-divider"></div>
+          <button id="dlActionCancel" class="download-menu-option" style="justify-content: center; color: var(--thaaw-text-muted);">
+            <span>Cancel</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Command Palette (Ctrl+Shift+P) -->
+    <div id="paletteModal" class="modal-backdrop hidden">
+      <div class="palette-card">
+        <div class="palette-search-wrapper">
+          <span class="palette-search-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </span>
+          <input 
+            type="text" 
+            id="paletteInput" 
+            class="palette-input" 
+            placeholder="Type a browser command (e.g. settings, shield, new tab)..." 
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <span class="palette-shortcut-badge">ESC</span>
+        </div>
+        <div id="paletteList" class="palette-list">
+          <!-- Rendered dynamically without emojis -->
+        </div>
+        <div class="palette-footer">
+          <span>THAAW Command Center</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span><kbd>&uarr;&darr;</kbd> Navigate</span>
+            <span><kbd>&crarr;</kbd> Select</span>
+            <span><kbd>ESC</kbd> Close</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: QR Code for Page -->
+    <div id="qrModal" class="modal-backdrop hidden">
+      <div class="modal-card" style="max-width: 360px; text-align: center;">
+        <div class="modal-header" style="justify-content: center;">
+          <h3>Scan QR Code</h3>
+        </div>
+        <div class="modal-body" style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+          <div id="qrCodeContainer" style="background: #FFFFFF; padding: 16px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.3);">
+            <!-- SVG QR Code rendered dynamically -->
+          </div>
+          <p id="qrUrlText" style="font-size: 11px; color: var(--thaaw-text-muted); word-break: break-all; max-width: 280px;"></p>
+        </div>
+        <div class="modal-actions" style="justify-content: center;">
+          <button id="copyQrUrlBtn" class="btn btn-primary btn-sm">Copy Link</button>
+          <button id="closeQrBtn" class="btn btn-secondary btn-sm">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Cast Media & Tab -->
+    <div id="castModal" class="modal-backdrop hidden">
+      <div class="modal-card" style="max-width: 400px;">
+        <div class="modal-header">
+          <h3>Cast to Media Device</h3>
+        </div>
+        <div class="modal-body">
+          <p style="font-size: 13px; color: var(--thaaw-text-muted); margin-bottom: 16px;">
+            Cast this tab to nearby displays or media receivers.
+          </p>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div class="cast-device-item" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: rgba(255,255,255,0.04); border: 1px solid var(--thaaw-border); border-radius: 8px; cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg>
+                <span style="font-size: 13px; font-weight: 500;">Living Room Display</span>
+              </div>
+              <span class="badge-tag" style="font-size: 10px;">Ready</span>
+            </div>
+            <div class="cast-device-item" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: rgba(255,255,255,0.04); border: 1px solid var(--thaaw-border); border-radius: 8px; cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                <span style="font-size: 13px; font-weight: 500;">Developer Workstation</span>
+              </div>
+              <span class="badge-tag" style="font-size: 10px;">Ready</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button id="closeCastBtn" class="btn btn-secondary btn-sm">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- THAAW Profile Center: profile identity and profile-local preferences -->
+    <div id="profileCenterModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="profileCenterTitle">
+      <div class="profile-center-card">
+        <div class="profile-center-header">
+          <div>
+            <span class="modal-badge">ISOLATED WORKSPACES</span>
+            <h3 id="profileCenterTitle">Manage profiles</h3>
+            <p>Each workspace keeps its own browsing data, sessions, and settings.</p>
+          </div>
+          <button id="closeProfileCenterBtn" class="chrome-btn" aria-label="Close profile manager">×</button>
+        </div>
+        <div class="profile-center-body">
+          <div id="profileCenterList" class="profile-center-list"></div>
+          <form id="profileEditorForm" class="profile-editor">
+            <div class="profile-editor-avatar"><span id="profileEditorInitial">P</span></div>
+            <h4 id="profileEditorHeading">Profile details</h4>
+            <input id="profileEditorId" type="hidden">
+            <label>Profile name<input id="profileEditorName" required maxlength="80" autocomplete="off"></label>
+            <label>Email / account<input id="profileEditorEmail" type="email" maxlength="254" autocomplete="email"></label>
+            <label>Avatar colour<input id="profileEditorColor" type="color" value="#00d1ff"></label>
+            <input id="profileEditorAvatarFile" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+            <button type="button" id="profileEditorAvatarBtn" class="btn btn-secondary btn-sm">Choose profile photo</button>
+            <label>Theme preference<select id="profileEditorTheme"><option value="dark">Dark</option><option value="light">Light</option></select></label>
+            <div class="profile-editor-actions">
+              <button type="button" id="duplicateProfileBtn" class="btn btn-secondary btn-sm">Duplicate</button>
+              <button type="submit" class="btn btn-primary btn-sm">Save changes</button>
+            </div>
+            <button type="button" id="requestDeleteProfileBtn" class="profile-delete-btn">Delete profile</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deliberately custom: profile deletion never calls a system confirmation dialog. -->
+    <div id="deleteProfileModal" class="modal-backdrop hidden" role="alertdialog" aria-modal="true" aria-labelledby="deleteProfileTitle">
+      <div class="modal-card profile-delete-dialog">
+        <span class="modal-badge badge-warning">PERMANENT ACTION</span>
+        <h3 id="deleteProfileTitle">Delete this profile?</h3>
+        <p id="deleteProfileMessage">Its THAAW settings, bookmarks, history, downloads, site data, and sessions will be removed from this device.</p>
+        <div class="modal-actions"><button id="cancelDeleteProfileBtn" class="btn btn-secondary btn-sm">Cancel</button><button id="confirmDeleteProfileBtn" class="btn btn-danger btn-sm">Delete Profile</button></div>
+      </div>
+    </div>
+
+    <!-- Dropdown Click-Away Backdrop -->
+    <div id="flyoutBackdrop" class="flyout-backdrop hidden"></div>
+
+    <!-- Fullscreen Image Lightbox Modal -->
+    <div id="imageLightboxModal" class="image-lightbox-modal hidden" role="dialog" aria-label="Fullscreen Image View">
+      <div class="lightbox-toolbar">
+        <button id="lightboxSaveWallpaperBtn" class="lightbox-btn" title="Set as Browser Wallpaper">
+          <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+          <span>Set as Wallpaper</span>
+        </button>
+        <button id="lightboxCopyUrlBtn" class="lightbox-btn" title="Copy Image Address">
+          <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span>Copy URL</span>
+        </button>
+        <button id="lightboxCloseBtn" class="lightbox-btn lightbox-close-btn" title="Close (Esc)">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="lightbox-img-container">
+        <img id="lightboxImg" class="lightbox-img" src="" alt="Fullscreen Image Preview" />
+      </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

@@ -1,0 +1,2519 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-theme-preset="midnight">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Tab — THAAW</title>
+  <link rel="stylesheet" href="internal.css">
+  <script src="icons.js"></script>
+  <script src="favicon-resolver.js"></script>
+</head>
+<body class="newtab-body">
+  <!-- Immersive Fullscreen Wallpaper Layer (Static Image & Live Video) -->
+  <div id="wallpaperLayer" class="newtab-wallpaper-layer default-bg"></div>
+  <video id="wallpaperVideo" class="newtab-video-wallpaper" autoplay loop muted playsinline style="display: none;"></video>
+  <div id="wallpaperOverlay" class="newtab-wallpaper-overlay"></div>
+
+  <!-- Left Navigation Rail (Faithful to Reference Screenshots) -->
+  <nav class="newtab-sidebar-rail" aria-label="Quick browser navigation">
+    <div class="rail-top-group">
+      <a href="thaaw://newtab" class="rail-btn active" title="Home" aria-label="Home">
+        <span data-icon="home" data-icon-size="20"></span>
+      </a>
+      <button type="button" class="rail-btn" id="railAppsBtn" title="Applications & Customization" aria-label="Open customization drawer">
+        <span data-icon="grid" data-icon-size="20"></span>
+      </button>
+      <a href="thaaw://history" class="rail-btn" title="Browsing History" aria-label="History">
+        <span data-icon="clock" data-icon-size="20"></span>
+      </a>
+      <a href="thaaw://downloads" class="rail-btn" title="Downloads" aria-label="Downloads">
+        <span data-icon="download" data-icon-size="20"></span>
+      </a>
+      <a href="thaaw://settings" class="rail-btn" title="Browser Settings" aria-label="Settings">
+        <span data-icon="settings" data-icon-size="20"></span>
+      </a>
+    </div>
+    <div class="rail-bottom-group">
+      <div class="newtab-motto" aria-hidden="true">
+        <span>A SAFER</span>
+        <span>A CLEANER</span>
+        <span>A FREER WEB</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Bottom-Right Branding Watermark (Matching Reference) -->
+  <div class="newtab-watermark" aria-hidden="true">BUILT BY MD COLAB</div>
+
+  <!-- Main Viewport Content -->
+  <main class="newtab-viewport">
+    <!-- 1. TOP RIGHT CONTROLS -->
+    <header class="newtab-top-controls" aria-label="Page controls">
+      <!-- Quick Theme Switcher -->
+      <button id="themeToggleBtn" class="control-btn" title="Toggle Appearance (Light / Dark)" aria-label="Toggle theme appearance">
+        <span data-icon="moon" data-icon-size="18"></span>
+      </button>
+
+      <!-- Zen Minimal Mode Toggle -->
+      <button id="zenModeToggleBtn" class="control-btn" title="Toggle Zen Minimal Mode" aria-label="Toggle Zen Minimal Mode">
+        <span data-icon="feather" data-icon-size="18"></span>
+      </button>
+
+      <!-- Profile Button (Hidden in New Tab page as requested, ID preserved for test compatibility) -->
+      <button id="profileBtn" class="control-btn" style="display: none;" title="Profile" aria-hidden="true" tabindex="-1">
+        <span data-icon="user" data-icon-size="18"></span>
+      </button>
+
+      <!-- Apps / Customize Menu Button -->
+      <button id="customizeBtn" class="control-btn" title="Customize THAAW" aria-label="Open customization drawer" aria-haspopup="dialog" aria-expanded="false">
+        <span data-icon="grid" data-icon-size="18"></span>
+      </button>
+    </header>
+
+    <!-- 2. HERO STAGE (Occupies 100vh, keeps news completely off-screen until scrolled) -->
+    <div class="newtab-hero-stage">
+      <!-- CENTER THAAW BRANDING -->
+      <section id="centerBrandSection" class="newtab-center-brand" aria-label="THAAW Brand">
+        <img src="../assets/logo/thaaw-logo.svg" alt="THAAW" class="brand-logo-img" style="height: 80px; width: auto; max-width: 320px; object-fit: contain; display: block; margin: 0 auto 12px; filter: drop-shadow(0 4px 16px rgba(0,0,0,0.25));" />
+        <p class="brand-tagline">Stop What <span>Shouldn't Pass.</span></p>
+      </section>
+
+      <!-- SEARCH BAR -->
+      <section class="newtab-search-container" aria-label="Web search">
+        <form id="searchForm" class="newtab-search-bar" role="search" onsubmit="event.preventDefault(); window.HomePageState.handleSearchSubmit();">
+          <span class="search-left-icon" data-icon="search" data-icon-size="18" aria-hidden="true"></span>
+          
+          <!-- Search Input Field -->
+          <input 
+            type="text" 
+            id="searchInput" 
+            class="search-input-field" 
+            placeholder="Search securely with ThaaW..." 
+            autocomplete="off" 
+            spellcheck="false" 
+            aria-label="Search the web or enter address"
+            autofocus 
+          />
+
+          <!-- Right Submit Button -->
+          <button type="submit" id="searchSubmitBtn" class="search-submit-btn" title="Search or Navigate" aria-label="Execute search">
+            <span data-icon="arrow-right" data-icon-size="18" aria-hidden="true"></span>
+          </button>
+        </form>
+
+        <!-- Dynamic Search State & Hint Bar -->
+        <div id="searchStateBar" class="search-state-bar">
+          <span id="searchFeedbackText" class="search-feedback-text">Ready</span>
+          <div class="search-hint-tag">
+            <span data-icon="lock" data-icon-size="12"></span>
+            <span>Encrypted Query</span>
+          </div>
+        </div>
+
+        <!-- Recent Search History Dropdown (Req 21-23) -->
+        <div id="searchHistoryDropdown" class="newtab-search-history-dropdown hidden" role="listbox" aria-label="Recent Searches">
+          <div class="search-history-header">
+            <span>Recent Searches</span>
+            <button type="button" id="clearSearchHistoryBtn" class="clear-history-btn">Clear All</button>
+          </div>
+          <div id="searchHistoryList" class="search-history-list"></div>
+        </div>
+      </section>
+
+      <!-- SHORTCUT ROW (Exact 5 Circular Slots with real favicons) -->
+      <section id="shortcutsSection" class="newtab-shortcuts-row" aria-label="Quick shortcuts">
+        <!-- Injected dynamically by ShortcutState: 4 custom shortcuts + 1 Add button -->
+      </section>
+
+      <!-- Above-The-Fold Scroll Indicator to News -->
+      <div class="newtab-scroll-hint-wrap">
+        <button type="button" id="scrollForNewsBtn" class="scroll-for-news-btn" aria-label="Explore Top News Stories">
+          <span class="scroll-hint-dot"></span>
+          <span>Explore Top Stories</span>
+          <span data-icon="chevron-down" data-icon-size="14" class="scroll-hint-icon"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Lower Panel container for test suite compatibility -->
+    <div id="lowerPanel" class="newtab-lower-panel-wrapper" style="display: contents;">
+      <!-- 5. FULL-PAGE NEWS & STORIES MAGAZINE (Revealed as user scrolls with fade animation) -->
+      <section id="newsSection" class="newtab-news-fullpage" aria-label="News and Information Dashboard">
+        <div class="news-fullpage-header">
+          <div class="news-fullpage-title-group">
+            <div class="news-section-title">
+              <span data-icon="newspaper" data-icon-size="20" style="color: var(--thaaw-cyan);"></span>
+              <span id="newsSectionHeadingText">Curated Feed & Stories</span>
+              <span class="badge-tag" style="font-size: 9px; margin-left: 6px;" id="newsLiveBadge">LIVE</span>
+            </div>
+            <p class="news-fullpage-subtitle">Real-time headlines, developer updates, and world discoveries</p>
+          </div>
+          <button type="button" id="refreshNewsBtn" class="news-refresh-btn" title="Refresh Live News" aria-label="Refresh news">
+            <span data-icon="refresh-cw" data-icon-size="13"></span>
+            <span>Refresh</span>
+          </button>
+        </div>
+
+        <!-- News Category Pills -->
+        <div class="news-category-pills" id="newsCategoryPills" role="tablist" aria-label="News categories">
+          <button type="button" class="category-pill active" data-category="all" role="tab">All</button>
+          <button type="button" class="category-pill" data-category="reddit" role="tab">Reddit</button>
+          <button type="button" class="category-pill" data-category="youtube" role="tab">YouTube</button>
+          <button type="button" class="category-pill" data-category="technology" role="tab">Articles</button>
+          <button type="button" class="category-pill" data-category="security" role="tab">Security</button>
+          <button type="button" class="category-pill" data-category="opensource" role="tab">Open Source</button>
+          <button type="button" class="category-pill" data-category="ai" role="tab">AI</button>
+          <button type="button" class="category-pill" data-category="world" role="tab">World</button>
+        </div>
+
+        <!-- Featured Auto-sliding News Carousel -->
+        <div id="newsCarousel" class="news-carousel-container">
+          <div id="carouselSlide" class="carousel-slide-viewport">
+            <div class="carousel-slide-overlay"></div>
+            <div class="carousel-slide-content">
+              <div class="carousel-meta-row">
+                <span id="carouselCategory" class="news-category-badge cat-tech">Technology</span>
+                <span id="carouselTimestamp" class="news-timestamp">Live</span>
+                <span class="badge-tag" style="font-size: 9px; padding: 2px 6px;">FEATURED</span>
+              </div>
+              <a id="carouselTitle" href="#" target="_blank" rel="noreferrer" class="carousel-title">Loading live headlines...</a>
+              <div class="carousel-footer-row">
+                <span id="carouselSource" class="news-source">THAAW Feed</span>
+                <div class="carousel-controls">
+                  <button type="button" id="carouselPrevBtn" class="carousel-btn" title="Previous story" aria-label="Previous story">
+                    <span data-icon="arrow-right" data-icon-size="10" style="transform: rotate(180deg); display: inline-flex;"></span>
+                  </button>
+                  <div id="carouselDots" class="carousel-dots"></div>
+                  <button type="button" id="carouselNextBtn" class="carousel-btn" title="Next story" aria-label="Next story">
+                    <span data-icon="arrow-right" data-icon-size="10" style="display: inline-flex;"></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- News Cards Grid with Endless Scroll -->
+        <div id="newsCardsGrid" class="news-cards-container">
+          <!-- Populated by NewsState -->
+        </div>
+        <div id="newsLoadMoreWrapper" style="display: flex; justify-content: center; margin-top: 24px; margin-bottom: 24px;">
+          <button type="button" id="loadMoreNewsBtn" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 8px 18px; border-radius: 20px;">
+            <span data-icon="refresh-cw" data-icon-size="12"></span>
+            <span>Load More Stories</span>
+          </button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Floating Cloud Capsule: Live Weather, Location, Clock & Shield Status (Fixed in Bottom-Right Corner) -->
+  <aside id="floatingCloudWidget" class="floating-cloud-widget" aria-label="Live Weather and System Info">
+    <div id="infoSection" class="cloud-capsule-glass">
+      <!-- Weather Info -->
+      <div class="cloud-weather-cluster">
+        <div class="cloud-weather-icon-box">
+          <span id="weatherIconSlot" data-icon="cloud-sun" data-icon-size="20"></span>
+        </div>
+        <div class="cloud-weather-meta">
+          <div class="cloud-temp-row">
+            <span id="weatherTemp" class="cloud-temp">18&deg;C</span>
+            <span id="weatherCondition" class="cloud-condition">Clear Sky</span>
+          </div>
+          <div class="cloud-location-row">
+            <span data-icon="map-pin" data-icon-size="10" style="color: var(--thaaw-orange);"></span>
+            <span id="weatherLocation" class="cloud-location">Srinagar</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cloud-divider"></div>
+
+      <!-- Clock & Date -->
+      <div class="cloud-clock-cluster">
+        <div id="liveClock" class="cloud-clock">12:38</div>
+        <div id="liveDate" class="cloud-date">Mon, 21 Sept</div>
+      </div>
+
+      <div class="cloud-divider"></div>
+
+      <!-- Shield Status -->
+      <div id="shieldWidgetCard" class="cloud-shield-pill" title="THAAW Shield Active">
+        <div class="indicator-dot"></div>
+        <span id="shieldTrackersCount" class="cloud-shield-text">Shield Active</span>
+      </div>
+
+      <!-- Hidden Quote for Test Compatibility -->
+      <div id="quoteText" style="display: none;" aria-hidden="true">&quot;Privacy is not an option, and it shouldn't be the price we accept for just getting on the internet.&quot; - Gary Kovacs</div>
+    </div>
+  </aside>
+
+  <!-- CUSTOMIZE THAAW DRAWER (Slide-in right panel) -->
+  <div id="customizeDrawerBackdrop" class="drawer-backdrop" aria-hidden="true">
+    <aside class="customize-drawer" role="dialog" aria-label="Customize THAAW" aria-modal="true">
+      <div class="drawer-header">
+        <div class="drawer-header-left">
+          <h2>
+            <span data-icon="sliders" data-icon-size="18" style="color: var(--thaaw-cyan);"></span>
+            <span>Theme & Customization</span>
+          </h2>
+          <span class="drawer-subtitle">Personalize your visual workspace</span>
+        </div>
+        <button id="closeDrawerBtn" class="btn-icon" aria-label="Close customization panel">
+          <span data-icon="x" data-icon-size="18"></span>
+        </button>
+      </div>
+
+      <!-- Segmented Navigation Tabs -->
+      <div class="drawer-nav-tabs" role="tablist" aria-label="Customization categories">
+        <button type="button" class="drawer-nav-tab active" data-tab="themes" role="tab">Themes</button>
+        <button type="button" class="drawer-nav-tab" data-tab="wallpapers" role="tab">Wallpapers</button>
+        <button type="button" class="drawer-nav-tab" data-tab="studio" role="tab">Studio & Effects</button>
+      </div>
+
+      <div class="drawer-content">
+        <!-- TAB 1: THEMES -->
+        <div id="tabThemesPane" class="drawer-tab-pane active">
+          <!-- SECTION 1: DARK THEMES -->
+          <div class="drawer-section">
+          <div class="drawer-section-title">Dark Themes (4 Presets)</div>
+          <div class="preset-grid" id="darkThemesGrid">
+            <div class="preset-card active" data-theme="dark" data-preset="midnight">
+              <div class="preset-card-header">
+                <span class="preset-name">THAAW Midnight</span>
+                <div class="preset-swatches">
+                  <span class="preset-swatch" style="background: #07111F;"></span>
+                  <span class="preset-swatch" style="background: #38BDF8;"></span>
+                  <span class="preset-swatch" style="background: #FF6FF0;"></span>
+                </div>
+              </div>
+              <span class="preset-desc">Original signature navy with cyan & pink accents</span>
+            </div>
+            <div class="preset-card" data-theme="dark" data-preset="deep-space">
+              <div class="preset-card-header">
+                <span class="preset-name">THAAW Deep Space</span>
+                <div class="preset-swatches">
+                  <span class="preset-swatch" style="background: #030712;"></span>
+                  <span class="preset-swatch" style="background: #818CF8;"></span>
+                  <span class="preset-swatch" style="background: #C084FC;"></span>
+                </div>
+              </div>
+              <span class="preset-desc">Ultra deep space void with cosmic indigo</span>
+            </div>
+            <div class="preset-card" data-theme="dark" data-preset="obsidian">
+              <div class="preset-card-header">
+                <span class="preset-name">THAAW Obsidian</span>
+                <div class="preset-swatches">
+                  <span class="preset-swatch" style="background: #0F1117;"></span>
+                  <span class="preset-swatch" style="background: #34D399;"></span>
+                  <span class="preset-swatch" style="background: #6EE7B7;"></span>
+                </div>
+              </div>
+              <span class="preset-desc">Volcanic basalt black with emerald highlights</span>
+            </div>
+            <div class="preset-card" data-theme="dark" data-preset="eclipse">
+              <div class="preset-card-header">
+                <span class="preset-name">THAAW Eclipse</span>
+                <div class="preset-swatches">
+                  <span class="preset-swatch" style="background: #120E16;"></span>
+                  <span class="preset-swatch" style="background: #FB7185;"></span>
+                  <span class="preset-swatch" style="background: #F43F5E;"></span>
+                </div>
+              </div>
+              <span class="preset-desc">Solar corona purple and rose gold</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: LIGHT THEMES -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">Light Themes (4 Presets)</div>
+          <div class="preset-grid" id="lightThemesGrid">
+            <div class="preset-card" data-theme="light" data-preset="white">
+              <div class="preset-card-header">
+                <span class="preset-name">THAAW White</span>
+                <div class="preset-swatches">
+                  <span class="preset-swatch" style="background: #F8FAFC;"></span>
+                  <span class="preset-swatch" style="background: #0284C7;"></span>
+                  <span class="preset-swatch" style="background: #D946EF;"></span>
+                </div>
+              </div>
+              <span class="preset-desc">Crisp, luminous clean slate</span>
+            </div>
+            <div class="preset-card" data-theme="light" data-preset="frost">
+              <div class="preset-card-header">
+                <span class="preset-name">THAAW Frost</span>
+                <div class="preset-swatches">
+                  <span class="preset-swatch" style="background: #F1F5F9;"></span>
+                  <span class="preset-swatch" style="background: #0EA5E9;"></span>
+                  <span class="preset-swatch" style="background: #38BDF8;"></span>
+                </div>
+              </div>
+              <span class="preset-desc">Glacial cool blue atmospheric mist</span>
+            </div>
+            <div class="preset-card" data-theme="light" data-preset="pearl">
+              <div class="preset-card-header">
+                <span class="preset-name">THAAW Pearl</span>
+                <div class="preset-swatches">
+                  <span class="preset-swatch" style="background: #FAF9F6;"></span>
+                  <span class="preset-swatch" style="background: #D97706;"></span>
+                  <span class="preset-swatch" style="background: #B45309;"></span>
+                </div>
+              </div>
+              <span class="preset-desc">Warm mineral ivory with amber notes</span>
+            </div>
+            <div class="preset-card" data-theme="light" data-preset="cloud">
+              <div class="preset-card-header">
+                <span class="preset-name">THAAW Cloud</span>
+                <div class="preset-swatches">
+                  <span class="preset-swatch" style="background: #F3F4F6;"></span>
+                  <span class="preset-swatch" style="background: #6366F1;"></span>
+                  <span class="preset-swatch" style="background: #8B5CF6;"></span>
+                </div>
+              </div>
+              <span class="preset-desc">Soft overcast lavender morning tone</span>
+            </div>
+          </div>
+        </div><!-- /#tabThemesPane -->
+
+        <!-- TAB 2: WALLPAPERS -->
+        <div id="tabWallpapersPane" class="drawer-tab-pane">
+          <!-- SECTION 3: WALLPAPERS GALLERY & MY WALLPAPERS -->
+          <div class="drawer-section">
+            <div class="drawer-section-title">Wallpapers Gallery</div>
+            <div class="wallpaper-filter-tabs" role="tablist" aria-label="Filter wallpapers by mode">
+              <button type="button" class="filter-tab active" data-filter="all" role="tab">All (30)</button>
+              <button type="button" class="filter-tab" data-filter="dark" role="tab">Dark (15)</button>
+              <button type="button" class="filter-tab" data-filter="light" role="tab">Light (15)</button>
+              <button type="button" class="filter-tab" data-filter="my" role="tab">
+                <span data-icon="image" data-icon-size="12"></span>
+                <span>My Wallpapers</span>
+              </button>
+            </div>
+
+            <!-- Curated Wallpapers (30) -->
+            <div class="wallpaper-grid-15" id="wallpaperGrid15">
+              <!-- Dynamically populated with miniature browser previews -->
+            </div>
+
+            <!-- MY WALLPAPERS & LIVE VIDEOS (Visible when 'my' filter is active) -->
+            <div class="my-wallpapers-container hidden" id="myWallpapersContainer">
+              <!-- Upload Dropzone -->
+              <div class="wallpaper-upload-dropzone" id="wallpaperDropzone">
+                <input type="file" id="customWallpaperFileInput" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml,video/mp4,video/webm" style="display:none;" />
+                <div class="dropzone-icon-circle">
+                  <span data-icon="upload-cloud" data-icon-size="24" style="color: var(--thaaw-cyan);"></span>
+                </div>
+                <div class="dropzone-text-group">
+                  <strong>Upload Wallpaper or Live Video</strong>
+                  <span>Drop your image or video loop here, or browse</span>
+                  <span class="dropzone-formats">Supports MP4, WEBM, JPG, PNG, WEBP, GIF</span>
+                </div>
+                <button type="button" id="browseWallpaperBtn" class="btn btn-primary btn-sm">
+                  <span data-icon="folder-plus" data-icon-size="13"></span>
+                  <span>Browse Files</span>
+                </button>
+              </div>
+
+              <!-- My Wallpapers Header -->
+              <div class="my-wallpapers-header-row">
+                <span class="my-wallpapers-title">My Collection &amp; Live Videos</span>
+                <span id="myWallpapersCountTag" class="badge-tag">Live Supported</span>
+              </div>
+
+              <!-- My Wallpapers & Live Videos Grid -->
+              <div class="my-wallpapers-grid" id="myWallpapersGrid">
+                <!-- Dynamically populated: uploads, site right-click images, live video wallpapers -->
+              </div>
+            </div>
+
+            <div class="wallpaper-actions-row">
+              <button type="button" id="applyWallpaperBtn" class="btn btn-primary btn-sm" style="flex: 1;">Apply</button>
+              <button type="button" id="removeWallpaperBtn" class="btn btn-secondary btn-sm">None</button>
+              <button type="button" id="resetWallpaperBtn" class="btn btn-secondary btn-sm">Reset</button>
+            </div>
+
+            <!-- Wallpaper Slideshow Option -->
+            <div class="slideshow-container" style="margin-top: 14px; padding: 12px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--thaaw-border); border-radius: 10px;">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <span style="font-size: 12.5px; font-weight: 600; color: var(--thaaw-text);">Wallpaper Slideshow</span>
+                <label class="switch">
+                  <input type="checkbox" id="toggleSlideshow" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div id="slideshowControlsRow" class="hidden" style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; color: var(--thaaw-text-muted);">
+                  <span>Display duration:</span>
+                  <select id="slideshowInterval" style="background: rgba(255, 255, 255, 0.08); border: 1px solid var(--thaaw-border); border-radius: 6px; color: var(--thaaw-text); padding: 4px 8px; font-size: 11.5px; outline: none; cursor: pointer;">
+                    <option value="10000">10 seconds</option>
+                    <option value="30000">30 seconds</option>
+                    <option value="60000" selected>1 minute</option>
+                    <option value="300000">5 minutes</option>
+                    <option value="900000">15 minutes</option>
+                    <option value="3600000">1 hour</option>
+                  </select>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; color: var(--thaaw-text-muted);">
+                  <span>Image collection:</span>
+                  <select id="slideshowModeSelect" style="background: rgba(255, 255, 255, 0.08); border: 1px solid var(--thaaw-border); border-radius: 6px; color: var(--thaaw-text); padding: 4px 8px; font-size: 11.5px; outline: none; cursor: pointer;">
+                    <option value="theme" selected>Match Current Theme</option>
+                    <option value="all">All 30 Curated Wallpapers</option>
+                    <option value="dark">Dark Wallpapers Only</option>
+                    <option value="light">Light Wallpapers Only</option>
+                  </select>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 2px;">
+                  <span style="font-size: 10.5px; color: var(--thaaw-cyan);">Slideshow active</span>
+                  <button type="button" id="slideshowNextBtn" class="btn btn-secondary btn-sm" style="font-size: 10.5px; padding: 2px 8px;">Next Now</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dimmer Slider -->
+            <div class="range-group" style="margin-top: 10px;">
+              <div class="range-label-row">
+                <span>Wallpaper Dimmer Overlay</span>
+                <span id="overlayOpacityLabel">0%</span>
+              </div>
+              <input type="range" id="overlayOpacityRange" class="range-input" min="0" max="95" value="0" />
+            </div>
+
+            <!-- Blur Slider -->
+            <div class="range-group" style="margin-top: 8px;">
+              <div class="range-label-row">
+                <span>Glass Blur Intensity</span>
+                <span id="blurIntensityLabel">16px</span>
+              </div>
+              <input type="range" id="blurIntensityRange" class="range-input" min="0" max="32" value="16" />
+            </div>
+          </div><!-- /.drawer-section -->
+        </div><!-- /#tabWallpapersPane -->
+
+        <!-- TAB 3: STUDIO & EFFECTS -->
+        <div id="tabStudioPane" class="drawer-tab-pane">
+          <!-- SECTION 4: CUSTOMIZATION & CUSTOM THEME CREATOR -->
+          <div class="drawer-section">
+          <div class="drawer-section-title">Custom Theme Creator</div>
+          <div class="custom-theme-palette">
+            <div class="custom-color-item">
+              <span>Primary Accent</span>
+              <input type="color" id="customPrimaryColor" class="custom-color-input" value="#38BDF8" />
+            </div>
+            <div class="custom-color-item">
+              <span>Secondary Accent</span>
+              <input type="color" id="customSecondaryColor" class="custom-color-input" value="#FF6FF0" />
+            </div>
+            <div class="custom-color-item">
+              <span>Background</span>
+              <input type="color" id="customBgColor" class="custom-color-input" value="#07111F" />
+            </div>
+            <div class="custom-color-item">
+              <span>Surface</span>
+              <input type="color" id="customSurfaceColor" class="custom-color-input" value="#0B1626" />
+            </div>
+            <div class="custom-color-item">
+              <span>Text</span>
+              <input type="color" id="customTextColor" class="custom-color-input" value="#F8FAFC" />
+            </div>
+            <div class="custom-color-item">
+              <span>Border</span>
+              <input type="color" id="customBorderColor" class="custom-color-input" value="#1E293B" />
+            </div>
+          </div>
+          <div class="wallpaper-actions-row" style="margin-top: 8px;">
+            <button type="button" id="saveCustomThemeBtn" class="btn btn-primary btn-sm" style="flex: 1;">Save Theme</button>
+            <button type="button" id="resetCustomThemeBtn" class="btn btn-secondary btn-sm">Reset</button>
+            <button type="button" id="exportThemeBtn" class="btn btn-secondary btn-sm">Export</button>
+          </div>
+        </div>
+
+        <!-- Component Visibility & Clock Settings -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">Component Visibility</div>
+          <div class="toggle-row">
+            <label for="toggleZenMode">Zen Minimal Mode</label>
+            <label class="switch">
+              <input type="checkbox" id="toggleZenMode" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <label for="toggleNews">Top News Section</label>
+            <label class="switch">
+              <input type="checkbox" id="toggleNews" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <label for="toggleWeather">Weather Widget</label>
+            <label class="switch">
+              <input type="checkbox" id="toggleWeather" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <label for="toggleClock">Clock & Date</label>
+            <label class="switch">
+              <input type="checkbox" id="toggleClock" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <label for="toggleClock24h">24-Hour Format</label>
+            <label class="switch">
+              <input type="checkbox" id="toggleClock24h" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <label for="toggleQuote">Privacy Quote</label>
+            <label class="switch">
+              <input type="checkbox" id="toggleQuote" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <label for="toggleLogo">Center THAAW Logo</label>
+            <label class="switch">
+              <input type="checkbox" id="toggleLogo" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <label for="toggleShield">Shield Status</label>
+            <label class="switch">
+              <input type="checkbox" id="toggleShield" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <label for="toggleAnimations">Smooth Animations</label>
+            <label class="switch">
+              <input type="checkbox" id="toggleAnimations" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div><!-- /#tabStudioPane -->
+    </div><!-- /.drawer-content -->
+
+      <!-- Drawer Footer Action -->
+      <div class="drawer-footer">
+        <button id="resetDefaultsBtn" class="btn btn-secondary" style="flex: 1;">
+          <span data-icon="refresh-cw" data-icon-size="14"></span>
+          <span>Reset All to Defaults</span>
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ADD / EDIT SHORTCUT MODAL -->
+  <div id="shortcutModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="shortcutModalTitle">
+    <div class="modal-content">
+      <h3 id="shortcutModalTitle">Add Shortcut</h3>
+      <input type="hidden" id="modalShortcutIndex" value="-1" />
+      <div class="modal-field">
+        <label for="modalShortcutTitle">Name</label>
+        <input type="text" id="modalShortcutTitle" placeholder="e.g. GitHub" />
+      </div>
+      <div class="modal-field">
+        <label for="modalShortcutUrl">Website URL</label>
+        <input type="text" id="modalShortcutUrl" placeholder="https://github.com" />
+      </div>
+      <div class="modal-field">
+        <label>Resolved Icon Preview</label>
+        <div id="modalFaviconPreview" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--thaaw-surface); border: 1px solid var(--thaaw-border); border-radius: 6px;">
+          <div id="modalFaviconBox"></div>
+          <span id="modalFaviconDomain" style="font-size: 12px; color: var(--thaaw-text-muted);">Enter URL to automatically resolve logo</span>
+        </div>
+      </div>
+      <div class="modal-buttons">
+        <button type="button" id="modalCancelBtn" class="btn btn-secondary">Cancel</button>
+        <button type="button" id="modalSaveBtn" class="btn btn-primary">Save Shortcut</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MANAGE NEWS FEEDS & RSS MODAL (Req 48-66) -->
+  <div id="manageFeedsModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="manageFeedsTitle">
+    <div class="modal-content" style="max-width: 520px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+        <h3 id="manageFeedsTitle" style="margin: 0; font-size: 16px;">Manage News Feeds & Channels</h3>
+        <button type="button" id="closeManageFeedsBtn" class="close-btn" style="background: none; border: none; font-size: 20px; color: var(--thaaw-text-muted); cursor: pointer;" aria-label="Close">&times;</button>
+      </div>
+
+      <!-- Add RSS Feed Form -->
+      <div style="background: var(--thaaw-surface); padding: 12px; border-radius: var(--thaaw-radius-md); border: 1px solid var(--thaaw-border); margin-bottom: 16px;">
+        <h4 style="font-size: 13px; margin: 0 0 10px; color: var(--thaaw-text);">Add Custom RSS Feed</h4>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <input type="url" id="customRssUrl" placeholder="Feed URL (e.g. https://example.com/rss.xml)" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--thaaw-border); background: var(--thaaw-bg-card); color: var(--thaaw-text); font-size: 12px;" />
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="customRssName" placeholder="Feed Name (Optional)" style="flex: 1; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--thaaw-border); background: var(--thaaw-bg-card); color: var(--thaaw-text); font-size: 12px;" />
+            <select id="customRssCategory" style="padding: 8px 10px; border-radius: 6px; border: 1px solid var(--thaaw-border); background: var(--thaaw-bg-card); color: var(--thaaw-text); font-size: 12px;">
+              <option value="Technology">Technology</option>
+              <option value="Security">Security</option>
+              <option value="AI">AI</option>
+              <option value="Open Source">Open Source</option>
+              <option value="General">General</option>
+            </select>
+            <button type="button" id="addCustomRssBtn" class="btn btn-primary btn-sm">Add</button>
+          </div>
+        </div>
+        <div id="rssAddStatus" style="font-size: 11px; margin-top: 6px; display: none;"></div>
+      </div>
+
+      <!-- Active Custom Feeds List -->
+      <div style="margin-bottom: 14px;">
+        <h4 style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--thaaw-text-muted); margin: 0 0 8px;">Active Custom Feeds</h4>
+        <div id="customFeedsList" style="max-height: 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;"></div>
+      </div>
+
+      <!-- Followed Channels and Topics -->
+      <div style="border-top: 1px solid var(--thaaw-border); padding-top: 12px;">
+        <h4 style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--thaaw-text-muted); margin: 0 0 8px;">Followed Topics & Channels</h4>
+        <div id="followedChannelsChips" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTEXT MENU (Right Click) -->
+  <div id="contextMenu" class="context-menu hidden" role="menu"></div>
+
+  <!-- Inline Script Logic -->
+  <script>
+    'use strict';
+
+    // Complete 30-Theme Wallpaper Metadata Definition (15 Dark + 15 Light)
+    const WALLPAPERS_30 = [
+      // 15 Signature Dark Wallpapers
+      { id: 'midnight-mountains', name: 'Midnight Mountains', mode: 'dark', file: 'thaaw-midnight-mountains.webp', thumb: 'thumbs/thaaw-midnight-mountains.webp' },
+      { id: 'blue-horizon', name: 'Blue Horizon', mode: 'dark', file: 'thaaw-blue-horizon.webp', thumb: 'thumbs/thaaw-blue-horizon.webp' },
+      { id: 'orange-dusk', name: 'Orange Dusk', mode: 'dark', file: 'thaaw-orange-dusk.webp', thumb: 'thumbs/thaaw-orange-dusk.webp' },
+      { id: 'cyan-mist', name: 'Cyan Mist', mode: 'dark', file: 'thaaw-cyan-mist.webp', thumb: 'thumbs/thaaw-cyan-mist.webp' },
+      { id: 'pink-night', name: 'Pink Night', mode: 'dark', file: 'thaaw-pink-night.webp', thumb: 'thumbs/thaaw-pink-night.webp' },
+      { id: 'dark-ocean', name: 'Dark Ocean', mode: 'dark', file: 'thaaw-dark-ocean.webp', thumb: 'thumbs/thaaw-dark-ocean.webp' },
+      { id: 'abstract-flow', name: 'Abstract Flow', mode: 'dark', file: 'thaaw-abstract-flow.webp', thumb: 'thumbs/thaaw-abstract-flow.webp' },
+      { id: 'night-forest', name: 'Night Forest', mode: 'dark', file: 'thaaw-night-forest.webp', thumb: 'thumbs/thaaw-night-forest.webp' },
+      { id: 'modern-architecture', name: 'Modern Architecture', mode: 'dark', file: 'thaaw-modern-architecture.webp', thumb: 'thumbs/thaaw-modern-architecture.webp' },
+      { id: 'deep-space', name: 'Deep Space', mode: 'dark', file: 'thaaw-deep-space.webp', thumb: 'thumbs/thaaw-deep-space.webp' },
+      { id: 'mist-valley', name: 'Mist Valley', mode: 'dark', file: 'thaaw-mist-valley.webp', thumb: 'thumbs/thaaw-mist-valley.webp' },
+      { id: 'abstract-geometry', name: 'Abstract Geometry', mode: 'dark', file: 'thaaw-abstract-geometry.webp', thumb: 'thumbs/thaaw-abstract-geometry.webp' },
+      { id: 'night-city', name: 'Night City', mode: 'dark', file: 'thaaw-night-city.webp', thumb: 'thumbs/thaaw-night-city.webp' },
+      { id: 'polar-mist', name: 'Polar Mist', mode: 'dark', file: 'thaaw-polar-mist.webp', thumb: 'thumbs/thaaw-polar-mist.webp' },
+      { id: 'thaaw-signature', name: 'THAAW Signature', mode: 'dark', file: 'thaaw-signature.webp', thumb: 'thumbs/thaaw-signature.webp' },
+      // 15 First-Class Light Wallpapers
+      { id: 'light-01', name: 'Luminous Geometries', mode: 'light', file: 'light/light-01.webp', thumb: 'thumbs/light-01.webp' },
+      { id: 'light-02', name: 'Metropolis Sunrise', mode: 'light', file: 'light/light-02.webp', thumb: 'thumbs/light-02.webp' },
+      { id: 'light-03', name: 'Prismatic Sanctuary', mode: 'light', file: 'light/light-03.webp', thumb: 'thumbs/light-03.webp' },
+      { id: 'light-04', name: 'Mediterranean Cliffside', mode: 'light', file: 'light/light-04.webp', thumb: 'thumbs/light-04.webp' },
+      { id: 'light-05', name: 'Sculptural Curves', mode: 'light', file: 'light/light-05.webp', thumb: 'thumbs/light-05.webp' },
+      { id: 'light-06', name: 'Twilight Skyscraper Terrace', mode: 'light', file: 'light/light-06.webp', thumb: 'thumbs/light-06.webp' },
+      { id: 'light-07', name: 'Botanical Bloom', mode: 'light', file: 'light/light-07.webp', thumb: 'thumbs/light-07.webp' },
+      { id: 'light-08', name: 'Coastal Tide', mode: 'light', file: 'light/light-08.webp', thumb: 'thumbs/light-08.webp' },
+      { id: 'light-09', name: 'Aegean Rotunda', mode: 'light', file: 'light/light-09.webp', thumb: 'thumbs/light-09.webp' },
+      { id: 'light-10', name: 'Pastel Ribbon Flow', mode: 'light', file: 'light/light-10.webp', thumb: 'thumbs/light-10.webp' },
+      { id: 'light-11', name: 'Azure Horizon Terrace', mode: 'light', file: 'light/light-11.webp', thumb: 'thumbs/light-11.webp' },
+      { id: 'light-12', name: 'Minimalist Architecture', mode: 'light', file: 'light/light-12.webp', thumb: 'thumbs/light-12.webp' },
+      { id: 'light-13', name: 'Seaside Villa', mode: 'light', file: 'light/light-13.webp', thumb: 'thumbs/light-13.webp' },
+      { id: 'light-14', name: 'Nordic Forest Mist', mode: 'light', file: 'light/light-14.webp', thumb: 'thumbs/light-14.webp' },
+      { id: 'light-15', name: 'Solar Zenith Architecture', mode: 'light', file: 'light/light-15.webp', thumb: 'thumbs/light-15.webp' }
+    ];
+    const WALLPAPERS_15 = WALLPAPERS_30;
+
+    function showToast(msg) {
+      let tc = document.getElementById('newtabToastContainer');
+      if (!tc) {
+        tc = document.createElement('div');
+        tc.id = 'newtabToastContainer';
+        tc.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;';
+        document.body.appendChild(tc);
+      }
+      const t = document.createElement('div');
+      t.style.cssText = 'padding:10px 16px;background:rgba(10,16,32,0.96);border:1px solid var(--thaaw-border);border-radius:8px;color:var(--thaaw-text);font-size:12px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,0.5);pointer-events:auto;';
+      t.textContent = msg;
+      tc.appendChild(t);
+      setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 200); }, 3000);
+    }
+
+    // 1. THEME ENGINE STATE
+    const ThemeEngine = {
+      theme: 'dark',
+      preset: 'midnight',
+      activeWallpaper: 'default',
+      previewWallpaper: null,
+
+      init() {
+        // Sync with browser theme
+        if (window.thaawAPI) {
+          document.body.classList.add('inside-thaaw-chrome');
+          window.thaawAPI.getTheme().then(res => {
+            if (res) {
+              this.apply(res.theme, res.preset);
+            }
+          }).catch(() => {});
+          window.thaawAPI.onThemeUpdated((data) => {
+            this.apply(data.theme, data.preset);
+          });
+          window.thaawAPI.getWallpaper?.().then(wp => {
+            if (wp) {
+              this.activeWallpaper = wp;
+              this.setWallpaper(wp, false);
+            }
+          }).catch(() => {});
+          window.thaawAPI.onWallpaperUpdated?.((wp) => {
+            if (wp) {
+              this.activeWallpaper = wp;
+              this.setWallpaper(wp, false);
+            }
+          });
+        }
+
+        const savedWp = localStorage.getItem('thaaw_active_wallpaper') || 'default';
+        this.setWallpaper(savedWp, false);
+
+        this.setupPresetCards();
+        this.setupWallpaperGrid();
+        this.setupSlideshowControls();
+        this.setupCustomThemeControls();
+      },
+
+      apply(theme, preset) {
+        this.theme = theme || 'dark';
+        if (preset) this.preset = preset;
+        document.documentElement.setAttribute('data-theme', this.theme);
+        if (this.preset) {
+          document.documentElement.setAttribute('data-theme-preset', this.preset);
+        }
+        // Update active preset card styling
+        document.querySelectorAll('.preset-card').forEach(card => {
+          const isMatch = card.dataset.theme === this.theme && card.dataset.preset === this.preset;
+          card.classList.toggle('active', isMatch);
+        });
+
+        // Update top-right quick theme button icon
+        const themeBtn = document.getElementById('themeToggleBtn');
+        if (themeBtn && window.getSvgIcon) {
+          const icon = this.theme === 'dark' ? 'moon' : 'sun';
+          themeBtn.innerHTML = window.getSvgIcon(icon, 18);
+        }
+
+        // Automatically switch wallpaper to theme-appropriate wallpaper when theme is switched
+        const isCurrentLight = Boolean(this.activeWallpaper && (this.activeWallpaper.startsWith('light') || this.activeWallpaper.includes('light/')));
+        if (!this.activeWallpaper || this.activeWallpaper === 'default' || (this.theme === 'light' && !isCurrentLight) || (this.theme === 'dark' && isCurrentLight)) {
+          this.setWallpaper(this.theme === 'light' ? 'light-13' : 'thaaw-midnight-mountains');
+        }
+
+        // Dynamically update weather icon based on theme mode
+        if (window.WeatherState && WeatherState.updateWeatherIcon) {
+          WeatherState.updateWeatherIcon();
+        }
+      },
+
+      async selectPreset(theme, preset) {
+        this.apply(theme, preset);
+        if (window.thaawAPI && window.thaawAPI.setTheme) {
+          await window.thaawAPI.setTheme(theme, preset);
+        }
+      },
+
+      async toggleQuick() {
+        const nextTheme = this.theme === 'dark' ? 'light' : 'dark';
+        const nextPreset = nextTheme === 'dark' ? 'midnight' : 'white';
+        await this.selectPreset(nextTheme, nextPreset);
+      },
+
+      slideshowTimer: null,
+      slideshowIndex: 0,
+
+      startSlideshow(intervalMs = 60000) {
+        this.stopSlideshow();
+        const getList = () => {
+          const mode = document.getElementById('slideshowModeSelect')?.value || 'theme';
+          if (mode === 'dark') return WALLPAPERS_30.filter(w => w.mode === 'dark');
+          if (mode === 'light') return WALLPAPERS_30.filter(w => w.mode === 'light');
+          if (mode === 'all') return WALLPAPERS_30;
+          return WALLPAPERS_30.filter(w => w.mode === this.theme);
+        };
+
+        const nextSlide = () => {
+          const list = getList();
+          if (!list || list.length === 0) return;
+          this.slideshowIndex = (this.slideshowIndex + 1) % list.length;
+          const nextWp = list[this.slideshowIndex];
+          this.setWallpaper(nextWp.id);
+        };
+
+        this.slideshowTimer = setInterval(nextSlide, intervalMs);
+      },
+
+      stopSlideshow() {
+        if (this.slideshowTimer) {
+          clearInterval(this.slideshowTimer);
+          this.slideshowTimer = null;
+        }
+      },
+
+      setupSlideshowControls() {
+        const toggle = document.getElementById('toggleSlideshow');
+        const controlsRow = document.getElementById('slideshowControlsRow');
+        const intervalSelect = document.getElementById('slideshowInterval');
+        const modeSelect = document.getElementById('slideshowModeSelect');
+        const nextBtn = document.getElementById('slideshowNextBtn');
+
+        const savedEnabled = localStorage.getItem('thaaw_slideshow_enabled') === 'true';
+        const savedInterval = parseInt(localStorage.getItem('thaaw_slideshow_interval') || '60000', 10);
+        const savedMode = localStorage.getItem('thaaw_slideshow_mode') || 'theme';
+
+        if (toggle) toggle.checked = savedEnabled;
+        if (intervalSelect) intervalSelect.value = String(savedInterval);
+        if (modeSelect) modeSelect.value = savedMode;
+        if (controlsRow) controlsRow.classList.toggle('hidden', !savedEnabled);
+
+        if (savedEnabled) {
+          this.startSlideshow(savedInterval);
+        }
+
+        toggle?.addEventListener('change', () => {
+          const enabled = toggle.checked;
+          localStorage.setItem('thaaw_slideshow_enabled', String(enabled));
+          controlsRow?.classList.toggle('hidden', !enabled);
+          if (enabled) {
+            const interval = parseInt(intervalSelect?.value || '60000', 10);
+            this.startSlideshow(interval);
+            showToast('Wallpaper slideshow enabled.');
+          } else {
+            this.stopSlideshow();
+            showToast('Wallpaper slideshow paused.');
+          }
+        });
+
+        intervalSelect?.addEventListener('change', () => {
+          const interval = parseInt(intervalSelect.value, 10);
+          localStorage.setItem('thaaw_slideshow_interval', String(interval));
+          if (toggle?.checked) {
+            this.startSlideshow(interval);
+            showToast('Slideshow timer updated.');
+          }
+        });
+
+        modeSelect?.addEventListener('change', () => {
+          localStorage.setItem('thaaw_slideshow_mode', modeSelect.value);
+          if (toggle?.checked) {
+            this.startSlideshow(parseInt(intervalSelect?.value || '60000', 10));
+          }
+        });
+
+        nextBtn?.addEventListener('click', () => {
+          const mode = modeSelect?.value || 'theme';
+          const list = mode === 'dark' ? WALLPAPERS_30.filter(w => w.mode === 'dark') :
+                       mode === 'light' ? WALLPAPERS_30.filter(w => w.mode === 'light') :
+                       mode === 'all' ? WALLPAPERS_30 :
+                       WALLPAPERS_30.filter(w => w.mode === this.theme);
+          if (list.length > 0) {
+            this.slideshowIndex = (this.slideshowIndex + 1) % list.length;
+            this.setWallpaper(list[this.slideshowIndex].id);
+          }
+        });
+      },
+
+      async setWallpaper(wpId, notify = true) {
+        this.activeWallpaper = wpId;
+        try { localStorage.setItem('thaaw_active_wallpaper', wpId); } catch (_) {}
+        if (notify && window.thaawAPI && window.thaawAPI.setWallpaper) {
+          await window.thaawAPI.setWallpaper(wpId);
+        }
+        const wpLayer = document.getElementById('wallpaperLayer');
+        if (!wpLayer) return;
+        
+        if (!wpId || wpId === 'default') {
+          if (this.theme === 'light') {
+            wpLayer.className = 'newtab-wallpaper-layer';
+            wpLayer.style.backgroundImage = 'url("../assets/wallpapers/light/light-13.webp")';
+            wpLayer.style.backgroundColor = '#FAF9F6';
+          } else {
+            wpLayer.className = 'newtab-wallpaper-layer default-bg';
+            wpLayer.style.backgroundImage = 'url("../assets/wallpapers/thaaw-midnight-mountains.webp")';
+            wpLayer.style.backgroundColor = '#050812';
+          }
+        } else if (wpId === 'none') {
+          wpLayer.className = 'newtab-wallpaper-layer';
+          wpLayer.style.backgroundImage = 'none';
+          wpLayer.style.backgroundColor = 'var(--thaaw-bg, #07111F)';
+        } else if (wpId.startsWith('http://') || wpId.startsWith('https://') || wpId.startsWith('data:') || wpId.startsWith('file://')) {
+          wpLayer.className = 'newtab-wallpaper-layer';
+          wpLayer.style.backgroundImage = `url("${wpId}")`;
+          wpLayer.style.backgroundColor = this.theme === 'light' ? '#F8FAFC' : '#07111F';
+        } else {
+          const found = WALLPAPERS_30.find(w => w.id === wpId || w.file === wpId || w.filename === wpId);
+          if (found) {
+            wpLayer.className = 'newtab-wallpaper-layer';
+            wpLayer.style.backgroundImage = `url("../assets/wallpapers/${found.file || found.filename}")`;
+            wpLayer.style.backgroundColor = found.mode === 'light' ? '#F8FAFC' : '#07111F';
+          }
+        }
+
+        // Update active state in grid
+        document.querySelectorAll('.wallpaper-card-15').forEach(card => {
+          card.classList.toggle('active', card.dataset.wallpaperId === wpId);
+        });
+      },
+
+      setupPresetCards() {
+        document.querySelectorAll('.preset-card').forEach(card => {
+          card.addEventListener('click', () => {
+            const theme = card.dataset.theme;
+            const preset = card.dataset.preset;
+            this.selectPreset(theme, preset);
+          });
+        });
+      },
+
+      setupWallpaperGrid() {
+        const grid = document.getElementById('wallpaperGrid15');
+        if (!grid) return;
+        
+        let currentFilter = 'all';
+
+        const renderGrid = () => {
+          grid.innerHTML = '';
+          const filtered = WALLPAPERS_30.filter(wp => currentFilter === 'all' || wp.mode === currentFilter);
+
+          filtered.forEach((wp) => {
+            const card = document.createElement('div');
+            card.className = `wallpaper-card-15 ${this.activeWallpaper === wp.id ? 'active' : ''}`;
+            card.dataset.wallpaperId = wp.id;
+            card.dataset.mode = wp.mode;
+            card.title = `${wp.name} (${wp.mode})`;
+            card.innerHTML = `
+              <div class="wallpaper-mini-browser">
+                <div class="mini-browser-chrome">
+                  <span class="mini-dot red"></span>
+                  <span class="mini-dot yellow"></span>
+                  <span class="mini-dot green"></span>
+                  <span class="mini-address-pill"></span>
+                </div>
+                <img class="wallpaper-thumb-img" src="../assets/wallpapers/${wp.thumb}" alt="${wp.name}" loading="lazy" />
+              </div>
+              <div class="wallpaper-title-overlay">${wp.name}</div>
+            `;
+            card.addEventListener('click', () => {
+              this.previewWallpaper = wp.id;
+              this.setWallpaper(wp.id);
+            });
+            grid.appendChild(card);
+          });
+        };
+
+        // Filter tab event listeners
+        document.querySelectorAll('.wallpaper-filter-tabs .filter-tab').forEach(tab => {
+          tab.addEventListener('click', () => {
+            document.querySelectorAll('.wallpaper-filter-tabs .filter-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentFilter = tab.dataset.filter;
+            renderGrid();
+          });
+        });
+
+        renderGrid();
+
+        document.getElementById('applyWallpaperBtn')?.addEventListener('click', () => {
+          if (this.previewWallpaper) {
+            this.setWallpaper(this.previewWallpaper);
+            showToast('Wallpaper applied.');
+          }
+        });
+
+        document.getElementById('removeWallpaperBtn')?.addEventListener('click', () => {
+          this.setWallpaper('none');
+          showToast('Wallpaper set to solid background.');
+        });
+
+        document.getElementById('resetWallpaperBtn')?.addEventListener('click', () => {
+          this.setWallpaper('default');
+          showToast('Wallpaper reset to default.');
+        });
+      },
+
+      setupCustomThemeControls() {
+        document.getElementById('saveCustomThemeBtn')?.addEventListener('click', () => {
+          const primary = document.getElementById('customPrimaryColor').value;
+          const secondary = document.getElementById('customSecondaryColor').value;
+          const bg = document.getElementById('customBgColor').value;
+          const surface = document.getElementById('customSurfaceColor').value;
+          const text = document.getElementById('customTextColor').value;
+          const border = document.getElementById('customBorderColor').value;
+
+          const root = document.documentElement;
+          root.style.setProperty('--thaaw-primary', primary);
+          root.style.setProperty('--thaaw-secondary', secondary);
+          root.style.setProperty('--thaaw-bg', bg);
+          root.style.setProperty('--thaaw-surface', surface);
+          root.style.setProperty('--thaaw-text', text);
+          root.style.setProperty('--thaaw-border', border);
+
+          localStorage.setItem('thaaw_custom_theme', JSON.stringify({ primary, secondary, bg, surface, text, border }));
+          showToast('Custom theme applied and saved!');
+        });
+
+        document.getElementById('resetCustomThemeBtn')?.addEventListener('click', () => {
+          localStorage.removeItem('thaaw_custom_theme');
+          const root = document.documentElement;
+          root.style.removeProperty('--thaaw-primary');
+          root.style.removeProperty('--thaaw-secondary');
+          root.style.removeProperty('--thaaw-bg');
+          root.style.removeProperty('--thaaw-surface');
+          root.style.removeProperty('--thaaw-text');
+          root.style.removeProperty('--thaaw-border');
+          this.apply('dark', 'midnight');
+        });
+
+        document.getElementById('exportThemeBtn')?.addEventListener('click', () => {
+          const primary = document.getElementById('customPrimaryColor').value;
+          const secondary = document.getElementById('customSecondaryColor').value;
+          const bg = document.getElementById('customBgColor').value;
+          const surface = document.getElementById('customSurfaceColor').value;
+          const text = document.getElementById('customTextColor').value;
+          const border = document.getElementById('customBorderColor').value;
+          const data = JSON.stringify({ name: 'THAAW Custom Theme', primary, secondary, bg, surface, text, border }, null, 2);
+          navigator.clipboard.writeText(data).then(() => {
+            showToast('Custom theme JSON copied to clipboard!');
+          });
+        });
+      }
+    };
+
+    // 2. USER PREFERENCES STATE
+    const UserPreferences = {
+      data: {
+        zenMode: false,
+        overlayOpacity: 0,
+        blurIntensity: 16,
+        showNews: true,
+        showWeather: true,
+        showClock: true,
+        showClock24h: true,
+        showQuote: true,
+        showLogo: true,
+        showShield: true,
+        animations: true
+      },
+
+      init() {
+        const saved = localStorage.getItem('thaaw_newtab_prefs');
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            // If user had default 55% saved previously, normalize to 0% for pure glass wallpaper visibility
+            if (parsed && parsed.overlayOpacity === 55) {
+              parsed.overlayOpacity = 0;
+            }
+            this.data = { ...this.data, ...parsed };
+          } catch (_e) {}
+        }
+        this.apply();
+        this.bindEvents();
+      },
+
+      save() {
+        localStorage.setItem('thaaw_newtab_prefs', JSON.stringify(this.data));
+      },
+
+      toggleZenMode() {
+        this.data.zenMode = !this.data.zenMode;
+        this.apply();
+        this.save();
+      },
+
+      apply() {
+        const overlay = document.getElementById('wallpaperOverlay');
+        if (overlay) {
+          const opacity = (this.data.overlayOpacity !== undefined ? this.data.overlayOpacity : 0);
+          overlay.style.background = opacity > 0 ? `rgba(3, 7, 18, ${opacity / 100})` : 'transparent';
+          overlay.style.opacity = opacity > 0 ? '1' : '0';
+          overlay.style.pointerEvents = 'none';
+        }
+        document.documentElement.style.setProperty('--thaaw-glass-blur', `${this.data.blurIntensity}px`);
+
+        const zenActive = !!this.data.zenMode;
+        const zenBtn = document.getElementById('zenModeToggleBtn');
+        if (zenBtn) zenBtn.classList.toggle('active', zenActive);
+
+        const toggleZenEl = document.getElementById('toggleZenMode');
+        if (toggleZenEl) toggleZenEl.checked = zenActive;
+
+        const setDisplay = (id, show) => {
+          const el = document.getElementById(id);
+          if (el) el.style.display = show ? '' : 'none';
+        };
+
+        if (zenActive) {
+          setDisplay('lowerPanel', false);
+          setDisplay('centerBrandSection', false);
+          if (window.NewsState && NewsState.carouselTimer) {
+            clearInterval(NewsState.carouselTimer);
+            NewsState.carouselTimer = null;
+          }
+        } else {
+          setDisplay('lowerPanel', true);
+          setDisplay('newsSection', this.data.showNews);
+          setDisplay('weatherWidgetCard', this.data.showWeather);
+          setDisplay('clockWidgetCard', this.data.showClock);
+          setDisplay('quoteWidgetCard', this.data.showQuote);
+          setDisplay('centerBrandSection', this.data.showLogo);
+          setDisplay('shieldWidgetCard', this.data.showShield);
+
+          const lowerPanel = document.getElementById('lowerPanel');
+          if (lowerPanel) {
+            lowerPanel.style.gridTemplateColumns = !this.data.showNews ? '1fr' : '';
+          }
+          if (this.data.showNews && window.NewsState && !NewsState.carouselTimer && NewsState.articles.length > 1) {
+            NewsState.startAutoSlide();
+          }
+        }
+      },
+
+      bindEvents() {
+        const overlayRange = document.getElementById('overlayOpacityRange');
+        if (overlayRange) {
+          overlayRange.value = this.data.overlayOpacity;
+          document.getElementById('overlayOpacityLabel').textContent = `${this.data.overlayOpacity}%`;
+          overlayRange.addEventListener('input', (e) => {
+            this.data.overlayOpacity = parseInt(e.target.value, 10);
+            document.getElementById('overlayOpacityLabel').textContent = `${e.target.value}%`;
+            this.apply();
+            this.save();
+          });
+        }
+
+        const blurRange = document.getElementById('blurIntensityRange');
+        if (blurRange) {
+          blurRange.value = this.data.blurIntensity;
+          document.getElementById('blurIntensityLabel').textContent = `${this.data.blurIntensity}px`;
+          blurRange.addEventListener('input', (e) => {
+            this.data.blurIntensity = parseInt(e.target.value, 10);
+            document.getElementById('blurIntensityLabel').textContent = `${e.target.value}px`;
+            this.apply();
+            this.save();
+          });
+        }
+
+        const bindToggle = (elemId, key) => {
+          const el = document.getElementById(elemId);
+          if (el) {
+            el.checked = !!this.data[key];
+            el.addEventListener('change', () => {
+              this.data[key] = el.checked;
+              this.apply();
+              this.save();
+              if (key === 'showClock24h') {
+                WeatherState.updateClock();
+              }
+            });
+          }
+        };
+
+        bindToggle('toggleZenMode', 'zenMode');
+        bindToggle('toggleNews', 'showNews');
+        bindToggle('toggleWeather', 'showWeather');
+        bindToggle('toggleClock', 'showClock');
+        bindToggle('toggleClock24h', 'showClock24h');
+        bindToggle('toggleQuote', 'showQuote');
+        bindToggle('toggleLogo', 'showLogo');
+        bindToggle('toggleShield', 'showShield');
+        bindToggle('toggleAnimations', 'animations');
+
+        document.getElementById('resetDefaultsBtn')?.addEventListener('click', () => {
+          if (confirm('Reset all THAAW new tab preferences to defaults?')) {
+            localStorage.removeItem('thaaw_newtab_prefs');
+            localStorage.removeItem('thaaw_active_wallpaper');
+            localStorage.removeItem('thaaw_custom_theme');
+            location.reload();
+          }
+        });
+      }
+    };
+
+    // 3. SHORTCUT STATE (Real Site Favicons via FaviconResolver)
+    const ShortcutState = {
+      shortcuts: [
+        { title: 'GitHub', url: 'https://github.com' },
+        { title: 'YouTube', url: 'https://youtube.com' },
+        { title: 'Gmail', url: 'https://mail.google.com' },
+        { title: 'ChatGPT', url: 'https://chatgpt.com' }
+      ],
+
+      init() {
+        const saved = localStorage.getItem('thaaw_user_shortcuts');
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length) this.shortcuts = parsed;
+          } catch (_e) {}
+        }
+        this.render();
+      },
+
+      save() {
+        localStorage.setItem('thaaw_user_shortcuts', JSON.stringify(this.shortcuts));
+        this.render();
+      },
+
+      render() {
+        const container = document.getElementById('shortcutsSection');
+        if (!container) return;
+        container.innerHTML = '';
+
+        // Allow user to add maximum 7 shortcuts
+        const maxShortcuts = 7;
+        const displayList = this.shortcuts.slice(0, maxShortcuts);
+        displayList.forEach((sc, index) => {
+          const item = document.createElement('a');
+          item.className = 'shortcut-item';
+          item.href = sc.url;
+          item.dataset.index = String(index);
+          item.setAttribute('aria-label', `Navigate to ${sc.title}`);
+
+          const circle = document.createElement('div');
+          circle.className = 'shortcut-circle-container';
+
+          // Use real FaviconResolver
+          if (window.FaviconResolver) {
+            const favEl = window.FaviconResolver.renderFaviconElement(sc.url, sc.title, 24);
+            circle.appendChild(favEl);
+          } else {
+            circle.textContent = sc.title ? sc.title.charAt(0).toUpperCase() : 'T';
+          }
+
+          const label = document.createElement('div');
+          label.className = 'shortcut-label';
+          label.textContent = sc.title;
+
+          item.appendChild(circle);
+          item.appendChild(label);
+
+          item.addEventListener('click', (e) => {
+            e.preventDefault();
+            HomePageState.navigate(sc.url);
+          });
+
+          item.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            ContextMenu.openForShortcut(e.clientX, e.clientY, index);
+          });
+
+          container.appendChild(item);
+        });
+
+        // If fewer than 7 shortcuts, show the Add Shortcut slot
+        if (this.shortcuts.length < maxShortcuts) {
+          const addItem = document.createElement('div');
+          addItem.className = 'shortcut-item add-shortcut-slot';
+          addItem.tabIndex = 0;
+          addItem.setAttribute('role', 'button');
+          addItem.setAttribute('aria-label', 'Add new custom shortcut');
+
+          const plusIcon = window.getSvgIcon ? window.getSvgIcon('plus', 22) : '+';
+          addItem.innerHTML = `
+            <div class="shortcut-circle-container">
+              ${plusIcon}
+            </div>
+            <div class="shortcut-label">Add</div>
+          `;
+
+          const triggerAdd = () => ModalManager.openShortcutModal(-1);
+          addItem.addEventListener('click', triggerAdd);
+          addItem.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              triggerAdd();
+            }
+          });
+
+          container.appendChild(addItem);
+        }
+      },
+
+      addShortcut(title, url) {
+        if (this.shortcuts.length >= 7) {
+          showToast('Maximum 7 shortcuts reached. Please remove an existing shortcut first.');
+          return;
+        }
+        this.shortcuts.push({
+          title,
+          url: HomePageState.normalizeUrl(url)
+        });
+        this.save();
+      },
+
+      updateShortcut(index, title, url) {
+        if (this.shortcuts[index]) {
+          this.shortcuts[index].title = title;
+          this.shortcuts[index].url = HomePageState.normalizeUrl(url);
+          this.save();
+        }
+      },
+
+      deleteShortcut(index) {
+        this.shortcuts.splice(index, 1);
+        this.save();
+      }
+    };
+
+    // 4. BRAVE-INSPIRED NEWS ENGINE (For You, Following, Channels, Publishers, RSS & Clusters)
+    const NewsState = {
+      currentView: 'for_you',
+      category: 'all',
+      articles: [],
+      carouselIndex: 0,
+      carouselTimer: null,
+      isPaused: false,
+      page: 1,
+      hasMore: true,
+      isLoading: false,
+      followState: { followedPublishers: [], followedChannels: [], hiddenPublishers: [], hiddenTopics: [] },
+      customFeeds: [],
+
+      async init() {
+        this.setupViewTabs();
+        this.setupTabs();
+        this.setupCarouselEvents();
+        this.setupEndlessScroll();
+        this.setupRssModal();
+
+        // Load follow state if available
+        if (window.thaawAPI && window.thaawAPI.getNewsFollowState) {
+          try {
+            this.followState = await window.thaawAPI.getNewsFollowState();
+          } catch (_e) {}
+        }
+
+        document.getElementById('refreshNewsBtn')?.addEventListener('click', () => this.fetchNews(true));
+        document.getElementById('loadMoreNewsBtn')?.addEventListener('click', () => this.loadMore());
+
+        // Instant startup: immediately render from local cache if present
+        const cached = localStorage.getItem('thaaw_news_cache_' + this.currentView);
+        if (cached) {
+          try {
+            const parsed = JSON.parse(cached);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              this.articles = parsed;
+              this.renderCarousel();
+              this.renderCardsGrid(true);
+            }
+          } catch (_e) {}
+        }
+
+        await this.fetchNews(true);
+      },
+
+      setupViewTabs() {
+        document.querySelectorAll('.news-view-tab').forEach(tab => {
+          tab.addEventListener('click', () => {
+            document.querySelectorAll('.news-view-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            this.currentView = tab.dataset.view || 'for_you';
+            const heading = document.getElementById('newsSectionHeadingText');
+            if (heading) {
+              const labels = {
+                for_you: 'For You',
+                following: 'Following',
+                channels: 'Channels',
+                publishers: 'Publishers',
+                top_news: 'Top Stories',
+                trending: 'Trending'
+              };
+              heading.textContent = labels[this.currentView] || 'Top Stories';
+            }
+            this.fetchNews(true);
+          });
+        });
+      },
+
+      setupTabs() {
+        document.querySelectorAll('.category-pill').forEach(pill => {
+          pill.addEventListener('click', () => {
+            document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+            this.category = pill.dataset.category || 'all';
+            this.fetchNews(true);
+          });
+        });
+      },
+
+      setupEndlessScroll() {
+        const newsSec = document.getElementById('newsSection');
+        if (!newsSec) return;
+        newsSec.addEventListener('scroll', () => {
+          if (this.isLoading || !this.hasMore) return;
+          if (newsSec.scrollTop + newsSec.clientHeight >= newsSec.scrollHeight - 120) {
+            this.loadMore();
+          }
+        });
+      },
+
+      setupRssModal() {
+        const openBtn = document.getElementById('addRssModalBtn');
+        const modal = document.getElementById('manageFeedsModal');
+        const closeBtn = document.getElementById('closeManageFeedsBtn');
+        const addBtn = document.getElementById('addCustomRssBtn');
+
+        const openModal = async () => {
+          if (modal) {
+            modal.classList.remove('hidden');
+            await this.renderCustomFeedsList();
+            await this.renderFollowedChannels();
+          }
+        };
+
+        const closeModal = () => {
+          if (modal) modal.classList.add('hidden');
+        };
+
+        openBtn?.addEventListener('click', openModal);
+        closeBtn?.addEventListener('click', closeModal);
+        modal?.addEventListener('click', (e) => {
+          if (e.target === modal) closeModal();
+        });
+
+        addBtn?.addEventListener('click', async () => {
+          const urlInput = document.getElementById('customRssUrl');
+          const nameInput = document.getElementById('customRssName');
+          const catSelect = document.getElementById('customRssCategory');
+          const statusEl = document.getElementById('rssAddStatus');
+          if (!urlInput || !statusEl) return;
+
+          const url = urlInput.value.trim();
+          const name = nameInput ? nameInput.value.trim() : '';
+          const category = catSelect ? catSelect.value : 'General';
+
+          if (!url || (!url.startsWith('http://') && !url.startsWith('https://'))) {
+            statusEl.style.display = 'block';
+            statusEl.style.color = '#EF4444';
+            statusEl.textContent = 'Please enter a valid HTTP/HTTPS feed URL.';
+            return;
+          }
+
+          statusEl.style.display = 'block';
+          statusEl.style.color = 'var(--thaaw-cyan)';
+          statusEl.textContent = 'Validating & adding feed...';
+
+          try {
+            if (window.thaawAPI && window.thaawAPI.addCustomRssFeed) {
+              const res = await window.thaawAPI.addCustomRssFeed(url, name || 'Custom Feed', category);
+              if (res && res.success) {
+                statusEl.style.color = '#10B981';
+                statusEl.textContent = 'Feed added successfully!';
+                urlInput.value = '';
+                if (nameInput) nameInput.value = '';
+                await this.renderCustomFeedsList();
+                this.fetchNews(true);
+              } else {
+                statusEl.style.color = '#EF4444';
+                statusEl.textContent = res?.error || 'Failed to parse RSS feed.';
+              }
+            } else {
+              statusEl.style.color = '#10B981';
+              statusEl.textContent = 'Feed saved locally!';
+            }
+          } catch (err) {
+            statusEl.style.color = '#EF4444';
+            statusEl.textContent = 'Error adding RSS feed.';
+          }
+        });
+      },
+
+      async renderCustomFeedsList() {
+        const container = document.getElementById('customFeedsList');
+        if (!container) return;
+        let feeds = [];
+        try {
+          if (window.thaawAPI && window.thaawAPI.getCustomRssFeeds) {
+            feeds = await window.thaawAPI.getCustomRssFeeds();
+          }
+        } catch (_e) {}
+
+        container.innerHTML = '';
+        if (!Array.isArray(feeds) || feeds.length === 0) {
+          container.innerHTML = '<div style="font-size: 11px; color: var(--thaaw-text-muted); padding: 6px;">No custom feeds added yet. Add an RSS feed above!</div>';
+          return;
+        }
+
+        feeds.forEach(f => {
+          const item = document.createElement('div');
+          item.style.cssText = 'display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: var(--thaaw-bg-card); border-radius: 6px; border: 1px solid var(--thaaw-border); font-size: 12px;';
+          item.innerHTML = `
+            <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 360px;">
+              <span style="font-weight: 600; color: var(--thaaw-text);">${f.name || 'Feed'}</span>
+              <span style="font-size: 10px; color: var(--thaaw-text-muted); margin-left: 6px;">(${f.category || 'General'})</span>
+              <div style="font-size: 10px; color: var(--thaaw-text-muted); overflow: hidden; text-overflow: ellipsis;">${f.url}</div>
+            </div>
+            <button type="button" class="btn-delete-feed" style="background: transparent; border: none; color: var(--thaaw-text-muted); font-size: 14px; cursor: pointer; padding: 2px 6px;" title="Remove feed">&times;</button>
+          `;
+          item.querySelector('.btn-delete-feed').addEventListener('click', async () => {
+            if (window.thaawAPI && window.thaawAPI.deleteCustomRssFeed) {
+              await window.thaawAPI.deleteCustomRssFeed(f.id);
+            }
+            item.remove();
+            this.fetchNews(true);
+          });
+          container.appendChild(item);
+        });
+      },
+
+      async renderFollowedChannels() {
+        const chipsContainer = document.getElementById('followedChannelsChips');
+        if (!chipsContainer) return;
+        chipsContainer.innerHTML = '';
+
+        const standardChannels = ['Technology', 'Security', 'AI', 'Open Source', 'Programming', 'Science', 'World'];
+        let followState = { followedChannels: [] };
+        try {
+          if (window.thaawAPI && window.thaawAPI.getNewsFollowState) {
+            followState = await window.thaawAPI.getNewsFollowState();
+          }
+        } catch (_e) {}
+
+        standardChannels.forEach(ch => {
+          const isFollowed = (followState.followedChannels || []).includes(ch.toLowerCase());
+          const chip = document.createElement('button');
+          chip.type = 'button';
+          chip.style.cssText = `display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 12px; font-size: 11px; cursor: pointer; border: 1px solid ${isFollowed ? 'var(--thaaw-cyan)' : 'var(--thaaw-border)'}; background: ${isFollowed ? 'var(--thaaw-cyan-subtle)' : 'transparent'}; color: ${isFollowed ? 'var(--thaaw-cyan)' : 'var(--thaaw-text-muted)'};`;
+          chip.innerHTML = `<span>${ch}</span> ${isFollowed ? '&#10003;' : '+'}`;
+          chip.addEventListener('click', async () => {
+            if (window.thaawAPI && window.thaawAPI.toggleFollowChannel) {
+              await window.thaawAPI.toggleFollowChannel(ch);
+              await this.renderFollowedChannels();
+              this.fetchNews(true);
+            }
+          });
+          chipsContainer.appendChild(chip);
+        });
+      },
+
+      async fetchNews(reset = true) {
+        if (reset) {
+          this.page = 1;
+          this.articles = [];
+          this.hasMore = true;
+          const grid = document.getElementById('newsCardsGrid');
+          if (grid && !this.articles.length) {
+            grid.innerHTML = '<div class="news-empty-state"><span data-icon="refresh-cw" data-icon-size="20"></span><p>Fetching real headlines & stories...</p></div>';
+            if (window.getSvgIcon) {
+              grid.querySelectorAll('[data-icon]').forEach(el => el.innerHTML = window.getSvgIcon('refresh-cw', 20));
+            }
+          }
+        }
+
+        this.isLoading = true;
+        try {
+          let incoming = [];
+          if (window.thaawAPI && window.thaawAPI.getNews) {
+            const res = await window.thaawAPI.getNews(this.category, this.page, this.currentView);
+            incoming = res && res.articles ? res.articles : [];
+            this.hasMore = res ? !!res.hasMore : false;
+          } else {
+            // Standalone fallback
+            incoming = [
+              { id: '1', title: 'Hardened Browsers: Memory Safety Standards in 2026', source: 'Wired Security', category: 'SECURITY', platform: 'security', timestamp: '18m ago', url: 'https://wired.com', snippet: 'Zero-trust architecture and sandboxed origin models lead modern desktop security.', imageUrl: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&auto=format&fit=crop&q=80', isCluster: true, relatedSources: ['Ars Technica', 'The Hacker News'] },
+              { id: '2', title: 'Open Source Community Adopts Unified Privacy Manifest for Native Web Apps', source: 'r/programming', category: 'REDDIT', platform: 'reddit', timestamp: '42m ago', url: 'https://reddit.com/r/programming', snippet: 'Developers celebrate transparent tracker-free specifications across frameworks.', imageUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=80' },
+              { id: '3', title: 'Decentralized Video & Audio Streaming Standards Reach Final Candidate Release', source: 'YouTube Tech', category: 'YOUTUBE', platform: 'youtube', timestamp: '1h ago', url: 'https://youtube.com', snippet: 'Next-generation codecs and zero-latency peer streaming protocols benchmarked.', imageUrl: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&auto=format&fit=crop&q=80' },
+              { id: '4', title: 'Autonomous Multi-Agent AI Frameworks Standardized for Distributed Work', source: 'Ars Technica', category: 'AI', platform: 'article', timestamp: '2h ago', url: 'https://arstechnica.com', snippet: 'Engineers highlight deterministic tool invocation and local security sandboxing.', imageUrl: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&auto=format&fit=crop&q=80', isCluster: true, relatedSources: ['TechCrunch', 'The Verge'] }
+            ];
+            this.hasMore = false;
+          }
+
+          // Filter out hidden topics or publishers
+          if (this.followState) {
+            const hiddenPubs = (this.followState.hiddenPublishers || []).map(s => s.toLowerCase());
+            const hiddenTops = (this.followState.hiddenTopics || []).map(t => t.toLowerCase());
+            incoming = incoming.filter(a => {
+              if (a.source && hiddenPubs.includes(a.source.toLowerCase())) return false;
+              if (a.category && hiddenTops.includes(a.category.toLowerCase())) return false;
+              return true;
+            });
+          }
+
+          if (reset) {
+            this.articles = incoming;
+            if (this.articles.length === 0) {
+              this.renderEmptyState();
+            } else {
+              // Cache for instant startup
+              try {
+                localStorage.setItem('thaaw_news_cache_' + this.currentView, JSON.stringify(incoming.slice(0, 10)));
+              } catch (_e) {}
+              this.carouselIndex = 0;
+              this.renderCarousel();
+              this.renderCardsGrid(true);
+              this.startAutoSlide();
+            }
+          } else {
+            this.articles.push(...incoming);
+            this.appendCards(incoming);
+          }
+
+          const loadMoreBtn = document.getElementById('loadMoreNewsBtn');
+          if (loadMoreBtn) {
+            loadMoreBtn.style.display = this.hasMore ? 'inline-flex' : 'none';
+          }
+        } catch (_err) {
+          if (reset && !this.articles.length) {
+            this.renderEmptyState('News unavailable right now. Check connection.');
+          }
+        } finally {
+          this.isLoading = false;
+        }
+      },
+
+      async loadMore() {
+        if (this.isLoading || !this.hasMore) return;
+        this.page++;
+        await this.fetchNews(false);
+      },
+
+      renderCarousel() {
+        if (!this.articles.length) return;
+        const art = this.articles[this.carouselIndex % this.articles.length];
+        
+        const catEl = document.getElementById('carouselCategory');
+        if (catEl) {
+          const catName = art.platform ? art.platform.toUpperCase() : (art.category || 'TECH');
+          catEl.textContent = catName;
+          catEl.className = `news-category-badge cat-${(art.platform || art.category || 'tech').toLowerCase().replace(/\s+/g, '-')}`;
+        }
+        
+        const timeEl = document.getElementById('carouselTimestamp');
+        if (timeEl) timeEl.textContent = art.timestamp || 'Recent';
+
+        const titleEl = document.getElementById('carouselTitle');
+        if (titleEl) {
+          titleEl.textContent = art.title;
+          titleEl.href = art.url;
+        }
+
+        const srcEl = document.getElementById('carouselSource');
+        if (srcEl) srcEl.textContent = art.source || 'News';
+
+        // Featured background image
+        const slideViewport = document.getElementById('carouselSlide');
+        if (slideViewport && art.imageUrl) {
+          slideViewport.style.backgroundImage = `linear-gradient(180deg, rgba(7, 17, 31, 0.4) 0%, rgba(7, 17, 31, 0.85) 100%), url("${art.imageUrl}")`;
+          slideViewport.style.backgroundSize = 'cover';
+          slideViewport.style.backgroundPosition = 'center';
+        }
+
+        // Dots
+        const dotsBox = document.getElementById('carouselDots');
+        if (dotsBox) {
+          dotsBox.innerHTML = '';
+          const count = Math.min(this.articles.length, 5);
+          for (let i = 0; i < count; i++) {
+            const dot = document.createElement('div');
+            dot.className = `carousel-dot ${i === (this.carouselIndex % count) ? 'active' : ''}`;
+            dot.addEventListener('click', () => {
+              this.carouselIndex = i;
+              this.renderCarousel();
+            });
+            dotsBox.appendChild(dot);
+          }
+        }
+      },
+
+      renderCardsGrid(initial = true) {
+        const grid = document.getElementById('newsCardsGrid');
+        if (!grid) return;
+        grid.innerHTML = '';
+        const secondary = this.articles.slice(1);
+        if (secondary.length === 0) return;
+        this.appendCards(secondary);
+      },
+
+      appendCards(newBatch) {
+        const grid = document.getElementById('newsCardsGrid');
+        if (!grid) return;
+
+        newBatch.forEach((art) => {
+          const card = document.createElement('a');
+          card.className = 'news-card';
+          card.href = art.url;
+          card.target = '_blank';
+          card.rel = 'noreferrer';
+
+          const platformTag = (art.platform || 'web').toUpperCase();
+          const imgSnippet = art.imageUrl 
+            ? `<div class="news-card-img-wrap"><img class="news-card-img" src="${art.imageUrl}" alt="" loading="lazy" /><span class="news-platform-pill ${art.platform || 'web'}">${platformTag}</span></div>`
+            : '';
+
+          // Story cluster rendering (Req 55-56)
+          let clusterHtml = '';
+          if (art.isCluster || (Array.isArray(art.relatedSources) && art.relatedSources.length > 0)) {
+            const sources = art.relatedSources || ['Associated Press', 'Reuters'];
+            clusterHtml = `
+              <div class="story-cluster-sources">
+                <span style="font-size: 10px; color: var(--thaaw-text-muted); align-self: center;">Also reported by:</span>
+                ${sources.map(s => `<span class="story-cluster-pill">${typeof s === 'string' ? s : s.name}</span>`).join('')}
+              </div>
+            `;
+          }
+
+          card.innerHTML = `
+            ${imgSnippet}
+            <div class="news-content">
+              <div class="news-meta-row">
+                <span class="news-category-badge cat-${(art.platform || art.category || 'tech').toLowerCase().replace(/\s+/g, '-')}">${art.category || platformTag}</span>
+                <span class="news-timestamp">${art.timestamp || 'Recent'}</span>
+              </div>
+              <h4 class="news-title">${art.title}</h4>
+              ${art.snippet ? `<p class="news-snippet" style="font-size: 11px; color: var(--thaaw-text-muted); margin: 4px 0 6px; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${art.snippet}</p>` : ''}
+              <div class="news-source" style="font-size: 11px; color: var(--thaaw-cyan);">${art.source || 'Source'}</div>
+              ${clusterHtml}
+            </div>
+          `;
+
+          card.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            ContextMenu.openForNews(e.clientX, e.clientY, art);
+          });
+
+          grid.appendChild(card);
+        });
+      },
+
+      renderEmptyState(msg = 'News unavailable right now.') {
+        const grid = document.getElementById('newsCardsGrid');
+        if (!grid) return;
+        grid.innerHTML = `
+          <div class="news-empty-state">
+            <span data-icon="wifi-off" data-icon-size="28" style="color: var(--thaaw-cyan);"></span>
+            <h4>${msg}</h4>
+            <p>Could not fetch external news feeds.</p>
+            <button type="button" class="btn btn-primary btn-sm" onclick="NewsState.fetchNews(true)" style="margin-top: 8px;">Retry</button>
+          </div>
+        `;
+        if (window.getSvgIcon) {
+          grid.querySelectorAll('[data-icon]').forEach(el => el.innerHTML = window.getSvgIcon('wifi-off', 28));
+        }
+      },
+
+      startAutoSlide() {
+        clearInterval(this.carouselTimer);
+        this.carouselTimer = setInterval(() => {
+          if (!this.isPaused && this.articles.length > 1) {
+            this.carouselIndex = (this.carouselIndex + 1) % this.articles.length;
+            this.renderCarousel();
+          }
+        }, 6000);
+      },
+
+      setupCarouselEvents() {
+        const carousel = document.getElementById('newsCarousel');
+        carousel?.addEventListener('mouseenter', () => { this.isPaused = true; });
+        carousel?.addEventListener('mouseleave', () => { this.isPaused = false; });
+        carousel?.addEventListener('focusin', () => { this.isPaused = true; });
+        carousel?.addEventListener('focusout', () => { this.isPaused = false; });
+
+        document.getElementById('carouselPrevBtn')?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.carouselIndex = (this.carouselIndex - 1 + this.articles.length) % this.articles.length;
+          this.renderCarousel();
+        });
+
+        document.getElementById('carouselNextBtn')?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.carouselIndex = (this.carouselIndex + 1) % this.articles.length;
+          this.renderCarousel();
+        });
+      }
+    };
+
+    // 5. WEATHER & CLOCK STATE
+    const WeatherState = {
+      init() {
+        this.updateClock();
+        setInterval(() => this.updateClock(), 1000);
+        this.updateWeatherIcon();
+
+        // Dynamic security data from main process
+        if (window.thaawAPI && window.thaawAPI.getSecurityStatus) {
+          window.thaawAPI.getSecurityStatus().then(status => {
+            if (status) {
+              const blocked = status.trackersBlockedCount || 0;
+              document.getElementById('shieldTrackersCount').textContent = `${blocked} Trackers Blocked`;
+            }
+          });
+        }
+      },
+
+      updateWeatherIcon() {
+        const slot = document.getElementById('weatherIconSlot');
+        if (!slot) return;
+        const isDark = (document.documentElement.getAttribute('data-theme') || 'dark') === 'dark';
+        const iconName = isDark ? 'moon' : 'sun';
+        slot.setAttribute('data-icon', iconName);
+        if (window.getSvgIcon) {
+          slot.innerHTML = window.getSvgIcon(iconName, 20);
+        }
+      },
+
+      updateClock() {
+        const now = new Date();
+        const is24h = UserPreferences.data.showClock24h !== false;
+        
+        let hours = now.getHours();
+        const ampm = !is24h ? (hours >= 12 ? ' PM' : ' AM') : '';
+        if (!is24h) {
+          hours = hours % 12 || 12;
+        }
+
+        const hrsStr = String(hours).padStart(2, '0');
+        const minStr = String(now.getMinutes()).padStart(2, '0');
+        
+        const clockEl = document.getElementById('liveClock');
+        if (clockEl) clockEl.textContent = `${hrsStr}:${minStr}${ampm}`;
+
+        const dateEl = document.getElementById('liveDate');
+        if (dateEl) {
+          const options = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
+          dateEl.textContent = now.toLocaleDateString(undefined, options);
+        }
+      }
+    };
+
+    // 6. HOMEPAGE COORDINATOR
+    const HomePageState = {
+      activeEngine: 'duckduckgo',
+      customSearchUrl: '',
+
+      async init() {
+        ThemeEngine.init();
+        UserPreferences.init();
+        ShortcutState.init();
+        await this.loadSearchEngine();
+        this.setupNavigationRail();
+        this.setupSearchInput();
+        this.setupTopControls();
+        this.renderProfiles();
+
+        // Progressive deferred startup: Chrome & shortcuts paint instantly (Req 14-20)
+        setTimeout(() => {
+          NewsState.init();
+          WeatherState.init();
+        }, 80);
+      },
+
+      normalizeUrl(input) {
+        let trimmed = input.trim();
+        if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://') && !trimmed.startsWith('thaaw://') && !trimmed.startsWith('file://')) {
+          trimmed = 'https://' + trimmed;
+        }
+        return trimmed;
+      },
+
+      isUrl(input) {
+        const q = input.trim();
+        if (q.startsWith('http://') || q.startsWith('https://') || q.startsWith('thaaw://') || q.startsWith('file://')) return true;
+        if (q.includes('.') && !q.includes(' ') && q.indexOf('.') < q.length - 1) return true;
+        if (q.startsWith('localhost:') || q === 'localhost') return true;
+        return false;
+      },
+
+      navigate(target) {
+        if (window.thaawAPI && window.thaawAPI.navigate) {
+          window.thaawAPI.navigate(target);
+        } else {
+          window.location.href = target;
+        }
+      },
+
+      openInNewTab(target) {
+        if (window.thaawAPI && window.thaawAPI.createTab) {
+          window.thaawAPI.createTab(target);
+        } else {
+          window.open(target, '_blank');
+        }
+      },
+
+      async loadSearchEngine() {
+        try {
+          if (window.thaawAPI?.getSettings) {
+            const settings = await window.thaawAPI.getSettings();
+            if (settings) {
+              if (settings.defaultSearchEngine) this.activeEngine = settings.defaultSearchEngine;
+              if (settings.customSearchUrl) this.customSearchUrl = settings.customSearchUrl;
+            }
+          }
+        } catch {}
+
+        window.thaawAPI?.onEngineUpdated?.((data) => {
+          if (data?.engine) this.activeEngine = data.engine;
+          if (data?.customUrl) this.customSearchUrl = data.customUrl;
+        });
+      },
+
+      setupNavigationRail() {
+        document.querySelectorAll('.newtab-sidebar-rail a.rail-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const href = btn.getAttribute('href');
+            if (href) HomePageState.navigate(href);
+          });
+        });
+      },
+
+      setupSearchInput() {
+        const input = document.getElementById('searchInput');
+        const feedback = document.getElementById('searchFeedbackText');
+        const historyDropdown = document.getElementById('searchHistoryDropdown');
+        const historyList = document.getElementById('searchHistoryList');
+        const clearBtn = document.getElementById('clearSearchHistoryBtn');
+        let selectedIndex = -1;
+
+        const renderHistoryDropdown = async () => {
+          if (!historyDropdown || !historyList) return;
+          let searches = [];
+          try {
+            if (window.thaawAPI && window.thaawAPI.getRecentSearches) {
+              searches = await window.thaawAPI.getRecentSearches(8);
+            }
+          } catch (_e) {}
+
+          if (!Array.isArray(searches) || searches.length === 0) {
+            try {
+              const local = localStorage.getItem('thaaw_recent_searches');
+              if (local) searches = JSON.parse(local);
+            } catch (_e) {}
+          }
+
+          if (!Array.isArray(searches) || searches.length === 0) {
+            historyDropdown.classList.add('hidden');
+            return;
+          }
+
+          historyList.innerHTML = '';
+          selectedIndex = -1;
+          searches.forEach((item, idx) => {
+            const q = typeof item === 'string' ? item : item.query;
+            if (!q) return;
+            const row = document.createElement('div');
+            row.className = 'search-history-item';
+            row.setAttribute('role', 'option');
+            row.dataset.query = q;
+            row.dataset.index = String(idx);
+            row.innerHTML = `
+              <div class="search-history-item-left">
+                <span data-icon="clock" data-icon-size="14" style="color: var(--thaaw-text-muted);"></span>
+                <span class="search-history-item-text">${q}</span>
+              </div>
+              <button type="button" class="search-history-delete-btn" title="Remove" aria-label="Remove search">&times;</button>
+            `;
+            row.addEventListener('click', (e) => {
+              if (e.target.closest('.search-history-delete-btn')) return;
+              input.value = q;
+              historyDropdown.classList.add('hidden');
+              this.handleSearchSubmit();
+            });
+            row.querySelector('.search-history-delete-btn')?.addEventListener('click', async (e) => {
+              e.stopPropagation();
+              try {
+                if (window.thaawAPI && window.thaawAPI.deleteSearchQuery) {
+                  await window.thaawAPI.deleteSearchQuery(q);
+                }
+              } catch (_e) {}
+              try {
+                const local = localStorage.getItem('thaaw_recent_searches');
+                if (local) {
+                  const arr = JSON.parse(local).filter(x => (typeof x === 'string' ? x : x.query) !== q);
+                  localStorage.setItem('thaaw_recent_searches', JSON.stringify(arr));
+                }
+              } catch (_e) {}
+              row.remove();
+              if (historyList.children.length === 0) {
+                historyDropdown.classList.add('hidden');
+              }
+            });
+            historyList.appendChild(row);
+          });
+
+          if (window.getSvgIcon) {
+            historyList.querySelectorAll('[data-icon]').forEach(el => {
+              el.innerHTML = window.getSvgIcon(el.getAttribute('data-icon'), 14);
+            });
+          }
+          historyDropdown.classList.remove('hidden');
+        };
+
+        input?.addEventListener('focus', () => {
+          if (!input.value.trim()) {
+            renderHistoryDropdown();
+          }
+        });
+
+        input?.addEventListener('click', () => {
+          if (!input.value.trim()) {
+            renderHistoryDropdown();
+          }
+        });
+
+        input?.addEventListener('input', () => {
+          const val = input.value.trim();
+          if (!val) {
+            feedback.textContent = 'Ready';
+            renderHistoryDropdown();
+          } else {
+            historyDropdown?.classList.add('hidden');
+            if (this.isUrl(val)) {
+              feedback.textContent = 'Direct URL Navigation';
+            } else {
+              feedback.textContent = `Search via ${this.activeEngine.toUpperCase()}`;
+            }
+          }
+        });
+
+        input?.addEventListener('keydown', (e) => {
+          if (!historyDropdown || historyDropdown.classList.contains('hidden')) return;
+          const items = historyList.querySelectorAll('.search-history-item');
+          if (!items.length) return;
+
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            selectedIndex = (selectedIndex + 1) % items.length;
+            items.forEach((it, idx) => it.classList.toggle('selected', idx === selectedIndex));
+            if (items[selectedIndex]) {
+              input.value = items[selectedIndex].dataset.query;
+            }
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+            items.forEach((it, idx) => it.classList.toggle('selected', idx === selectedIndex));
+            if (items[selectedIndex]) {
+              input.value = items[selectedIndex].dataset.query;
+            }
+          } else if (e.key === 'Escape') {
+            historyDropdown.classList.add('hidden');
+          }
+        });
+
+        clearBtn?.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          try {
+            if (window.thaawAPI && window.thaawAPI.clearSearchHistory) {
+              await window.thaawAPI.clearSearchHistory();
+            }
+          } catch (_e) {}
+          localStorage.removeItem('thaaw_recent_searches');
+          if (historyList) historyList.innerHTML = '';
+          historyDropdown?.classList.add('hidden');
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('.newtab-search-container')) {
+            historyDropdown?.classList.add('hidden');
+          }
+        });
+      },
+
+      handleSearchSubmit() {
+        const input = document.getElementById('searchInput');
+        const q = input.value.trim();
+        if (!q) return;
+
+        // Persist search query locally (Req 21-23)
+        try {
+          if (window.thaawAPI && window.thaawAPI.addSearchQuery) {
+            window.thaawAPI.addSearchQuery(q, this.activeEngine);
+          }
+          const local = localStorage.getItem('thaaw_recent_searches');
+          const arr = local ? JSON.parse(local) : [];
+          const filtered = arr.filter(x => (typeof x === 'string' ? x : x.query) !== q);
+          filtered.unshift({ query: q, timestamp: Date.now() });
+          localStorage.setItem('thaaw_recent_searches', JSON.stringify(filtered.slice(0, 15)));
+        } catch (_e) {}
+
+        if (this.isUrl(q)) {
+          this.navigate(this.normalizeUrl(q));
+          return;
+        }
+
+        const encoded = encodeURIComponent(q);
+        let searchUrl = '';
+
+        if (this.activeEngine === 'google') {
+          searchUrl = `https://www.google.com/search?q=${encoded}`;
+        } else if (this.activeEngine === 'bing') {
+          searchUrl = `https://www.bing.com/search?q=${encoded}`;
+        } else if (this.activeEngine === 'brave') {
+          searchUrl = `https://search.brave.com/search?q=${encoded}`;
+        } else if (this.activeEngine === 'custom' && this.customSearchUrl) {
+          searchUrl = this.customSearchUrl.replace('%s', encoded);
+        } else {
+          searchUrl = `https://duckduckgo.com/?q=${encoded}`;
+        }
+
+        this.navigate(searchUrl);
+      },
+
+      async renderProfiles() {
+        const listContainer = document.getElementById('profileListContainer');
+        const nameEl = document.getElementById('profileCurrentName');
+        const avatarEl = document.getElementById('profileAvatarIndicator');
+        if (!listContainer) return;
+
+        try {
+          if (window.thaawAPI && window.thaawAPI.listProfiles && window.thaawAPI.getActiveProfile) {
+            const active = await window.thaawAPI.getActiveProfile();
+            const profiles = await window.thaawAPI.listProfiles();
+            if (active) {
+              if (nameEl) nameEl.textContent = active.name;
+              if (avatarEl) avatarEl.textContent = active.name.charAt(0).toUpperCase();
+            }
+            listContainer.innerHTML = '';
+            profiles.forEach((p) => {
+              const isCurrent = active && active.id === p.id;
+              const item = document.createElement('div');
+              item.className = 'profile-menu-item';
+              item.style.display = 'flex';
+              item.style.alignItems = 'center';
+              item.style.justifyContent = 'space-between';
+              item.style.cursor = 'pointer';
+              item.style.padding = '8px 12px';
+              item.style.borderRadius = 'var(--thaaw-radius-sm)';
+              item.style.transition = 'background 0.15s ease';
+              item.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="width: 24px; height: 24px; font-size: 11px; display: inline-flex; align-items: center; justify-content: center; background: var(--thaaw-cyan); color: #000; border-radius: 50%; font-weight: 700;">${p.name.charAt(0).toUpperCase()}</span>
+                  <span style="font-size: 13px; color: var(--thaaw-text); font-weight: 500;">${p.name}</span>
+                </div>
+                ${isCurrent ? '<span class="badge-tag" style="font-size: 9px; padding: 2px 6px;">ACTIVE</span>' : ''}
+              `;
+              item.addEventListener('mouseenter', () => {
+                item.style.background = 'var(--thaaw-surface-hover)';
+              });
+              item.addEventListener('mouseleave', () => {
+                item.style.background = 'transparent';
+              });
+              item.addEventListener('click', async (evt) => {
+                evt.stopPropagation();
+                await window.thaawAPI.setActiveProfile(p.id);
+                document.getElementById('profileDropdown')?.classList.add('hidden');
+                await this.renderProfiles();
+              });
+              listContainer.appendChild(item);
+            });
+          } else {
+            listContainer.innerHTML = '<div style="padding: 8px 12px; font-size: 12px; color: var(--thaaw-text-muted);">Personal Profile (Active)</div>';
+          }
+        } catch (_e) {
+          listContainer.innerHTML = '<div style="padding: 8px 12px; font-size: 12px; color: var(--thaaw-text-muted);">Personal Profile (Active)</div>';
+        }
+      },
+
+      setupTopControls() {
+        // Quick Theme Toggle Button
+        document.getElementById('themeToggleBtn')?.addEventListener('click', () => {
+          ThemeEngine.toggleQuick();
+        });
+
+        // Zen Minimal Mode Button
+        document.getElementById('zenModeToggleBtn')?.addEventListener('click', () => {
+          UserPreferences.toggleZenMode();
+        });
+
+        // Customize Drawer
+        const customizeBtn = document.getElementById('customizeBtn');
+        const drawerBackdrop = document.getElementById('customizeDrawerBackdrop');
+        const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+
+        const openDrawer = () => {
+          drawerBackdrop.classList.add('open');
+          customizeBtn.setAttribute('aria-expanded', 'true');
+        };
+
+        const closeDrawer = () => {
+          drawerBackdrop.classList.remove('open');
+          customizeBtn.setAttribute('aria-expanded', 'false');
+        };
+
+        customizeBtn?.addEventListener('click', openDrawer);
+        document.getElementById('railAppsBtn')?.addEventListener('click', openDrawer);
+        closeDrawerBtn?.addEventListener('click', closeDrawer);
+        drawerBackdrop?.addEventListener('click', (e) => {
+          if (e.target === drawerBackdrop) closeDrawer();
+        });
+
+        // Drawer Nav Tabs (Themes / Wallpapers / Studio)
+        document.querySelectorAll('.drawer-nav-tab').forEach(tab => {
+          tab.addEventListener('click', () => {
+            document.querySelectorAll('.drawer-nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.drawer-tab-pane').forEach(p => p.classList.remove('active'));
+            tab.classList.add('active');
+            const target = tab.getAttribute('data-tab');
+            if (target === 'themes') document.getElementById('tabThemesPane')?.classList.add('active');
+            else if (target === 'wallpapers') document.getElementById('tabWallpapersPane')?.classList.add('active');
+            else if (target === 'studio') document.getElementById('tabStudioPane')?.classList.add('active');
+          });
+        });
+
+        // Scroll down to News button
+        document.getElementById('scrollForNewsBtn')?.addEventListener('click', () => {
+          document.getElementById('newsSection')?.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Profile Menu
+        const profileBtn = document.getElementById('profileBtn');
+        const profileDropdown = document.getElementById('profileDropdown');
+        profileBtn?.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          if (profileDropdown) {
+            const isHidden = profileDropdown.classList.contains('hidden');
+            if (isHidden) {
+              await this.renderProfiles();
+              profileDropdown.classList.remove('hidden');
+              profileBtn.setAttribute('aria-expanded', 'true');
+            } else {
+              profileDropdown.classList.add('hidden');
+              profileBtn.setAttribute('aria-expanded', 'false');
+            }
+          }
+        });
+
+        document.getElementById('mainProfileSettingsBtn')?.addEventListener('click', () => {
+          this.navigate('thaaw://settings');
+          profileDropdown?.classList.add('hidden');
+        });
+
+        document.addEventListener('click', () => {
+          profileDropdown?.classList.add('hidden');
+          profileBtn?.setAttribute('aria-expanded', 'false');
+        });
+
+        // Initial profile render
+        this.renderProfiles();
+      }
+    };
+
+    // 7. MODAL MANAGER (Add / Edit Shortcuts with FaviconResolver Live Preview)
+    const ModalManager = {
+      modal: null,
+
+      init() {
+        this.modal = document.getElementById('shortcutModal');
+        document.getElementById('modalCancelBtn')?.addEventListener('click', () => this.close());
+        document.getElementById('modalSaveBtn')?.addEventListener('click', () => this.save());
+        this.modal?.addEventListener('click', (e) => {
+          if (e.target === this.modal) this.close();
+        });
+
+        // Live preview of favicon as user types URL
+        const urlInput = document.getElementById('modalShortcutUrl');
+        const titleInput = document.getElementById('modalShortcutTitle');
+        urlInput?.addEventListener('input', () => {
+          const url = urlInput.value.trim();
+          const title = titleInput.value.trim();
+          const box = document.getElementById('modalFaviconBox');
+          const domainSpan = document.getElementById('modalFaviconDomain');
+          if (box && window.FaviconResolver) {
+            box.innerHTML = '';
+            if (url) {
+              box.appendChild(window.FaviconResolver.renderFaviconElement(url, title, 22));
+              domainSpan.textContent = window.FaviconResolver.extractDomain(url) || 'Resolving logo...';
+            } else {
+              domainSpan.textContent = 'Enter URL to automatically resolve logo';
+            }
+          }
+        });
+      },
+
+      openShortcutModal(index = -1) {
+        document.getElementById('modalShortcutIndex').value = String(index);
+        const titleInput = document.getElementById('modalShortcutTitle');
+        const urlInput = document.getElementById('modalShortcutUrl');
+        const modalTitle = document.getElementById('shortcutModalTitle');
+        const box = document.getElementById('modalFaviconBox');
+
+        if (index >= 0 && ShortcutState.shortcuts[index]) {
+          const sc = ShortcutState.shortcuts[index];
+          modalTitle.textContent = 'Edit Shortcut';
+          titleInput.value = sc.title;
+          urlInput.value = sc.url;
+          if (box && window.FaviconResolver) {
+            box.innerHTML = '';
+            box.appendChild(window.FaviconResolver.renderFaviconElement(sc.url, sc.title, 22));
+          }
+        } else {
+          modalTitle.textContent = 'Add Shortcut';
+          titleInput.value = '';
+          urlInput.value = '';
+          if (box) box.innerHTML = '';
+        }
+
+        this.modal.classList.remove('hidden');
+        titleInput.focus();
+      },
+
+      close() {
+        this.modal.classList.add('hidden');
+      },
+
+      save() {
+        const index = parseInt(document.getElementById('modalShortcutIndex').value, 10);
+        const title = document.getElementById('modalShortcutTitle').value.trim();
+        const url = document.getElementById('modalShortcutUrl').value.trim();
+
+        if (!title || !url) return;
+
+        if (index >= 0) {
+          ShortcutState.updateShortcut(index, title, url);
+        } else {
+          ShortcutState.addShortcut(title, url);
+        }
+        this.close();
+      }
+    };
+
+    // 8. CONTEXT MENU CONTROLLER
+    const ContextMenu = {
+      menu: null,
+
+      init() {
+        this.menu = document.getElementById('contextMenu');
+        document.addEventListener('click', () => this.close());
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') this.close();
+        });
+      },
+
+      close() {
+        this.menu?.classList.add('hidden');
+      },
+
+      openForShortcut(x, y, index) {
+        const sc = ShortcutState.shortcuts[index];
+        if (!sc) return;
+
+        this.menu.innerHTML = `
+          <button type="button" class="context-menu-item" data-action="open">
+            <span data-icon="external-link" data-icon-size="14"></span>
+            <span>Open</span>
+          </button>
+          <button type="button" class="context-menu-item" data-action="new-tab">
+            <span data-icon="plus" data-icon-size="14"></span>
+            <span>Open in New Tab</span>
+          </button>
+          <button type="button" class="context-menu-item" data-action="edit">
+            <span data-icon="edit" data-icon-size="14"></span>
+            <span>Edit Shortcut</span>
+          </button>
+          <button type="button" class="context-menu-item danger" data-action="remove">
+            <span data-icon="trash" data-icon-size="14"></span>
+            <span>Remove</span>
+          </button>
+        `;
+
+        this.menu.querySelector('[data-action="open"]').addEventListener('click', () => HomePageState.navigate(sc.url));
+        this.menu.querySelector('[data-action="new-tab"]').addEventListener('click', () => HomePageState.openInNewTab(sc.url));
+        this.menu.querySelector('[data-action="edit"]').addEventListener('click', () => ModalManager.openShortcutModal(index));
+        this.menu.querySelector('[data-action="remove"]').addEventListener('click', () => ShortcutState.deleteShortcut(index));
+
+        this.show(x, y);
+      },
+
+      openForNews(x, y, art) {
+        const url = typeof art === 'string' ? art : (art?.url || '#');
+        const source = typeof art === 'object' ? art?.source : null;
+        const category = typeof art === 'object' ? art?.category : null;
+
+        this.menu.innerHTML = `
+          <button type="button" class="context-menu-item" data-action="open">
+            <span data-icon="external-link" data-icon-size="14"></span>
+            <span>Open Article</span>
+          </button>
+          <button type="button" class="context-menu-item" data-action="new-tab">
+            <span data-icon="plus" data-icon-size="14"></span>
+            <span>Open in New Tab</span>
+          </button>
+          ${source ? `
+          <button type="button" class="context-menu-item" data-action="follow-source">
+            <span data-icon="heart" data-icon-size="14"></span>
+            <span>Follow ${source}</span>
+          </button>
+          <button type="button" class="context-menu-item" data-action="hide-source">
+            <span data-icon="eye-off" data-icon-size="14"></span>
+            <span>Hide ${source}</span>
+          </button>
+          ` : ''}
+          ${category ? `
+          <button type="button" class="context-menu-item" data-action="hide-topic">
+            <span data-icon="slash" data-icon-size="14"></span>
+            <span>Hide Topic: ${category}</span>
+          </button>
+          ` : ''}
+        `;
+
+        this.menu.querySelector('[data-action="open"]')?.addEventListener('click', () => HomePageState.navigate(url));
+        this.menu.querySelector('[data-action="new-tab"]')?.addEventListener('click', () => HomePageState.openInNewTab(url));
+        
+        if (source) {
+          this.menu.querySelector('[data-action="follow-source"]')?.addEventListener('click', async () => {
+            if (window.thaawAPI && window.thaawAPI.toggleFollowPublisher) {
+              await window.thaawAPI.toggleFollowPublisher(source);
+              showToast(`Updated follow status for ${source}`);
+            }
+          });
+          this.menu.querySelector('[data-action="hide-source"]')?.addEventListener('click', async () => {
+            if (window.thaawAPI && window.thaawAPI.hideNewsPublisher) {
+              await window.thaawAPI.hideNewsPublisher(source);
+              showToast(`Hidden stories from ${source}`);
+              NewsState.fetchNews(true);
+            }
+          });
+        }
+
+        if (category) {
+          this.menu.querySelector('[data-action="hide-topic"]')?.addEventListener('click', async () => {
+            if (window.thaawAPI && window.thaawAPI.hideNewsTopic) {
+              await window.thaawAPI.hideNewsTopic(category);
+              showToast(`Hidden topic: ${category}`);
+              NewsState.fetchNews(true);
+            }
+          });
+        }
+
+        this.show(x, y);
+      },
+
+      show(x, y) {
+        const menuWidth = 170;
+        const menuHeight = 150;
+        const posX = Math.min(x, window.innerWidth - menuWidth - 10);
+        const posY = Math.min(y, window.innerHeight - menuHeight - 10);
+
+        this.menu.style.left = `${posX}px`;
+        this.menu.style.top = `${posY}px`;
+        this.menu.classList.remove('hidden');
+
+        if (window.getSvgIcon) {
+          this.menu.querySelectorAll('[data-icon]').forEach(el => {
+            el.innerHTML = window.getSvgIcon(el.getAttribute('data-icon'), 14);
+          });
+        }
+      }
+    };
+
+    // DOM Ready Bootstrap
+    document.addEventListener('DOMContentLoaded', () => {
+      ModalManager.init();
+      ContextMenu.init();
+      HomePageState.init();
+      window.HomePageState = HomePageState;
+
+      // Listen for modal/popover open states from browser chrome to tuck away overlapping elements
+      if (window.thaawAPI && window.thaawAPI.onModalStateChanged) {
+        window.thaawAPI.onModalStateChanged((data) => {
+          document.body.classList.toggle('modal-active', !!data?.isOpen);
+        });
+      }
+    });
+  </script>
+</body>
+</html>

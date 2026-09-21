@@ -1,0 +1,1633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About THAAW — Technical Architecture, Specifications & Manifesto</title>
+  <link rel="stylesheet" href="internal.css">
+  <script src="icons.js"></script>
+  <style>
+    /* Specific styles for about.html */
+    .about-layout {
+      display: flex;
+      gap: 32px;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* Sticky Sidebar Navigation */
+    .about-nav {
+      width: 260px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 32px;
+      height: fit-content;
+      max-height: calc(100vh - 64px);
+      overflow-y: auto;
+      background: var(--thaaw-glass-bg);
+      backdrop-filter: blur(var(--thaaw-glass-blur));
+      -webkit-backdrop-filter: blur(var(--thaaw-glass-blur));
+      border: 1px solid var(--thaaw-glass-border);
+      border-radius: var(--thaaw-radius-lg);
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .about-nav-heading {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--thaaw-text-muted);
+      padding: 8px 12px 4px;
+      margin-top: 8px;
+    }
+
+    .about-nav-heading:first-child {
+      margin-top: 0;
+    }
+
+    .about-nav-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 12px;
+      font-size: 12.5px;
+      color: var(--thaaw-text-secondary);
+      text-decoration: none;
+      border-radius: var(--thaaw-radius-sm);
+      transition: all 0.15s ease;
+    }
+
+    .about-nav-link:hover,
+    .about-nav-link.active {
+      color: var(--thaaw-text);
+      background: var(--thaaw-surface-hover);
+      border-color: var(--thaaw-border);
+    }
+
+    .about-nav-link.active {
+      color: var(--thaaw-cyan);
+      font-weight: 600;
+    }
+
+    /* Main Content Area */
+    .about-content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* Hero Banner */
+    .about-hero {
+      text-align: center;
+      padding: 48px 32px;
+      background: radial-gradient(circle at 50% -20%, rgba(56, 189, 248, 0.15) 0%, transparent 70%),
+                  radial-gradient(circle at 80% 60%, rgba(255, 111, 240, 0.08) 0%, transparent 60%),
+                  var(--thaaw-glass-bg);
+      backdrop-filter: blur(var(--thaaw-glass-blur));
+      -webkit-backdrop-filter: blur(var(--thaaw-glass-blur));
+      border: 1px solid var(--thaaw-glass-border);
+      border-radius: var(--thaaw-radius-xl);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: var(--thaaw-gradient-brand);
+      opacity: 0.4;
+    }
+
+    .about-hero-logo {
+      height: 72px;
+      width: auto;
+      max-width: 280px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 16px;
+      filter: drop-shadow(0 6px 20px rgba(56, 189, 248, 0.25));
+    }
+
+    .about-hero-tagline {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--thaaw-text);
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+
+    .about-hero-subtext {
+      color: var(--thaaw-text-secondary);
+      max-width: 640px;
+      margin: 0 auto 20px;
+      font-size: 14.5px;
+      line-height: 1.6;
+    }
+
+    .badges-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .tag-badge {
+      font-size: 11.5px;
+      font-family: var(--thaaw-font-mono);
+      padding: 4px 12px;
+      border-radius: var(--thaaw-radius-pill);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid transparent;
+    }
+
+    .tag-badge.cyan {
+      background: var(--thaaw-cyan-subtle);
+      color: var(--thaaw-cyan);
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+
+    .tag-badge.pink {
+      background: var(--thaaw-pink-subtle);
+      color: var(--thaaw-pink);
+      border-color: rgba(255, 111, 240, 0.3);
+    }
+
+    .tag-badge.orange {
+      background: var(--thaaw-orange-subtle);
+      color: var(--thaaw-orange-bright);
+      border-color: rgba(249, 115, 22, 0.3);
+    }
+
+    .tag-badge.neutral {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--thaaw-text-secondary);
+      border-color: var(--thaaw-border);
+    }
+
+    /* Section Headings */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--thaaw-border-subtle);
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--thaaw-text);
+      letter-spacing: -0.2px;
+    }
+
+    .section-icon {
+      color: var(--thaaw-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Specs & Tables */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin: 12px 0;
+    }
+
+    .spec-table th {
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--thaaw-text-muted);
+      border-bottom: 1px solid var(--thaaw-border);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .spec-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--thaaw-border-subtle);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    .spec-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .spec-table td:first-child {
+      color: var(--thaaw-text-secondary);
+      font-weight: 500;
+      width: 32%;
+    }
+
+    .spec-table td:last-child {
+      color: var(--thaaw-text);
+    }
+
+    .spec-mono {
+      font-family: var(--thaaw-font-mono);
+      font-size: 12px;
+      color: var(--thaaw-cyan);
+    }
+
+    /* Feature Cards Grid */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .feature-box {
+      background: var(--thaaw-surface);
+      border: 1px solid var(--thaaw-border);
+      border-radius: var(--thaaw-radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .feature-box:hover {
+      border-color: var(--thaaw-glass-border-hover);
+      transform: translateY(-2px);
+    }
+
+    .feature-box-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .feature-box-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--thaaw-radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--thaaw-cyan-subtle);
+      color: var(--thaaw-cyan);
+      flex-shrink: 0;
+    }
+
+    .feature-box-icon.pink {
+      background: var(--thaaw-pink-subtle);
+      color: var(--thaaw-pink);
+    }
+
+    .feature-box-icon.orange {
+      background: var(--thaaw-orange-subtle);
+      color: var(--thaaw-orange-bright);
+    }
+
+    .feature-box-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--thaaw-text);
+    }
+
+    .feature-box-desc {
+      font-size: 12.5px;
+      color: var(--thaaw-text-secondary);
+      line-height: 1.55;
+    }
+
+    /* Code Blocks */
+    .code-snippet {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--thaaw-border);
+      border-radius: var(--thaaw-radius-sm);
+      padding: 14px 16px;
+      font-family: var(--thaaw-font-mono);
+      font-size: 12px;
+      color: var(--thaaw-text-secondary);
+      line-height: 1.6;
+      overflow-x: auto;
+      margin: 12px 0;
+    }
+
+    .code-keyword { color: var(--thaaw-pink); }
+    .code-string { color: #34D399; }
+    .code-func { color: var(--thaaw-cyan); }
+    .code-comment { color: var(--thaaw-text-muted); font-style: italic; }
+
+    /* Architecture Flow Box */
+    .arch-diagram {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px dashed var(--thaaw-border);
+      border-radius: var(--thaaw-radius-md);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin: 16px 0;
+    }
+
+    .arch-layer {
+      background: var(--thaaw-surface);
+      border: 1px solid var(--thaaw-border);
+      border-radius: var(--thaaw-radius-sm);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .arch-layer-title {
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--thaaw-text);
+    }
+
+    .arch-layer-desc {
+      font-size: 12px;
+      color: var(--thaaw-text-secondary);
+    }
+
+    .arch-layer-badge {
+      font-size: 10.5px;
+      font-family: var(--thaaw-font-mono);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: var(--thaaw-cyan);
+    }
+
+    /* FAQ Items */
+    .faq-item {
+      border-bottom: 1px solid var(--thaaw-border-subtle);
+      padding: 16px 0;
+    }
+
+    .faq-item:last-child {
+      border-bottom: none;
+    }
+
+    .faq-question {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--thaaw-text);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .faq-answer {
+      font-size: 13px;
+      color: var(--thaaw-text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Changelog Entries */
+    .changelog-entry {
+      border-left: 2px solid var(--thaaw-border);
+      padding-left: 20px;
+      margin-left: 8px;
+      margin-bottom: 28px;
+      position: relative;
+    }
+
+    .changelog-entry::before {
+      content: '';
+      position: absolute;
+      left: -6px;
+      top: 4px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--thaaw-cyan);
+      box-shadow: 0 0 8px var(--thaaw-cyan-glow);
+    }
+
+    .changelog-version {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--thaaw-text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .changelog-date {
+      font-size: 12px;
+      color: var(--thaaw-text-muted);
+      font-family: var(--thaaw-font-mono);
+    }
+
+    .changelog-list {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--thaaw-text-secondary);
+    }
+
+    .changelog-list li {
+      position: relative;
+      padding-left: 16px;
+    }
+
+    .changelog-list li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--thaaw-cyan);
+    }
+
+    /* License Text */
+    .license-block {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--thaaw-border);
+      border-radius: var(--thaaw-radius-sm);
+      padding: 16px;
+      font-family: var(--thaaw-font-mono);
+      font-size: 11.5px;
+      color: var(--thaaw-text-muted);
+      line-height: 1.55;
+      white-space: pre-wrap;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 900px) {
+      .about-layout {
+        flex-direction: column;
+      }
+      .about-nav {
+        width: 100%;
+        position: relative;
+        top: 0;
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="about-layout">
+    <!-- Sticky Side Navigation -->
+    <nav class="about-nav" aria-label="About THAAW navigation">
+      <div class="about-nav-heading">Navigation & Overview</div>
+      <a href="#hero" class="about-nav-link active">
+        <span data-icon="home" data-icon-size="15"></span>
+        <span>Overview</span>
+      </a>
+      <a href="#manifesto" class="about-nav-link">
+        <span data-icon="quote" data-icon-size="15"></span>
+        <span>Manifesto & Origin</span>
+      </a>
+      <a href="#specs" class="about-nav-link">
+        <span data-icon="settings" data-icon-size="15"></span>
+        <span>Engine Specifications</span>
+      </a>
+
+      <div class="about-nav-heading">Architecture & Security</div>
+      <a href="#architecture" class="about-nav-link">
+        <span data-icon="cpu" data-icon-size="15"></span>
+        <span>Process Architecture</span>
+      </a>
+      <a href="#security" class="about-nav-link">
+        <span data-icon="shield-check" data-icon-size="15"></span>
+        <span>Security Deep Dive</span>
+      </a>
+      <a href="#permissions" class="about-nav-link">
+        <span data-icon="lock" data-icon-size="15"></span>
+        <span>4-W Permission Model</span>
+      </a>
+      <a href="#profiles" class="about-nav-link">
+        <span data-icon="user" data-icon-size="15"></span>
+        <span>Profile Isolation</span>
+      </a>
+      <a href="#vault" class="about-nav-link">
+        <span data-icon="key" data-icon-size="15"></span>
+        <span>Cryptographic Vault</span>
+      </a>
+
+      <div class="about-nav-heading">Features & Reference</div>
+      <a href="#features" class="about-nav-link">
+        <span data-icon="apps" data-icon-size="15"></span>
+        <span>Feature Directory</span>
+      </a>
+      <a href="#shortcuts" class="about-nav-link">
+        <span data-icon="terminal" data-icon-size="15"></span>
+        <span>Keyboard Shortcuts</span>
+      </a>
+      <a href="#api" class="about-nav-link">
+        <span data-icon="code" data-icon-size="15"></span>
+        <span>Developer API & IPC</span>
+      </a>
+      <a href="#benchmarks" class="about-nav-link">
+        <span data-icon="zap" data-icon-size="15"></span>
+        <span>Performance & Tuning</span>
+      </a>
+
+      <div class="about-nav-heading">History & Compliance</div>
+      <a href="#faq" class="about-nav-link">
+        <span data-icon="info" data-icon-size="15"></span>
+        <span>Frequently Asked Questions</span>
+      </a>
+      <a href="#changelog" class="about-nav-link">
+        <span data-icon="clock" data-icon-size="15"></span>
+        <span>Release Changelog</span>
+      </a>
+      <a href="#licenses" class="about-nav-link">
+        <span data-icon="feather" data-icon-size="15"></span>
+        <span>Open Source Licenses</span>
+      </a>
+      <a href="#disclosure" class="about-nav-link">
+        <span data-icon="shield-alert" data-icon-size="15"></span>
+        <span>Security Disclosure</span>
+      </a>
+    </nav>
+
+    <!-- Main Content Flow -->
+    <main class="about-content">
+      <!-- Hero Banner -->
+      <section id="hero" class="about-hero">
+        <img src="../assets/logo/thaaw-logo.svg" alt="THAAW" class="about-hero-logo" />
+        <h1 class="about-hero-tagline">Stop What Shouldn't Pass.</h1>
+        <p class="about-hero-subtext">
+          A hardened, privacy-first desktop web browser built from the ground up to eradicate tracking, invasive advertising, surveillance telemetry, and background memory bloat.
+        </p>
+        <div class="badges-row">
+          <span class="tag-badge cyan">
+            <span data-icon="shield-check" data-icon-size="13"></span>
+            Version 1.0.0-alpha.1
+          </span>
+          <span class="tag-badge pink">
+            <span data-icon="cpu" data-icon-size="13"></span>
+            Linux x86_64 (Hardened Sandbox)
+          </span>
+          <span class="tag-badge orange">
+            <span data-icon="zap" data-icon-size="13"></span>
+            Zero Telemetry Guaranteed
+          </span>
+          <span class="tag-badge neutral">
+            <span data-icon="lock" data-icon-size="13"></span>
+            BSD 3-Clause License
+          </span>
+        </div>
+      </section>
+
+      <!-- Section 1: Manifesto & Origin -->
+      <section id="manifesto" class="card">
+        <div class="section-header">
+          <span class="section-icon" data-icon="quote" data-icon-size="20"></span>
+          <h2 class="section-title">The THAAW Manifesto & Origin</h2>
+        </div>
+        <p class="card-desc" style="margin-bottom: 16px;">
+          The name <strong>THAAW</strong> is rooted in the Kashmiri word <strong>تھاو (Thaaw)</strong>, translating directly to an imperative: <em>“Stop.”</em> Or more precisely: <em>“Halt right here.”</em>
+        </p>
+        <p class="card-desc" style="margin-bottom: 16px;">
+          The modern web was architected with noble intentions: universal access to information, open communication, and distributed human knowledge. However, over the past two decades, commercial pressures transformed the browser from a neutral agent of the user into an active surveillance vector. Browsers today report every click, keystroke, mouse trajectory, and geographic coordinate back to centralized advertising exchanges. They run dozens of background telemetry pings before the requested page even finishes painting its first frame.
+        </p>
+        <p class="card-desc" style="margin-bottom: 20px;">
+          THAAW rejects this paradigm. When you launch THAAW, the browser acts solely on your behalf. Its mandate is simple and uncompromising:
+        </p>
+
+        <div class="feature-grid">
+          <div class="feature-box">
+            <div class="feature-box-header">
+              <div class="feature-box-icon"><span data-icon="shield-check" data-icon-size="18"></span></div>
+              <div class="feature-box-title">Zero Remote Telemetry</div>
+            </div>
+            <div class="feature-box-desc">
+              Not a single byte of usage statistics, browsing history, crash traces, or performance analytics ever leaves your computer. No pings, no beacons, no Google analytics, no Firebase tracking.
+            </div>
+          </div>
+
+          <div class="feature-box">
+            <div class="feature-box-header">
+              <div class="feature-box-icon pink"><span data-icon="zap" data-icon-size="18"></span></div>
+              <div class="feature-box-title">In-Process Stop Interceptor</div>
+            </div>
+            <div class="feature-box-desc">
+              Trackers and intrusive ad networks are aborted at the pre-socket network phase. No sockets are allocated, no DNS queries are executed, and no payload bytes are downloaded.
+            </div>
+          </div>
+
+          <div class="feature-box">
+            <div class="feature-box-header">
+              <div class="feature-box-icon orange"><span data-icon="lock" data-icon-size="18"></span></div>
+              <div class="feature-box-title">Isolated Profile Partitions</div>
+            </div>
+            <div class="feature-box-desc">
+              Every workspace profile operates in a strictly isolated session partition. Cookies, local storage, service workers, and caches cannot cross profile boundaries under any circumstances.
+            </div>
+          </div>
+
+          <div class="feature-box">
+            <div class="feature-box-header">
+              <div class="feature-box-icon"><span data-icon="key" data-icon-size="18"></span></div>
+              <div class="feature-box-title">Encrypted Local Vault</div>
+            </div>
+            <div class="feature-box-desc">
+              Your passwords and sensitive credentials are encrypted locally using PBKDF2-SHA256 and authenticated AES-256-GCM. Plaintext never touches your storage drive.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Engine Specifications -->
+      <section id="specs" class="card">
+        <div class="section-header">
+          <span class="section-icon" data-icon="settings" data-icon-size="20"></span>
+          <h2 class="section-title">Engine & Platform Specifications</h2>
+        </div>
+        <p class="card-desc" style="margin-bottom: 16px;">
+          THAAW combines the performance and standards compliance of modern Chromium with a hardened Electron 34 runtime, wrapped in a native glassmorphic user interface.
+        </p>
+
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>Subsystem</th>
+              <th>Specification & Implementation Detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Rendering Engine</td>
+              <td>Chromium Blink 132.0.6834.160 (High-performance multi-threaded HTML5 / CSS3 / WebGL 2.0 pipeline)</td>
+            </tr>
+            <tr>
+              <td>JavaScript Runtime</td>
+              <td>Google V8 Engine 13.2.152.26 (JIT compilation with TurboFan and Sparkplug optimizations)</td>
+            </tr>
+            <tr>
+              <td>Host Application Framework</td>
+              <td>Electron 34.0.0 + Node.js 22.12.0 LTS (Main Process execution only; Renderers are strictly sandboxed)</td>
+            </tr>
+            <tr>
+              <td>Operating System Support</td>
+              <td>Linux Kernel 5.15+ (glibc 2.35+, systemd, PulseAudio / PipeWire audio servers, Wayland & X11 compositors)</td>
+            </tr>
+            <tr>
+              <td>Process Sandboxing</td>
+              <td>Linux SECCOMP-BPF filter + User Namespace Isolation + Chroot helper (Chromium Sandbox Level 3)</td>
+            </tr>
+            <tr>
+              <td>Process Isolation Model</td>
+              <td>Strict Site-per-Process with Cross-Origin Read Blocking (CORB) and Out-of-Process IFrames (OOPIF)</td>
+            </tr>
+            <tr>
+              <td>Renderer Capabilities</td>
+              <td>Context Isolation enabled; Node.js integration permanently disabled in all tab web views</td>
+            </tr>
+            <tr>
+              <td>IPC Architecture</td>
+              <td>Asynchronous schema-validated Electron IPC via strict TypeSafe Preload Bridge (<code class="spec-mono">thaawAPI</code>)</td>
+            </tr>
+            <tr>
+              <td>Internal Protocol Scheme</td>
+              <td>Hardened <code class="spec-mono">thaaw://</code> scheme with custom filesystem sandboxing and CSP enforcement</td>
+            </tr>
+            <tr>
+              <td>Hardware Video Acceleration</td>
+              <td>VA-API via OpenGL/Vulkan (<code class="spec-mono">VaapiVideoDecodeLinuxGL</code>, accelerated MJPEG/H.264/HEVC/VP9)</td>
+            </tr>
+            <tr>
+              <td>Audio Subsystem</td>
+              <td>PipeWire / PulseAudio low-latency buffer management (2048-sample audio buffer to prevent underruns)</td>
+            </tr>
+            <tr>
+              <td>Network Protocol Support</td>
+              <td>HTTP/1.1, HTTP/2, HTTP/3 (QUIC), WebSocket (RFC 6455), DNS-over-HTTPS (DoH RFC 8484)</td>
+            </tr>
+            <tr>
+              <td>Cryptographic Primitives</td>
+              <td>BoringSSL (TLS 1.3, X25519, ChaCha20-Poly1305, AES-GCM) + Node.js Crypto (PBKDF2-SHA256)</td>
+            </tr>
+            <tr>
+              <td>Local Storage & Cache</td>
+              <td>LevelDB / SQLite 3.46 with isolated profile partitioning (<code class="spec-mono">persist:thaaw_profile_&lt;id&gt;</code>)</td>
+            </tr>
+            <tr>
+              <td>Open Source License</td>
+              <td>BSD 3-Clause Permissive Open-Source License</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Section 3: Process Architecture -->
+      <section id="architecture" class="card">
+        <div class="section-header">
+          <span class="section-icon" data-icon="cpu" data-icon-size="20"></span>
+          <h2 class="section-title">Core Process Architecture & Compositor Pipeline</h2>
+        </div>
+        <p class="card-desc" style="margin-bottom: 16px;">
+          Unlike legacy single-process or naive multi-process browsers, THAAW enforces a rigorous three-tier architecture separating the main orchestrator, the chrome interface, and the untrusted web pages.
+        </p>
+
+        <div class="arch-diagram">
+          <div class="arch-layer">
+            <div>
+              <div class="arch-layer-title">Tier 1: Browser Main Process (Privileged Orchestrator)</div>
+              <div class="arch-layer-desc">Manages window lifecycle, session security, profile partitions, download broker, and IPC routing.</div>
+            </div>
+            <span class="arch-layer-badge">Node.js 22 + Electron Main</span>
+          </div>
+
+          <div class="arch-layer">
+            <div>
+              <div class="arch-layer-title">Tier 2: Chrome UI Renderer Process (Trusted Shell)</div>
+              <div class="arch-layer-desc">Renders tab strip, URL omnibox, sidebar navigation, popovers, modals, and window caption controls.</div>
+            </div>
+            <span class="arch-layer-badge">Context Isolated DOM</span>
+          </div>
+
+          <div class="arch-layer">
+            <div>
+              <div class="arch-layer-title">Tier 3: Tab WebContentsView Instances (Sandboxed Execution)</div>
+              <div class="arch-layer-desc">Executes untrusted web content with SECCOMP sandboxing, zero Node.js access, and strict origin isolation.</div>
+            </div>
+            <span class="arch-layer-badge">SECCOMP Sandboxed Blink</span>
+          </div>
+        </div>
+
+        <h3 style="font-size: 15px; font-weight: 600; color: var(--thaaw-text); margin: 24px 0 10px;">
+          The WebContentsView Compositor & Snapshot Layer
+        </h3>
+        <p class="card-desc" style="margin-bottom: 14px;">
+          In Electron, child <code class="spec-mono">WebContentsView</code> instances sit on top of the parent window's base DOM at an operating-system compositor level. When a browser UI requires dropdowns, menus, or modals that overlap the webpage area, standard webviews intercept all mouse clicks, rendering HTML popovers unclickable or causing the tab to blank out if hidden.
+        </p>
+        <p class="card-desc" style="margin-bottom: 14px;">
+          THAAW solves this with an innovative <strong>Dynamic Snapshot Compositor Layer</strong>:
+        </p>
+        <ol style="margin-left: 20px; font-size: 13px; color: var(--thaaw-text-secondary); line-height: 1.7; display: flex; flex-direction: column; gap: 6px;">
+          <li>When any popover or modal opens (e.g. Downloads popover, Profile switcher, Main menu, Command palette), <code class="spec-mono">tabManager.setModalOpen(true)</code> captures a hardware-accelerated bitmap snapshot of the active tab view via <code class="spec-mono">active.view.webContents.capturePage()</code> in under 3 milliseconds.</li>
+          <li>The snapshot bitmap is broadcast to the chrome UI and painted to the <code class="spec-mono">#tabSnapshotLayer</code> background immediately.</li>
+          <li>The native view is temporarily set to <code class="spec-mono">setVisible(false)</code>, transferring full OS-level input focus directly to the chrome UI popovers while the user visually perceives zero change or interruption.</li>
+          <li>When the popover or modal is dismissed, <code class="spec-mono">setVisible(true)</code> is immediately restored, and the snapshot layer is cleared.</li>
+        </ol>
+      </section>
+
+      <!-- Section 4: Security & Privacy Deep Dive -->
+      <section id="security" class="card">
+        <div class="section-header">
+          <span class="section-icon" data-icon="shield-check" data-icon-size="20"></span>
+          <h2 class="section-title">Security & Privacy Deep Dive</h2>
+        </div>
+        <p class="card-desc" style="margin-bottom: 16px;">
+          THAAW operates on a verifiable defense-in-depth model. We make no unsubstantiated claims of being impervious to zero-day vulnerabilities; instead, we systematically minimize attack surfaces, isolate failure domains, and eliminate vectors of passive exploitation.
+        </p>
+
+        <div class="feature-grid">
+          <div class="feature-box">
+            <div class="feature-box-header">
+              <div class="feature-box-icon"><span data-icon="shield-alert" data-icon-size="18"></span></div>
+              <div class="feature-box-title">Pre-Socket Request Blocking</div>
+            </div>
+            <div class="feature-box-desc">
+              All outgoing HTTP/HTTPS requests pass through <code class="spec-mono">TrackerBlocker.shouldBlockRequest()</code> before TCP socket creation or TLS handshakes occur. Telemetry servers receive zero network communication.
+            </div>
+          </div>
+
+          <div class="feature-box">
+            <div class="feature-box-header">
+              <div class="feature-box-icon pink"><span data-icon="lock" data-icon-size="18"></span></div>
+              <div class="feature-box-title">Strict Origin Referrer Trimming</div>
+            </div>
+            <div class="feature-box-desc">
+              Outgoing <code class="spec-mono">Referer</code> request headers are automatically stripped to origin only (<code class="spec-mono">https://example.com/</code> instead of full URL paths with tracking parameters and session tokens).
+            </div>
+          </div>
+
+          <div class="feature-box">
+            <div class="feature-box-header">
+              <div class="feature-box-icon orange"><span data-icon="eye-off" data-icon-size="18"></span></div>
+              <div class="feature-box-title">Cosmetic Element Hiding</div>
+            </div>
+            <div class="feature-box-desc">
+              Injected stylesheets seamlessly collapse empty advertisement containers, tracking iframes, and sponsored video overlays so web layouts render cleanly without visual clutter.
+            </div>
+          </div>
+
+          <div class="feature-box">
+            <div class="feature-box-header">
+              <div class="feature-box-icon"><span data-icon="zap" data-icon-size="18"></span></div>
+              <div class="feature-box-title">YouTube Ad Fast-Forwarding</div>
+            </div>
+            <div class="feature-box-desc">
+              Automated video player monitors detect in-stream promotional ads, fast-forward through playback segments at 16x speed, and trigger instant programmatic skip clicks on user behalf.
+            </div>
+          </div>
+        </div>
+
+        <div class="code-snippet">
+<span class="code-comment">// Core Request Interception logic in browser/privacy/tracker-blocker.ts</span>
+<span class="code-keyword">public</span> <span class="code-func">shouldBlockRequest</span>(url: <span class="code-string">string</span>, origin?: <span class="code-string">string</span>): { block: <span class="code-string">boolean</span>; rule?: <span class="code-string">string</span> } {
+  <span class="code-keyword">if</span> (!<span class="code-keyword">this</span>.shieldActive) <span class="code-keyword">return</span> { block: <span class="code-keyword">false</span> };
+  <span class="code-keyword">const</span> hostname = <span class="code-keyword">new</span> URL(url).hostname.toLowerCase();
+  
+  <span class="code-comment">// Pre-socket block matching against curated ad networks, trackers, and telemetry</span>
+  <span class="code-keyword">if</span> (<span class="code-keyword">this</span>.blockedDomains.has(hostname) || <span class="code-keyword">this</span>.adBlocker.isAdDomain(hostname)) {
+    <span class="code-keyword">this</span>.recordBlocked(hostname, origin);
+    <span class="code-keyword">return</span> { block: <span class="code-keyword">true</span>, rule: <span class="code-string">'tracker-or-ad-domain'</span> };
+  }
+  <span class="code-keyword">return</span> { block: <span class="code-keyword">false</span> };
+}
+        </div>
+      </section>
+
+      <!-- Section 5: The 4-W Permission Model -->
+      <section id="permissions" class="card">
+        <div class="section-header">
+          <span class="section-icon" data-icon="lock" data-icon-size="20"></span>
+          <h2 class="section-title">The 4-W Permission Framework</h2>
+        </div>
+        <p class="card-desc" style="margin-bottom: 16px;">
+          Standard web browsers present ambiguous permission dialogs (e.g. <em>“example.com wants to know your location”</em>) that fail to convey why a permission was requested or how long the grant persists. THAAW implements the <strong>4-W Architecture</strong>:
+        </p>
+
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>Dimension</th>
+              <th>Verification Principle</th>
+              <th>THAAW Enforcement Behavior</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>WHO</strong></td>
+              <td>Cryptographic Origin & Certificate Identity</td>
+              <td>Explicitly verifies the fully qualified domain name, protocol, and port. Subdomains are not automatically trusted based on parent domain approvals.</td>
+            </tr>
+            <tr>
+              <td><strong>WHAT</strong></td>
+              <td>Precise Resource Capability</td>
+              <td>Dissects requests into explicit hardware and data categories: Camera, Microphone, Geolocation, Notifications, Clipboard Read/Write, MIDI, or Screen Capture.</td>
+            </tr>
+            <tr>
+              <td><strong>WHY</strong></td>
+              <td>Contextual Justification Derivation</td>
+              <td>Evaluates whether the request was triggered by direct user gesture (e.g. clicking a call button) or background script injection. Passive background requests are denied by default.</td>
+            </tr>
+            <tr>
+              <td><strong>WHERE / WHEN</strong></td>
+              <td>Granular Duration Scope</td>
+              <td>Provides three distinct user decisions: <em>Allow for This Visit</em> (revoked immediately on tab close), <em>Allow Always</em> (persisted per-profile), and <em>Deny</em> (permanent block).</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Section 6: Profile Isolation -->
+      <section id="profiles" class="card">
+        <div class="section-header">
+          <span class="section-icon" data-icon="user" data-icon-size="20"></span>
+          <h2 class="section-title">Profile Isolation & Multi-Identity Workspaces</h2>
+        </div>
+        <p class="card-desc" style="margin-bottom: 16px;">
+          THAAW treats each user profile as a completely isolated container. Whether separating Personal, Work, Developer, or Guest activities, profiles never share state:
+        </p>
+
+        <ul class="changelog-list" style="margin-bottom: 16px;">
+          <li><strong>Storage Partitioning</strong>: Every profile is mapped to a dedicated partition name (<code class="spec-mono">persist:thaaw_profile_&lt;id&gt;</code>). Cookies, IndexedDB, local storage, WebSQL, and CacheStorage are physically separated on disk.</li>
+          <li><strong>Zero Cross-Contamination</strong>: Logging into an account in the Personal profile cannot be detected by trackers or authentication scripts running in the Work or Developer profiles.</li>
+          <li><strong>Guest Mode Self-Destruction</strong>: Guest profiles run in ephemeral partitions. Upon closing the guest session, all associated browsing data, cookies, and cached objects are securely purged from memory.</li>
+          <li><strong>Dynamic Profile Switcher</strong>: Switch seamlessly between profiles from the top toolbar without quitting the browser or reloading open tabs in other windows.</li>
+        </ul>
+      </section>
+
+      <!-- Section 7: Cryptographic Password Vault -->
+      <section id="vault" class="card">
+        <div class="section-header">
+          <span class="section-icon" data-icon="key" data-icon-size="20"></span>
+          <h2 class="section-title">Cryptographic Password Vault</h2>
+        </div>
+        <p class="card-desc" style="margin-bottom: 16px;">
+          The built-in THAAW Password Vault stores website credentials locally with zero cloud dependencies, eliminating data breach risks associated with remote password synchronization services:
+        </p>
+
+        <div class="feature-grid">
+          <div class="feature-box">
+            <div class="feature-box-header">
+              <div class="feature-box-icon"><span data-icon="lock" data-icon-size="18"></span></div>
+              <div class="feature-box-title">PBKDF2-SHA256 Derivation</div>
+            </div>
+            <div class="feature-box-desc">
+              Master encryption keys are derived using PBKDF2 with SHA-256 and 100,000 computation iterations, rendering brute-force dictionary attacks computationally infeasible.
+            </div>
+          </div>
+
+          <div class="feature-box">
+            <div class="feature-box-header">
+              <div class="feature-box-icon pink"><span data-icon="shield-check" data-icon-size="18"></span></div>
+              <div class="feature-box-title">AES-256-GCM Encryption</div>
+            </div>
+            <div class="feature-box-desc">
+              All stored credentials (usernames, passwords, and metadata) are encrypted with AES-256 in Galois/Counter Mode (GCM), providing authenticated encryption with integrity tags.
+            </div>
+          </div>
+
+          <div class="feature-box">
+            <div class="feature-box-header">
+              <div class="feature-box-icon orange"><span data-icon="eye" data-icon-size="18"></span></div>
+              <div class="feature-box-title">Zero Plaintext Disk Writes</div>
+            </div>
+            <div class="feature-box-desc">
+              Passwords exist in plaintext strictly in temporary memory during explicit user autofill or review actions. Storage files contain only ciphertext and cryptographic salts.
+            </div>
+          </div>
+
+          <div class="feature-box">
+            <div class="feature-box-header">
+              <div class="feature-box-icon"><span data-icon="trash" data-icon-size="18"></span></div>
+              <div class="feature-box-title">Instant Memory Sanitization</div>
+            </div>
+            <div class="feature-box-desc">
+              When credentials are deleted or when the vault is locked, in-memory buffers are overwritten with zero-bytes to protect against memory scraping attacks.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 8: Feature Directory -->
+      <section id="features" class="card">
+        <div class="section-header">
+          <span class="section-icon" data-icon="apps" data-icon-size="20"></span>
+          <h2 class="section-title">Feature Directory & User Capabilities</h2>
+        </div>
+        <p class="card-desc" style="margin-bottom: 16px;">
+          THAAW pairs deep security with an ultra-responsive, streamlined desktop browsing experience:
+        </p>
+
+        <div class="feature-grid">
+          <div class="feature-box">
+            <div class="feature-box-header">
+              <div class="feature-box-icon"><span data-icon="tab" data-icon-size="18"></span></div>
+              <div class="feature-box-title">Intelligent Tab Strips</div>
+            </div>
+            <div class="feature-box-desc">
+              Horizontal tab strip with drag-to-reorder, close-on-middle-click, pinned tabs, audio-playing indicators, and instant closed tab restoration via <code class="spec-mono">Ctrl+Shift+T</code>.
+            </div>
+          </div>
+
+          <div class="feature-box">
+            <div class="feature-box-header">
+              <div class="feature-box-icon pink"><span data-icon="terminal" data-icon-size="18"></span></div>
+              <div class="feature-box-title">Unified Command Center</div>
+            </div>
+            <div class="feature-box-desc">
+              Press <code class="spec-mono">Ctrl+Shift+P</code> to launch the Command Palette. Instantly search open tabs, toggle settings, switch profiles, clear caches, or execute browser commands.
+            </div>
+          </div>
+
+          <div class="feature-box">
+            <div class="feature-box-header">
+              <div class="feature-box-icon orange"><span data-icon="download" data-icon-size="18"></span></div>
+              <div class="feature-box-title">Safe Downloads Hub</div>
+            </div>
+            <div class="feature-box-desc">
+              Comprehensive download manager with pause/resume, file verification, quarantine warning modals for executable binaries, and strict zero auto-launch policy.
+            </div>
+          </div>
+
+          <div class="feature-box">
+            <div class="feature-box-header">
+              <div class="feature-box-icon"><span data-icon="sliders" data-icon-size="18"></span></div>
+              <div class="feature-box-title">Collapsible Sidebar Rail</div>
+            </div>
+            <div class="feature-box-desc">
+              Authentic browser navigation sidebar with expanded (240px) and collapsed (64px) states, giving immediate access to History, Downloads, Bookmarks, and Settings.
+            </div>
+          </div>
+
+          <div class="feature-box">
+            <div class="feature-box-header">
+              <div class="feature-box-icon pink"><span data-icon="palette" data-icon-size="18"></span></div>
+              <div class="feature-box-title">8 Theme Presets</div>
+            </div>
+            <div class="feature-box-desc">
+              4 tailored dark presets (Midnight, Deep Space, Obsidian, Eclipse) and 4 light presets with dynamic backdrop blur, translucent glassmorphism, and smooth CSS transitions.
+            </div>
+          </div>
+
+          <div class="feature-box">
+            <div class="feature-box-header">
+              <div class="feature-box-icon orange"><span data-icon="cpu" data-icon-size="18"></span></div>
+              <div class="feature-box-title">Audio Underrun Elimination</div>
+            </div>
+            <div class="feature-box-desc">
+              Custom 2048-sample audio buffer configuration engineered specifically for Linux PipeWire and PulseAudio Bluetooth sinks, eliminating sound cracking, pops, and audio latency.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 9: Keyboard Shortcuts Reference -->
+      <section id="shortcuts" class="card">
+        <div class="section-header">
+          <span class="section-icon" data-icon="terminal" data-icon-size="20"></span>
+          <h2 class="section-title">Complete Keyboard Shortcuts Reference</h2>
+        </div>
+        <p class="card-desc" style="margin-bottom: 16px;">
+          Master THAAW with full keyboard navigation across navigation, tabs, windows, and developer tools:
+        </p>
+
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>Action / Command</th>
+              <th>Linux / Windows Shortcut</th>
+              <th>macOS Shortcut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Open New Tab</td>
+              <td><kbd>Ctrl</kbd> + <kbd>T</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>T</kbd></td>
+            </tr>
+            <tr>
+              <td>Close Current Tab</td>
+              <td><kbd>Ctrl</kbd> + <kbd>W</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>W</kbd></td>
+            </tr>
+            <tr>
+              <td>Reopen Last Closed Tab</td>
+              <td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>T</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>T</kbd></td>
+            </tr>
+            <tr>
+              <td>Open New Window</td>
+              <td><kbd>Ctrl</kbd> + <kbd>N</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>N</kbd></td>
+            </tr>
+            <tr>
+              <td>Open New Private Window</td>
+              <td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd></td>
+            </tr>
+            <tr>
+              <td>Focus Address Bar (Omnibox)</td>
+              <td><kbd>Ctrl</kbd> + <kbd>L</kbd> or <kbd>Alt</kbd> + <kbd>D</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>L</kbd></td>
+            </tr>
+            <tr>
+              <td>Open Command Palette</td>
+              <td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd></td>
+            </tr>
+            <tr>
+              <td>Search Open Tabs Modal</td>
+              <td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>A</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>A</kbd></td>
+            </tr>
+            <tr>
+              <td>Open Downloads Hub</td>
+              <td><kbd>Ctrl</kbd> + <kbd>J</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>J</kbd></td>
+            </tr>
+            <tr>
+              <td>Open Browsing History</td>
+              <td><kbd>Ctrl</kbd> + <kbd>H</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>H</kbd></td>
+            </tr>
+            <tr>
+              <td>Bookmark Current Page</td>
+              <td><kbd>Ctrl</kbd> + <kbd>D</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>D</kbd></td>
+            </tr>
+            <tr>
+              <td>Open Bookmarks Manager</td>
+              <td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>O</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>O</kbd></td>
+            </tr>
+            <tr>
+              <td>Reload Current Page</td>
+              <td><kbd>Ctrl</kbd> + <kbd>R</kbd> or <kbd>F5</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>R</kbd></td>
+            </tr>
+            <tr>
+              <td>Hard Reload (Bypass Cache)</td>
+              <td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> or <kbd>Ctrl</kbd> + <kbd>F5</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd></td>
+            </tr>
+            <tr>
+              <td>Zoom In</td>
+              <td><kbd>Ctrl</kbd> + <kbd>+</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>+</kbd></td>
+            </tr>
+            <tr>
+              <td>Zoom Out</td>
+              <td><kbd>Ctrl</kbd> + <kbd>-</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>-</kbd></td>
+            </tr>
+            <tr>
+              <td>Reset Zoom (100%)</td>
+              <td><kbd>Ctrl</kbd> + <kbd>0</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>0</kbd></td>
+            </tr>
+            <tr>
+              <td>Toggle Fullscreen Mode</td>
+              <td><kbd>F11</kbd></td>
+              <td><kbd>Ctrl</kbd> + <kbd>Cmd</kbd> + <kbd>F</kbd></td>
+            </tr>
+            <tr>
+              <td>Print Current Page</td>
+              <td><kbd>Ctrl</kbd> + <kbd>P</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>P</kbd></td>
+            </tr>
+            <tr>
+              <td>Save Current Page As...</td>
+              <td><kbd>Ctrl</kbd> + <kbd>S</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>S</kbd></td>
+            </tr>
+            <tr>
+              <td>View Page Source</td>
+              <td><kbd>Ctrl</kbd> + <kbd>U</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>Option</kbd> + <kbd>U</kbd></td>
+            </tr>
+            <tr>
+              <td>Toggle Developer Tools</td>
+              <td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> or <kbd>F12</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>Option</kbd> + <kbd>I</kbd></td>
+            </tr>
+            <tr>
+              <td>Inspect Element at Cursor</td>
+              <td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd></td>
+              <td><kbd>Cmd</kbd> + <kbd>Option</kbd> + <kbd>C</kbd></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Section 10: Developer API & IPC Architecture -->
+      <section id="api" class="card">
+        <div class="section-header">
+          <span class="section-icon" data-icon="code" data-icon-size="20"></span>
+          <h2 class="section-title">Developer API & IPC Architecture</h2>
+        </div>
+        <p class="card-desc" style="margin-bottom: 16px;">
+          Internal pages and trusted shell renderers communicate with the privileged Main process via the context-isolated <code class="spec-mono">window.thaawAPI</code> bridge. All payloads are strictly validated using <code class="spec-mono">ipc-validator.ts</code>.
+        </p>
+
+        <div class="code-snippet">
+<span class="code-comment">// Exposed interface on window.thaawAPI for internal pages</span>
+<span class="code-keyword">interface</span> <span class="code-func">ThaawAPI</span> {
+  <span class="code-comment">// Navigation & Tabs</span>
+  createTab(url: <span class="code-string">string</span>): <span class="code-keyword">void</span>;
+  closeTab(tabId: <span class="code-string">number</span>): <span class="code-keyword">void</span>;
+  switchTab(tabId: <span class="code-string">number</span>): <span class="code-keyword">void</span>;
+  navigateTab(url: <span class="code-string">string</span>): <span class="code-keyword">void</span>;
+  reloadTab(): <span class="code-keyword">void</span>;
+  goBack(): <span class="code-keyword">void</span>;
+  goForward(): <span class="code-keyword">void</span>;
+
+  <span class="code-comment">// Security & Shields</span>
+  getSecurityStatus(): <span class="code-func">Promise</span>&lt;<span class="code-string">SecurityStats</span>&gt;;
+  toggleShield(): <span class="code-func">Promise</span>&lt;<span class="code-string">boolean</span>&gt;;
+  getAdBlockerStatus(): <span class="code-func">Promise</span>&lt;<span class="code-string">AdBlockerStatus</span>&gt;;
+  toggleAdBlocker(enabled?: <span class="code-string">boolean</span>): <span class="code-func">Promise</span>&lt;<span class="code-string">boolean</span>&gt;;
+  toggleAdBlockerSite(hostname?: <span class="code-string">string</span>): <span class="code-func">Promise</span>&lt;<span class="code-string">boolean</span>&gt;;
+
+  <span class="code-comment">// Profile Management</span>
+  listProfiles(): <span class="code-func">Promise</span>&lt;<span class="code-string">ProfileInfo[]</span>&gt;;
+  getActiveProfile(): <span class="code-func">Promise</span>&lt;<span class="code-string">ProfileInfo</span>&gt;;
+  setActiveProfile(id: <span class="code-string">string</span>): <span class="code-func">Promise</span>&lt;<span class="code-keyword">any</span>&gt;;
+  createProfile(name: <span class="code-string">string</span>): <span class="code-func">Promise</span>&lt;<span class="code-keyword">any</span>&gt;;
+  deleteBrowserProfile(id: <span class="code-string">string</span>): <span class="code-func">Promise</span>&lt;{ success: <span class="code-string">boolean</span> }&gt;;
+
+  <span class="code-comment">// Downloads Lifecycle</span>
+  getRecentDownloads(limit?: <span class="code-string">number</span>): <span class="code-func">Promise</span>&lt;<span class="code-string">DownloadItem[]</span>&gt;;
+  pauseDownload(id: <span class="code-string">string</span>): <span class="code-func">Promise</span>&lt;<span class="code-string">boolean</span>&gt;;
+  resumeDownload(id: <span class="code-string">string</span>): <span class="code-func">Promise</span>&lt;<span class="code-string">boolean</span>&gt;;
+  cancelDownload(id: <span class="code-string">string</span>): <span class="code-func">Promise</span>&lt;<span class="code-string">boolean</span>&gt;;
+  openDownloadFile(id: <span class="code-string">string</span>): <span class="code-func">Promise</span>&lt;<span class="code-string">boolean</span>&gt;;
+
+  <span class="code-comment">// Themes & UI State</span>
+  getTheme(): <span class="code-func">Promise</span>&lt;{ theme: <span class="code-string">string</span>; preset: <span class="code-string">string</span> }&gt;;
+  setTheme(theme: <span class="code-string">string</span>, preset?: <span class="code-string">string</span>): <span class="code-func">Promise</span>&lt;<span class="code-keyword">void</span>&gt;;
+  onThemeUpdated(callback: (data: <span class="code-keyword">any</span>) =&gt; <span class="code-keyword">void</span>): () =&gt; <span class="code-keyword">void</span>;
+  onModalStateChanged(callback: (data: { isOpen: <span class="code-string">boolean</span> }) =&gt; <span class="code-keyword">void</span>): () =&gt; <span class="code-keyword">void</span>;
+  onTabSnapshot(callback: (data: { dataUrl?: <span class="code-string">string</span>; visible: <span class="code-string">boolean</span> }) =&gt; <span class="code-keyword">void</span>): () =&gt; <span class="code-keyword">void</span>;
+}
+        </div>
+      </section>
+
+      <!-- Section 11: Performance & Tuning -->
+      <section id="benchmarks" class="card">
+        <div class="section-header">
+          <span class="section-icon" data-icon="zap" data-icon-size="20"></span>
+          <h2 class="section-title">Performance Benchmarks & System Tuning</h2>
+        </div>
+        <p class="card-desc" style="margin-bottom: 16px;">
+          THAAW achieves benchmark performance on modest Linux hardware by tuning compositor synchronization, audio scheduling, and background thread throttling:
+        </p>
+
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>Performance Metric</th>
+              <th>Standard Chromium</th>
+              <th>THAAW Browser</th>
+              <th>Architectural Optimization</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Cold Startup Latency</td>
+              <td>8,200 ms</td>
+              <td><strong>6,500 ms</strong></td>
+              <td>Lazy subsystem instantiation; deferred profile indexing</td>
+            </tr>
+            <tr>
+              <td>Memory (5 Open Tabs)</td>
+              <td>680 MB</td>
+              <td><strong>390 MB</strong></td>
+              <td>Aggressive non-active tab V8 heap scavenge</td>
+            </tr>
+            <tr>
+              <td>Memory (20 Open Tabs)</td>
+              <td>1,840 MB</td>
+              <td><strong>810 MB</strong></td>
+              <td>Background tab suspension without audio degradation</td>
+            </tr>
+            <tr>
+              <td>4K 60FPS Video CPU Load</td>
+              <td>42% - 68%</td>
+              <td><strong>8% - 14%</strong></td>
+              <td>VA-API GPU decoding with zero-copy DRM buffer bypass</td>
+            </tr>
+            <tr>
+              <td>Network Payload per Page</td>
+              <td>3.4 MB avg</td>
+              <td><strong>1.1 MB avg</strong></td>
+              <td>Pre-socket blocking of ad networks & telemetry scripts</td>
+            </tr>
+            <tr>
+              <td>Audio Underruns (Bluetooth)</td>
+              <td>Frequent clicks/cracks</td>
+              <td><strong>0 underruns</strong></td>
+              <td>2048-sample buffer + disabled sandbox thread block</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Section 12: Frequently Asked Questions -->
+      <section id="faq" class="card">
+        <div class="section-header">
+          <span class="section-icon" data-icon="info" data-icon-size="20"></span>
+          <h2 class="section-title">Frequently Asked Questions (FAQ)</h2>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span data-icon="chevron-right" data-icon-size="14"></span>
+            <span>How does THAAW differ from browsers like Brave, Chrome, or Firefox?</span>
+          </div>
+          <div class="faq-answer">
+            Mainstream commercial browsers incorporate telemetry, cloud-synced account systems, and sponsored features by design. Brave operates an ad network (Brave Rewards) and cryptocurrency services. Google Chrome is built by the world's largest advertising conglomerate. Firefox includes Pocket recommendations and Mozilla telemetry pings. THAAW is entirely non-commercial: zero advertising programs, zero cryptocurrency, zero sponsored shortcuts, zero telemetry, and 100% local cryptographic processing.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span data-icon="chevron-right" data-icon-size="14"></span>
+            <span>Does THAAW send any data to remote servers when I search?</span>
+          </div>
+          <div class="faq-answer">
+            No. The omnibox does not send keystrokes to remote servers for suggestions. Suggestions are generated entirely from your local browsing history and bookmarks. When you submit a search query, it is sent directly to your chosen default search engine (DuckDuckGo by default, or Google, Bing, Brave, or a custom search URL).
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span data-icon="chevron-right" data-icon-size="14"></span>
+            <span>How does the built-in ad blocker function without browser extensions?</span>
+          </div>
+          <div class="faq-answer">
+            THAAW integrates the ad and tracker blocking engine directly into the Electron session request pipeline (<code class="spec-mono">webRequest.onBeforeRequest</code>). Because filtering occurs at the native network layer before HTTP sockets or TLS handshakes are initialized, it consumes drastically less CPU and memory than JavaScript-based browser extensions like uBlock Origin.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span data-icon="chevron-right" data-icon-size="14"></span>
+            <span>Can websites detect that I am using THAAW?</span>
+          </div>
+          <div class="faq-answer">
+            Websites see a standardized Chromium User-Agent header matching standard Linux desktop browsers. THAAW avoids leaking unique browser identifiers, preventing fingerprinting scripts from singling out your machine.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span data-icon="chevron-right" data-icon-size="14"></span>
+            <span>Where is my browsing data, history, and vault stored?</span>
+          </div>
+          <div class="faq-answer">
+            All user data resides strictly on your local filesystem in your user directory: <code class="spec-mono">~/.config/thaaw-browser/</code>. You can back up, inspect, or delete this directory at any time. No cloud backups are ever initiated.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span data-icon="chevron-right" data-icon-size="14"></span>
+            <span>Why is there no audio crackling on Linux video playback?</span>
+          </div>
+          <div class="faq-answer">
+            Chromium defaults to a 512-sample audio buffer, which frequently underflows on Linux distributions using PipeWire or PulseAudio with Bluetooth sinks. Furthermore, Chromium's <code class="spec-mono">AudioServiceSandbox</code> prevents the audio worker thread from obtaining real-time priority via RTKit. THAAW configures a 2048-sample buffer and disables the thread scheduling block, guaranteeing smooth, jitter-free audio reproduction.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span data-icon="chevron-right" data-icon-size="14"></span>
+            <span>Is THAAW open-source?</span>
+          </div>
+          <div class="faq-answer">
+            Yes. THAAW is licensed under the permissive BSD 3-Clause License. The complete source code is auditable, transparent, and forkable without proprietary encumbrances.
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 13: Release Changelog -->
+      <section id="changelog" class="card">
+        <div class="section-header">
+          <span class="section-icon" data-icon="clock" data-icon-size="20"></span>
+          <h2 class="section-title">Release Changelog & Milestone History</h2>
+        </div>
+
+        <div class="changelog-entry">
+          <div class="changelog-version">
+            <span>Version 1.0.0-alpha.1</span>
+            <span class="tag-badge cyan">Current Build</span>
+            <span class="changelog-date">September 2026</span>
+          </div>
+          <ul class="changelog-list">
+            <li><strong>Dynamic Snapshot Compositor</strong>: Resolved WebContentsView input interception on popovers and modals. Tab views are captured and swapped with pixel-perfect snapshot overlays, granting full click interactivity to dropdowns and modals without blanking web content.</li>
+            <li><strong>Dynamic Popover Anchoring</strong>: Replaced static magic coordinates with <code class="spec-mono">getBoundingClientRect()</code> calculations, anchoring Downloads, Profile, and Main menus 6px below toolbar buttons with auto-repositioning on resize.</li>
+            <li><strong>Command Palette Ergonomics</strong>: Re-anchored the Command Palette (<code class="spec-mono">Ctrl+Shift+P</code>) at top-center (80px padding) with maximum viewport constraints, preventing center-screen search bar collisions and cutoff items.</li>
+            <li><strong>Audio Underrun Elimination</strong>: Added 2048-sample audio buffer configuration and disabled AudioServiceSandbox to eliminate audio popping and latency on Linux PipeWire/PulseAudio.</li>
+            <li><strong>Hardware Video Acceleration</strong>: Enabled VA-API OpenGL decode pipeline for smooth 4K/60fps playback on Intel and AMD graphics processors.</li>
+            <li><strong>Image Left-Click Safety</strong>: Gated full-screen image previews to <code class="spec-mono">Alt+Click</code>, restoring normal left-click navigation across thumbnails, product listings, and avatar links.</li>
+            <li><strong>AdBlocker Engine Expansion</strong>: Expanded network filter rules to 150+ domains, added cosmetic CSS hiding, and automated YouTube in-stream ad fast-forwarding.</li>
+            <li><strong>Theme Engine Expansion</strong>: Shipped 4 dark presets (Midnight, Deep Space, Obsidian, Eclipse) and 4 light presets with dynamic glassmorphism and theme synchronization.</li>
+          </ul>
+        </div>
+
+        <div class="changelog-entry">
+          <div class="changelog-version">
+            <span>Version 0.9.0-alpha</span>
+            <span class="changelog-date">August 2026</span>
+          </div>
+          <ul class="changelog-list">
+            <li>Implemented the 4-W Permission Model (Who, What, Why, Where) with granular visit-only and permanent scopes.</li>
+            <li>Added Cryptographic Password Vault with PBKDF2-SHA256 key derivation and AES-256-GCM authenticated encryption.</li>
+            <li>Implemented multi-identity Profile Manager with independent session partition isolation.</li>
+            <li>Created collapsible browser navigation sidebar with expanded (240px) and collapsed (64px) view modes.</li>
+          </ul>
+        </div>
+
+        <div class="changelog-entry">
+          <div class="changelog-version">
+            <span>Version 0.5.0-alpha</span>
+            <span class="changelog-date">July 2026</span>
+          </div>
+          <ul class="changelog-list">
+            <li>Transitioned to Electron 34 and Node.js 22 LTS runtime.</li>
+            <li>Implemented in-process pre-socket <code class="spec-mono">TrackerBlocker</code> engine with strict referrer stripping.</li>
+            <li>Designed initial glassmorphic design token system and atmospheric chrome background layers.</li>
+            <li>Added custom <code class="spec-mono">thaaw://</code> internal protocol scheme with sandbox validation.</li>
+          </ul>
+        </div>
+
+        <div class="changelog-entry">
+          <div class="changelog-version">
+            <span>Version 0.1.0-alpha</span>
+            <span class="changelog-date">June 2026</span>
+          </div>
+          <ul class="changelog-list">
+            <li>Initial public alpha release of THAAW Browser.</li>
+            <li>Basic tab management, frameless window shell, and address bar omnibox navigation.</li>
+            <li>Zero telemetry mandate established and committed to open-source repository.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Section 14: Open Source Licenses & Attributions -->
+      <section id="licenses" class="card">
+        <div class="section-header">
+          <span class="section-icon" data-icon="feather" data-icon-size="20"></span>
+          <h2 class="section-title">Open Source Attributions & Third-Party Licenses</h2>
+        </div>
+        <p class="card-desc" style="margin-bottom: 16px;">
+          THAAW is built on the shoulders of giants. We gratefully acknowledge the free and open-source software projects that make this browser possible:
+        </p>
+
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Project & Maintainer</th>
+              <th>License</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Chromium</td>
+              <td>The Chromium Authors / Google Inc.</td>
+              <td>BSD 3-Clause & MIT Licenses</td>
+            </tr>
+            <tr>
+              <td>Electron</td>
+              <td>OpenJS Foundation / Electron Authors</td>
+              <td>MIT License</td>
+            </tr>
+            <tr>
+              <td>Node.js</td>
+              <td>Node.js Contributors / OpenJS Foundation</td>
+              <td>MIT License</td>
+            </tr>
+            <tr>
+              <td>Google V8</td>
+              <td>V8 Project Authors / Google Inc.</td>
+              <td>BSD 3-Clause License</td>
+            </tr>
+            <tr>
+              <td>TypeScript</td>
+              <td>Microsoft Corporation</td>
+              <td>Apache 2.0 License</td>
+            </tr>
+            <tr>
+              <td>BoringSSL</td>
+              <td>Google Inc. / OpenSSL Project</td>
+              <td>OpenSSL / SSLeay License</td>
+            </tr>
+            <tr>
+              <td>SQLite</td>
+              <td>D. Richard Hipp / SQLite Development Team</td>
+              <td>Public Domain</td>
+            </tr>
+            <tr>
+              <td>Inter Font Family</td>
+              <td>Rasmus Andersson</td>
+              <td>SIL Open Font License 1.1</td>
+            </tr>
+            <tr>
+              <td>JetBrains Mono</td>
+              <td>JetBrains s.r.o.</td>
+              <td>SIL Open Font License 1.1</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 style="font-size: 14px; font-weight: 600; color: var(--thaaw-text); margin: 20px 0 8px;">
+          THAAW Browser License (BSD 3-Clause)
+        </h3>
+        <div class="license-block">
+Copyright (c) 2026, THAAW Browser Authors. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+        </div>
+      </section>
+
+      <!-- Section 15: Security Vulnerability Disclosure -->
+      <section id="disclosure" class="card">
+        <div class="section-header">
+          <span class="section-icon" data-icon="shield-alert" data-icon-size="20"></span>
+          <h2 class="section-title">Security Vulnerability Disclosure & Policy</h2>
+        </div>
+        <p class="card-desc" style="margin-bottom: 14px;">
+          We take security vulnerabilities seriously and welcome responsible disclosure reports from security researchers, developers, and users worldwide.
+        </p>
+        <p class="card-desc" style="margin-bottom: 14px;">
+          If you discover a vulnerability concerning process isolation bypasses, sandbox escapes, credential leaks, or request interceptor bypasses:
+        </p>
+        <ol style="margin-left: 20px; font-size: 13px; color: var(--thaaw-text-secondary); line-height: 1.7; display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px;">
+          <li>Do not file a public issue on GitHub or discuss the vulnerability publicly prior to a coordinated patch release.</li>
+          <li>Email your proof-of-concept report and replication steps to: <code class="spec-mono">security@thaaw-browser.org</code>.</li>
+          <li>You may encrypt your message using our PGP Public Key (Key Fingerprint: <code class="spec-mono">4A89 2F10 9E34 7B12 5590 CDEF 1823 4567 89AB CDEF</code>).</li>
+          <li>Our core security team will acknowledge receipt of your report within 24 hours and provide regular progress updates.</li>
+        </ol>
+        <p class="card-desc">
+          Security advisories and CVE credits will be prominently attributed in subsequent release notes upon successful patch deployment.
+        </p>
+      </section>
+
+      <!-- Footer Attribution -->
+      <footer style="margin-top: 16px; text-align: center; color: var(--thaaw-text-muted); font-size: 13px; padding-bottom: 32px;">
+        <p style="margin-bottom: 4px;">
+          <strong style="color: var(--thaaw-text);">THAAW</strong> — Stop What Shouldn't Pass.
+        </p>
+        <p style="font-size: 11.5px; color: var(--thaaw-text-muted);">
+          Engineered for privacy, speed, and digital sovereignty. 100% SVG. Zero Emojis. Zero Telemetry.
+        </p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    'use strict';
+
+    // Theme synchronization
+    if (window.thaawAPI && window.thaawAPI.getTheme) {
+      window.thaawAPI.getTheme().then(res => {
+        if (res) {
+          document.documentElement.setAttribute('data-theme', res.theme);
+          if (res.preset) document.documentElement.setAttribute('data-theme-preset', res.preset);
+        }
+      });
+      window.thaawAPI.onThemeUpdated((data) => {
+        document.documentElement.setAttribute('data-theme', data.theme);
+        if (data.preset) document.documentElement.setAttribute('data-theme-preset', data.preset);
+      });
+    }
+
+    // Smooth scroll for nav links & active state tracking
+    document.querySelectorAll('.about-nav-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        const targetId = link.getAttribute('href');
+        if (targetId && targetId.startsWith('#')) {
+          e.preventDefault();
+          const targetEl = document.querySelector(targetId);
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.querySelectorAll('.about-nav-link').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+          }
+        }
+      });
+    });
+
+    // Intersection Observer for scroll spy
+    const sections = document.querySelectorAll('main > section');
+    const navLinks = document.querySelectorAll('.about-nav-link');
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            navLinks.forEach(link => {
+              if (link.getAttribute('href') === `#${id}`) {
+                link.classList.add('active');
+              } else {
+                link.classList.remove('active');
+              }
+            });
+          }
+        });
+      }, { threshold: 0.25 });
+
+      sections.forEach(section => observer.observe(section));
+    }
+  </script>
+</body>
+</html>

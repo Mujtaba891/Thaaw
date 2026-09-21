@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bookmarks — THAAW</title>
+  <link rel="stylesheet" href="internal.css">
+  <script src="icons.js"></script>
+  <script src="favicon-resolver.js"></script>
+</head>
+<body class="internal-page-body">
+  <div class="container" style="max-width: 980px; margin: 24px auto; padding: 0 20px;">
+    <header class="page-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <span data-icon="bookmark" data-icon-size="28" style="color: var(--thaaw-primary);"></span>
+        <div>
+          <h1 style="font-size: 22px; font-weight: 700; color: var(--thaaw-text); margin: 0;">Bookmarks Manager</h1>
+          <p style="font-size: 12px; color: var(--thaaw-text-muted); margin: 4px 0 0;">Manage, organize, and search your saved sites.</p>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input type="search" id="bookmarkSearchInput" placeholder="Search bookmarks..." style="width: 220px; padding: 8px 12px; background: var(--thaaw-surface); border: 1px solid var(--thaaw-border); border-radius: var(--thaaw-radius-sm); color: var(--thaaw-text); font-size: 13px;" />
+        <button id="addBookmarkBtn" class="btn btn-primary btn-sm" style="display: flex; align-items: center; gap: 6px;">
+          <span data-icon="plus" data-icon-size="14"></span>
+          <span>Add Bookmark</span>
+        </button>
+        <button id="importBookmarksBtn" class="btn btn-secondary btn-sm" title="Import Bookmarks from HTML or JSON">Import</button>
+        <button id="exportBookmarksBtn" class="btn btn-secondary btn-sm" title="Export Bookmarks">Export</button>
+        <input type="file" id="importBookmarksFileInput" accept=".html,.htm,.json" style="display: none;" />
+      </div>
+    </header>
+
+    <!-- Bookmarks List -->
+    <div id="bookmarksListContainer" style="display: flex; flex-direction: column; gap: 10px;">
+      <!-- Dynamically populated -->
+    </div>
+  </div>
+
+  <!-- Add / Edit Bookmark Modal -->
+  <div id="bmModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="bmModalTitle">
+    <div class="modal-content" style="max-width: 440px;">
+      <h3 id="bmModalTitle" style="margin-top: 0; color: var(--thaaw-text);">Add Bookmark</h3>
+      <input type="hidden" id="bmEditId" value="" />
+      <div class="modal-field">
+        <label for="bmTitleInput">Title</label>
+        <input type="text" id="bmTitleInput" placeholder="e.g. GitHub" />
+      </div>
+      <div class="modal-field">
+        <label for="bmUrlInput">URL</label>
+        <input type="text" id="bmUrlInput" placeholder="https://github.com" />
+      </div>
+      <div class="modal-buttons">
+        <button type="button" id="cancelBmBtn" class="btn btn-secondary">Cancel</button>
+        <button type="button" id="saveBmBtn" class="btn btn-primary">Save Bookmark</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    'use strict';
+
+    let allBookmarks = [];
+
+    // Global Theme Sync
+    if (window.thaawAPI && window.thaawAPI.getTheme) {
+      window.thaawAPI.getTheme().then(res => {
+        if (res) {
+          document.documentElement.setAttribute('data-theme', res.theme);
+          if (res.preset) document.documentElement.setAttribute('data-theme-preset', res.preset);
+        }
+      });
+      window.thaawAPI.onThemeUpdated((data) => {
+        document.documentElement.setAttribute('data-theme', data.theme);
+        if (data.preset) document.documentElement.setAttribute('data-theme-preset', data.preset);
+      });
+    }
+
+    async function loadBookmarks(query = '') {
+      const container = document.getElementById('bookmarksListContainer');
+      container.innerHTML = '<div style="text-align: center; color: var(--thaaw-text-muted); padding: 40px;">Loading bookmarks...</div>';
+
+      try {
+        if (window.thaawAPI && window.thaawAPI.getBookmarks) {
+          allBookmarks = await window.thaawAPI.getBookmarks(query);
+        } else {
+          allBookmarks = [
+            { id: '1', title: 'GitHub', url: 'https://github.com' },
+            { id: '2', title: 'DuckDuckGo', url: 'https://duckduckgo.com' },
+            { id: '3', title: 'Wikipedia', url: 'https://en.wikipedia.org' }
+          ];
+        }
+        renderBookmarks(allBookmarks);
+      } catch (err) {
+        container.innerHTML = '<div style="text-align: center; color: var(--thaaw-text-muted); padding: 40px;">Could not load bookmarks.</div>';
+      }
+    }
+
+    function renderBookmarks(list) {
+      const container = document.getElementById('bookmarksListContainer');
+      container.innerHTML = '';
+
+      if (!list || list.length === 0) {
+        container.innerHTML = `
+          <div class="card" style="text-align: center; padding: 40px; color: var(--thaaw-text-muted);">
+            <span data-icon="bookmark" data-icon-size="32" style="color: var(--thaaw-text-muted); margin-bottom: 12px; display: inline-block;"></span>
+            <div style="font-size: 14px; font-weight: 600; color: var(--thaaw-text);">No bookmarks saved yet</div>
+            <p style="font-size: 12px; margin-top: 4px;">Click the star icon in the URL bar or "Add Bookmark" above.</p>
+          </div>
+        `;
+        if (window.getSvgIcon) {
+          container.querySelectorAll('[data-icon]').forEach(el => el.innerHTML = window.getSvgIcon('bookmark', 32));
+        }
+        return;
+      }
+
+      list.forEach((bm) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.display = 'flex';
+        card.style.alignItems = 'center';
+        card.style.justifyContent = 'space-between';
+        card.style.marginBottom = '0';
+        card.style.padding = '12px 18px';
+
+        // Left info
+        const info = document.createElement('div');
+        info.style.display = 'flex';
+        info.style.alignItems = 'center';
+        info.style.gap = '14px';
+        info.style.flex = '1';
+        info.style.minWidth = '0';
+
+        if (window.FaviconResolver) {
+          const fav = window.FaviconResolver.renderFaviconElement(bm.url, bm.title, 22);
+          info.appendChild(fav);
+        }
+
+        const textDiv = document.createElement('div');
+        textDiv.style.minWidth = '0';
+
+        const titleA = document.createElement('a');
+        titleA.textContent = bm.title || bm.url;
+        titleA.href = bm.url;
+        titleA.style.fontSize = '14px';
+        titleA.style.fontWeight = '600';
+        titleA.style.color = 'var(--thaaw-text)';
+        titleA.style.textDecoration = 'none';
+        titleA.style.display = 'block';
+        titleA.style.whiteSpace = 'nowrap';
+        titleA.style.overflow = 'hidden';
+        titleA.style.textOverflow = 'ellipsis';
+        titleA.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (window.thaawAPI && window.thaawAPI.navigate) {
+            window.thaawAPI.navigate(bm.url);
+          } else {
+            window.location.href = bm.url;
+          }
+        });
+
+        const urlSpan = document.createElement('div');
+        urlSpan.textContent = bm.url;
+        urlSpan.style.fontSize = '12px';
+        urlSpan.style.color = 'var(--thaaw-primary)';
+        urlSpan.style.whiteSpace = 'nowrap';
+        urlSpan.style.overflow = 'hidden';
+        urlSpan.style.textOverflow = 'ellipsis';
+
+        textDiv.appendChild(titleA);
+        textDiv.appendChild(urlSpan);
+        info.appendChild(textDiv);
+        card.appendChild(info);
+
+        // Actions
+        const actions = document.createElement('div');
+        actions.style.display = 'flex';
+        actions.style.alignItems = 'center';
+        actions.style.gap = '8px';
+        actions.style.flexShrink = '0';
+
+        const openTabBtn = document.createElement('button');
+        openTabBtn.className = 'btn btn-secondary btn-sm';
+        openTabBtn.title = 'Open in New Tab';
+        openTabBtn.innerHTML = window.getSvgIcon ? window.getSvgIcon('external-link', 13) : 'Open';
+        openTabBtn.addEventListener('click', () => {
+          if (window.thaawAPI && window.thaawAPI.createTab) {
+            window.thaawAPI.createTab(bm.url);
+          } else {
+            window.open(bm.url, '_blank');
+          }
+        });
+        actions.appendChild(openTabBtn);
+
+        const editBtn = document.createElement('button');
+        editBtn.className = 'btn btn-secondary btn-sm';
+        editBtn.title = 'Edit Bookmark';
+        editBtn.innerHTML = window.getSvgIcon ? window.getSvgIcon('edit', 13) : 'Edit';
+        editBtn.addEventListener('click', () => {
+          openEditModal(bm);
+        });
+        actions.appendChild(editBtn);
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn btn-secondary btn-sm';
+        delBtn.style.color = 'var(--thaaw-danger, #EF4444)';
+        delBtn.title = 'Delete Bookmark';
+        delBtn.innerHTML = window.getSvgIcon ? window.getSvgIcon('trash', 13) : 'Delete';
+        delBtn.addEventListener('click', async () => {
+          if (confirm(`Delete bookmark "${bm.title || bm.url}"?`)) {
+            if (window.thaawAPI && window.thaawAPI.deleteBookmark) {
+              await window.thaawAPI.deleteBookmark(bm.id);
+              loadBookmarks(document.getElementById('bookmarkSearchInput').value.trim());
+            }
+          }
+        });
+        actions.appendChild(delBtn);
+
+        card.appendChild(actions);
+        container.appendChild(card);
+      });
+    }
+
+    // Search filter
+    let bmSearchTimer = null;
+    document.getElementById('bookmarkSearchInput').addEventListener('input', (e) => {
+      clearTimeout(bmSearchTimer);
+      bmSearchTimer = setTimeout(() => {
+        loadBookmarks(e.target.value.trim());
+      }, 200);
+    });
+
+    // Add / Edit Modal
+    const bmModal = document.getElementById('bmModal');
+    function openEditModal(bm = null) {
+      const titleInput = document.getElementById('bmTitleInput');
+      const urlInput = document.getElementById('bmUrlInput');
+      const idInput = document.getElementById('bmEditId');
+      const modalTitle = document.getElementById('bmModalTitle');
+
+      if (bm) {
+        modalTitle.textContent = 'Edit Bookmark';
+        idInput.value = bm.id;
+        titleInput.value = bm.title;
+        urlInput.value = bm.url;
+      } else {
+        modalTitle.textContent = 'Add Bookmark';
+        idInput.value = '';
+        titleInput.value = '';
+        urlInput.value = '';
+      }
+
+      bmModal.classList.remove('hidden');
+      titleInput.focus();
+    }
+
+    function showToast(msg) {
+      let tc = document.getElementById('bmToastContainer');
+      if (!tc) {
+        tc = document.createElement('div');
+        tc.id = 'bmToastContainer';
+        tc.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;';
+        document.body.appendChild(tc);
+      }
+      const t = document.createElement('div');
+      t.style.cssText = 'padding:10px 16px;background:rgba(10,16,32,0.96);border:1px solid var(--thaaw-border);border-radius:8px;color:var(--thaaw-text);font-size:12px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,0.5);pointer-events:auto;';
+      t.textContent = msg;
+      tc.appendChild(t);
+      setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 200); }, 3000);
+    }
+
+    document.getElementById('addBookmarkBtn').addEventListener('click', () => openEditModal());
+    document.getElementById('cancelBmBtn').addEventListener('click', () => bmModal.classList.add('hidden'));
+
+    document.getElementById('saveBmBtn').addEventListener('click', async () => {
+      const id = document.getElementById('bmEditId').value;
+      const title = document.getElementById('bmTitleInput').value.trim();
+      let url = document.getElementById('bmUrlInput').value.trim();
+
+      if (!title || !url) {
+        showToast('Please provide both title and URL.');
+        return;
+      }
+
+      if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('thaaw://')) {
+        url = 'https://' + url;
+      }
+
+      if (id) {
+        if (window.thaawAPI && window.thaawAPI.updateBookmark) {
+          await window.thaawAPI.updateBookmark(id, { title, url });
+        }
+      } else {
+        if (window.thaawAPI && window.thaawAPI.addBookmark) {
+          await window.thaawAPI.addBookmark({ title, url });
+        }
+      }
+
+      bmModal.classList.add('hidden');
+      loadBookmarks();
+    });
+
+    // Export Bookmarks
+    document.getElementById('exportBookmarksBtn').addEventListener('click', () => {
+      let html = '<!DOCTYPE NETSCAPE-Bookmark-file-1>\n<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">\n<TITLE>Bookmarks</TITLE>\n<H1>Bookmarks</H1>\n<DL><p>\n';
+      allBookmarks.forEach(bm => {
+        html += `  <DT><A HREF="${bm.url}">${bm.title || bm.url}</A>\n`;
+      });
+      html += '</DL><p>\n';
+
+      const blob = new Blob([html], { type: 'text/html' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'thaaw-bookmarks.html';
+      a.click();
+    });
+
+    // Import Bookmarks
+    const importBtn = document.getElementById('importBookmarksBtn');
+    const importInput = document.getElementById('importBookmarksFileInput');
+    if (importBtn && importInput) {
+      importBtn.addEventListener('click', () => {
+        importInput.value = '';
+        importInput.click();
+      });
+
+      importInput.addEventListener('change', async (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+
+        try {
+          const content = await file.text();
+          const format = file.name.endsWith('.json') ? 'json' : 'html';
+          if (window.thaawAPI && window.thaawAPI.importBookmarks) {
+            const res = await window.thaawAPI.importBookmarks(content, format);
+            showToast(`Imported ${res.imported || 0} bookmark(s).`);
+          } else {
+            showToast('Bookmarks import API not available.');
+          }
+          loadBookmarks();
+        } catch (err) {
+          showToast('Failed to import bookmarks file.');
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadBookmarks();
+    });
+  </script>
+</body>
+</html>

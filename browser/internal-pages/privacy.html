@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Center — THAAW</title>
+  <link rel="stylesheet" href="internal.css">
+  <script src="icons.js"></script>
+  <style>
+    .tier-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .tier-card {
+      background: var(--thaaw-surface);
+      border: 2px solid var(--thaaw-border);
+      border-radius: var(--thaaw-radius-md);
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    .tier-card:hover {
+      border-color: var(--thaaw-blue);
+    }
+    .tier-card.selected {
+      border-color: var(--thaaw-blue);
+      background: var(--thaaw-blue-subtle);
+    }
+    .tier-name {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--thaaw-text);
+    }
+    .tier-desc {
+      font-size: 13px;
+      color: var(--thaaw-text-secondary);
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="page-header">
+      <div style="color: var(--thaaw-blue);">
+        <span data-icon="shield-check" data-icon-size="36"></span>
+      </div>
+      <div>
+        <h1>THAAW Privacy Shield</h1>
+        <p>Configure protection tiers, tracking defenses, and anti-fingerprinting parameters.</p>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="card-title">
+        <span data-icon="shield" data-icon-size="18"></span>
+        <span>Protection Tier</span>
+      </div>
+      <div class="card-desc">Choose how aggressively THAAW stops tracking scripts, cookies, and fingerprinting.</div>
+
+      <div class="tier-grid">
+        <div class="tier-card selected" onclick="selectTier(this, 'balanced')">
+          <div class="tier-name">Balanced (Default)</div>
+          <div class="tier-desc">Blocks known trackers, cross-site tracking cookies, and fingerprinting beacons. Maintains maximum site compatibility.</div>
+        </div>
+
+        <div class="tier-card" onclick="selectTier(this, 'strict')">
+          <div class="tier-name">Strict</div>
+          <div class="tier-desc">Blocks trackers and invasive advertisements, enforces strict referrer truncation, and normalizes canvas data.</div>
+        </div>
+
+        <div class="tier-card" onclick="selectTier(this, 'maximum')">
+          <div class="tier-name">Maximum</div>
+          <div class="tier-desc">Aggressive blocking of all third-party resources, uniform fingerprint spoofing, and strict session isolation.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Privacy Features -->
+    <div class="card">
+      <div class="card-title">
+        <span data-icon="eye-off" data-icon-size="18"></span>
+        <span>Anti-Fingerprinting & Tracking Protections</span>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Canvas & Audio Noise Normalization</div>
+          <div class="setting-description">Subtly masks canvas rendering hashes without causing visible distortions to images or games.</div>
+        </div>
+        <span class="badge badge-blue">ACTIVE</span>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Referrer Truncation</div>
+          <div class="setting-description">Prevents destination websites from seeing the specific URL path or query params you came from.</div>
+        </div>
+        <span class="badge badge-blue">STRICT ORIGIN</span>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Bounce Tracking Scrubbing</div>
+          <div class="setting-description">Automatically purges URL query parameters commonly used for tracking (gclid, fbclid, utm_*).</div>
+        </div>
+        <span class="badge badge-orange">FILTERING</span>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Zero Telemetry Policy</div>
+          <div class="setting-description">THAAW never collects or transmits your browsing history, searches, or system identity.</div>
+        </div>
+        <span class="badge badge-green">VERIFIED OFF</span>
+      </div>
+    </div>
+
+    <div style="margin-top: 30px; text-align: center; color: var(--thaaw-text-muted); font-size: 13px;">
+      <strong style="color: var(--thaaw-text);">THAAW</strong> — Stop What Shouldn't Pass.
+    </div>
+  </div>
+
+  <script>
+    'use strict';
+    // Global Theme & Preset Sync
+    if (window.thaawAPI && window.thaawAPI.getTheme) {
+      window.thaawAPI.getTheme().then(res => {
+        if (res) {
+          document.documentElement.setAttribute('data-theme', res.theme);
+          if (res.preset) document.documentElement.setAttribute('data-theme-preset', res.preset);
+        }
+      });
+      window.thaawAPI.onThemeUpdated((data) => {
+        document.documentElement.setAttribute('data-theme', data.theme);
+        if (data.preset) document.documentElement.setAttribute('data-theme-preset', data.preset);
+      });
+    }
+
+    // Sync active protection level on load
+    if (window.thaawAPI && window.thaawAPI.getSettings) {
+      window.thaawAPI.getSettings().then(s => {
+        if (s && s.protectionLevel) {
+          const cards = document.querySelectorAll('.tier-card');
+          cards.forEach(c => {
+            if (c.getAttribute('onclick') && c.getAttribute('onclick').includes(s.protectionLevel)) {
+              cards.forEach(card => card.classList.remove('selected'));
+              c.classList.add('selected');
+            }
+          });
+        }
+      });
+    }
+
+    function selectTier(elem, tier) {
+      document.querySelectorAll('.tier-card').forEach(c => c.classList.remove('selected'));
+      elem.classList.add('selected');
+      if (window.thaawAPI?.setProtectionLevel) {
+        window.thaawAPI.setProtectionLevel(tier);
+      }
+      if (window.thaawAPI?.updateSettings) {
+        window.thaawAPI.updateSettings({ protectionLevel: tier });
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Downloads — THAAW</title>
+  <link rel="stylesheet" href="internal.css">
+  <script src="icons.js"></script>
+  <style>
+    .download-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 18px;
+      background: var(--thaaw-surface);
+      border: 1px solid var(--thaaw-border);
+      border-radius: var(--thaaw-radius-md);
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+    .download-card:hover {
+      background: var(--thaaw-surface-hover);
+      border-color: var(--thaaw-border-hover, rgba(255,255,255,0.14));
+    }
+    .download-card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      color: var(--thaaw-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .download-card-body {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .download-filename {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--thaaw-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+    }
+    .download-filename:hover {
+      color: var(--thaaw-cyan);
+    }
+    .download-subtext {
+      font-size: 11px;
+      color: var(--thaaw-text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .download-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .download-full-progress {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .download-full-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--thaaw-cyan) 0%, #00E5FF 100%);
+      border-radius: 2px;
+      transition: width 0.2s ease;
+    }
+    .toast-popup {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .toast-msg {
+      pointer-events: auto;
+      padding: 10px 16px;
+      background: rgba(10, 16, 32, 0.96);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--thaaw-border);
+      border-radius: 8px;
+      color: var(--thaaw-text);
+      font-size: 12px;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      animation: fadeIn 0.2s ease forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .download-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      animation: fadeIn 0.15s ease;
+    }
+    .download-modal-card {
+      width: 360px;
+      max-width: 90vw;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid var(--thaaw-border);
+      border-radius: var(--thaaw-radius-md);
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .download-modal-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--thaaw-border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .download-modal-filename {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--thaaw-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+    }
+    .download-modal-list {
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .download-modal-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--thaaw-text);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      transition: all 0.15s ease;
+    }
+    .download-modal-btn:hover {
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--thaaw-cyan);
+    }
+    .download-modal-btn.danger {
+      color: #F87171;
+    }
+    .download-modal-btn.danger:hover {
+      background: rgba(239, 68, 68, 0.12);
+      color: #EF4444;
+    }
+    .download-modal-divider {
+      height: 1px;
+      background: var(--thaaw-border);
+      margin: 4px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="page-header" style="justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <div style="color: var(--thaaw-blue);">
+          <span data-icon="download" data-icon-size="32"></span>
+        </div>
+        <div>
+          <h1>Downloads</h1>
+          <p>Local files inspected and downloaded in this session</p>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <input type="search" id="downloadSearch" placeholder="Search downloads..." style="width: 220px;" />
+        <button id="clearCompletedBtn" class="btn btn-secondary" style="font-size: 12px;">Clear Completed</button>
+      </div>
+    </header>
+
+    <div class="card" style="margin-bottom: 20px;">
+      <div class="card-title">
+        <span data-icon="shield-check" data-icon-size="18"></span>
+        <span>Download Threat Protection</span>
+      </div>
+      <p class="card-desc">
+        All downloads undergo pre-save static inspection to verify file extensions, MIME signatures, and quarantine executable payloads. Completed downloads remain safe and accessible here.
+      </p>
+    </div>
+
+    <div id="downloadsList" style="display: flex; flex-direction: column; gap: 10px;">
+      <!-- Downloads dynamically rendered here -->
+    </div>
+
+    <div id="emptyDownloads" class="card" style="display: none; text-align: center; padding: 48px 20px; color: var(--thaaw-text-muted);">
+      <div style="display: inline-flex; width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.03); align-items: center; justify-content: center; margin-bottom: 12px;">
+        <span data-icon="download" data-icon-size="24"></span>
+      </div>
+      <div style="font-weight: 600; font-size: 14px; color: var(--thaaw-text);">No Downloads Found</div>
+      <p style="font-size: 12px; margin-top: 4px;">Files you download will securely appear here.</p>
+    </div>
+  </div>
+
+  <!-- Download Actions Modal -->
+  <div id="downloadPageActionsModal" class="download-modal-backdrop" style="display: none;">
+    <div class="download-modal-card">
+      <div class="download-modal-header">
+        <div id="pageDlMenuIcon" class="download-card-icon" style="width: 32px; height: 32px;"></div>
+        <div id="pageDlMenuFilename" class="download-modal-filename">file.zip</div>
+      </div>
+      <div class="download-modal-list">
+        <button id="pageDlActionOpen" class="download-modal-btn">
+          <span data-icon="external-link" data-icon-size="16"></span>
+          <span>Open File</span>
+        </button>
+        <button id="pageDlActionFolder" class="download-modal-btn">
+          <span data-icon="folder" data-icon-size="16"></span>
+          <span>Show in Folder</span>
+        </button>
+        <button id="pageDlActionCopyLink" class="download-modal-btn">
+          <span data-icon="link" data-icon-size="16"></span>
+          <span>Copy Download Link</span>
+        </button>
+        <div class="download-modal-divider"></div>
+        <button id="pageDlActionRemove" class="download-modal-btn">
+          <span data-icon="x" data-icon-size="16"></span>
+          <span>Remove from Downloads</span>
+        </button>
+        <button id="pageDlActionDelete" class="download-modal-btn danger">
+          <span data-icon="trash-2" data-icon-size="16"></span>
+          <span>Delete File</span>
+        </button>
+        <div class="download-modal-divider"></div>
+        <button id="pageDlActionCancel" class="download-modal-btn" style="justify-content: center; color: var(--thaaw-text-muted);">
+          <span>Cancel</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastPopup" class="toast-popup"></div>
+
+  <script>
+    // Global Theme & Preset Sync
+    if (window.thaawAPI && window.thaawAPI.getTheme) {
+      window.thaawAPI.getTheme().then(res => {
+        if (res) {
+          document.documentElement.setAttribute('data-theme', res.theme);
+          if (res.preset) document.documentElement.setAttribute('data-theme-preset', res.preset);
+        }
+      });
+      window.thaawAPI.onThemeUpdated((data) => {
+        document.documentElement.setAttribute('data-theme', data.theme);
+        if (data.preset) document.documentElement.setAttribute('data-theme-preset', data.preset);
+      });
+    }
+
+    function showInternalToast(msg) {
+      const container = document.getElementById('toastPopup');
+      if (!container) return;
+      const el = document.createElement('div');
+      el.className = 'toast-msg';
+      el.textContent = msg;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        setTimeout(() => el.remove(), 250);
+      }, 3000);
+    }
+
+    function formatBytes(bytes) {
+      if (!bytes || bytes === 0) return '0 B';
+      const k = 1024;
+      const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    function getIconName(cat) {
+      switch (cat) {
+        case 'archive': return 'package';
+        case 'image': return 'image';
+        case 'video': return 'video';
+        case 'audio': return 'volume-2';
+        case 'code': return 'code';
+        default: return 'file';
+      }
+    }
+
+    let allDownloads = [];
+
+    async function loadDownloads() {
+      if (!window.thaawAPI || !window.thaawAPI.getAllDownloads) return;
+      try {
+        allDownloads = await window.thaawAPI.getAllDownloads();
+        renderFilteredDownloads();
+      } catch (e) {
+        console.error('Failed to load downloads:', e);
+      }
+    }
+
+    function renderFilteredDownloads() {
+      const listEl = document.getElementById('downloadsList');
+      const emptyEl = document.getElementById('emptyDownloads');
+      const searchVal = (document.getElementById('downloadSearch').value || '').toLowerCase().trim();
+
+      const filtered = allDownloads.filter(item => {
+        if (!searchVal) return true;
+        return (item.filename || '').toLowerCase().includes(searchVal) || (item.url || '').toLowerCase().includes(searchVal);
+      });
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = '';
+        emptyEl.style.display = 'block';
+        return;
+      }
+
+      emptyEl.style.display = 'none';
+      listEl.innerHTML = filtered.map(item => {
+        const isProgressing = item.state === 'progressing';
+        const isCompleted = item.state === 'completed';
+        const isFailed = item.state === 'failed';
+        const isCancelled = item.state === 'cancelled';
+        const pct = item.progress || 0;
+        const icon = getIconName(item.category);
+
+        let badgeClass = 'badge-green';
+        let badgeText = 'COMPLETED';
+        if (isProgressing) {
+          badgeClass = 'badge-cyan';
+          badgeText = item.isPaused ? 'PAUSED' : `${pct}%`;
+        } else if (isFailed) {
+          badgeClass = 'badge-red';
+          badgeText = 'FAILED';
+        } else if (isCancelled) {
+          badgeClass = 'badge';
+          badgeText = 'CANCELLED';
+        }
+
+        return `
+          <div class="download-card" data-download-id="${item.id}" onclick="handleCardClick(event, '${item.id}')">
+            <div class="download-card-icon">
+              <span data-icon="${icon}" data-icon-size="20"></span>
+            </div>
+            <div class="download-card-body">
+              <div class="download-filename">${item.filename}</div>
+              <div class="download-subtext">
+                ${item.url || 'Unknown Source'} • ${formatBytes(item.receivedBytes || item.totalBytes)} ${item.totalBytes ? 'of ' + formatBytes(item.totalBytes) : ''}
+                ${item.speed ? '• ' + formatBytes(item.speed) + '/s' : ''}
+              </div>
+              ${isProgressing ? `
+                <div class="download-full-progress">
+                  <div class="download-full-progress-fill" style="width: ${pct}%;"></div>
+                </div>
+              ` : ''}
+            </div>
+            <div class="download-card-actions" onclick="event.stopPropagation()">
+              <span class="badge ${badgeClass}">${badgeText}</span>
+              ${isCompleted ? `
+                <button class="btn btn-secondary" onclick="window.thaawAPI.openDownloadFolder('${item.id}')">Folder</button>
+                <button class="btn btn-primary" onclick="window.thaawAPI.openDownloadFile('${item.id}')">Open</button>
+              ` : isProgressing ? `
+                ${item.isPaused ? `
+                  <button class="btn btn-secondary" onclick="window.thaawAPI.resumeDownload('${item.id}').then(loadDownloads)">Resume</button>
+                ` : `
+                  <button class="btn btn-secondary" onclick="window.thaawAPI.pauseDownload('${item.id}').then(loadDownloads)">Pause</button>
+                `}
+                <button class="btn btn-secondary" style="color: var(--thaaw-danger);" onclick="window.thaawAPI.cancelDownload('${item.id}').then(loadDownloads)">Cancel</button>
+              ` : isFailed ? `
+                <button class="btn btn-secondary" onclick="window.thaawAPI.createTab('${item.url}')">Retry</button>
+              ` : ''}
+              <button class="btn btn-secondary" onclick="openPageActionsModal('${item.id}')" title="Options">···</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      if (window.lucide && window.lucide.createIcons) {
+        window.lucide.createIcons();
+      }
+    }
+
+    document.getElementById('downloadSearch').addEventListener('input', renderFilteredDownloads);
+
+    document.getElementById('clearCompletedBtn').addEventListener('click', async () => {
+      if (window.thaawAPI?.clearCompletedDownloads) {
+        await window.thaawAPI.clearCompletedDownloads();
+        showInternalToast('Completed downloads cleared from list.');
+        loadDownloads();
+      }
+    });
+
+    if (window.thaawAPI) {
+      window.thaawAPI.onDownloadStarted?.(() => loadDownloads());
+      window.thaawAPI.onDownloadCompleted?.((item) => {
+        showInternalToast('Download finished: ' + item.filename);
+        loadDownloads();
+      });
+      window.thaawAPI.onDownloadProgress?.((data) => {
+        const row = document.querySelector(`[data-download-id="${data.id}"]`);
+        if (row) {
+          const fill = row.querySelector('.download-full-progress-fill');
+          if (fill) fill.style.width = data.progress + '%';
+        }
+      });
+      window.thaawAPI.onDownloadFailed?.(() => loadDownloads());
+      window.thaawAPI.onDownloadCancelled?.(() => loadDownloads());
+    }
+
+    let activeCardItem = null;
+
+    function handleCardClick(event, id) {
+      if (event.target.closest('.download-card-actions')) return;
+      openPageActionsModal(id);
+    }
+
+    function openPageActionsModal(id) {
+      const item = allDownloads.find(d => d.id === id);
+      if (!item) return;
+      activeCardItem = item;
+
+      const modal = document.getElementById('downloadPageActionsModal');
+      const filenameEl = document.getElementById('pageDlMenuFilename');
+      const openBtn = document.getElementById('pageDlActionOpen');
+      const folderBtn = document.getElementById('pageDlActionFolder');
+
+      filenameEl.textContent = item.filename;
+      openBtn.style.display = item.state === 'completed' ? 'flex' : 'none';
+      folderBtn.style.display = item.state === 'completed' ? 'flex' : 'none';
+
+      modal.style.display = 'flex';
+      if (window.lucide && window.lucide.createIcons) {
+        window.lucide.createIcons();
+      }
+    }
+
+    function closePageActionsModal() {
+      const modal = document.getElementById('downloadPageActionsModal');
+      if (modal) modal.style.display = 'none';
+      activeCardItem = null;
+    }
+
+    document.getElementById('pageDlActionOpen').addEventListener('click', async () => {
+      if (activeCardItem && window.thaawAPI?.openDownloadFile) {
+        await window.thaawAPI.openDownloadFile(activeCardItem.id);
+        closePageActionsModal();
+      }
+    });
+
+    document.getElementById('pageDlActionFolder').addEventListener('click', async () => {
+      if (activeCardItem && window.thaawAPI?.openDownloadFolder) {
+        await window.thaawAPI.openDownloadFolder(activeCardItem.id);
+        closePageActionsModal();
+      }
+    });
+
+    document.getElementById('pageDlActionCopyLink').addEventListener('click', async () => {
+      if (activeCardItem?.url) {
+        await navigator.clipboard.writeText(activeCardItem.url);
+        showInternalToast('Download link copied to clipboard');
+        closePageActionsModal();
+      }
+    });
+
+    document.getElementById('pageDlActionRemove').addEventListener('click', async () => {
+      if (activeCardItem && window.thaawAPI?.removeDownloadItem) {
+        await window.thaawAPI.removeDownloadItem(activeCardItem.id);
+        showInternalToast('Removed from downloads list');
+        closePageActionsModal();
+        loadDownloads();
+      }
+    });
+
+    document.getElementById('pageDlActionDelete').addEventListener('click', async () => {
+      if (activeCardItem && window.thaawAPI?.deleteDownloadFile) {
+        await window.thaawAPI.deleteDownloadFile(activeCardItem.id);
+        showInternalToast('File permanently deleted from disk');
+        closePageActionsModal();
+        loadDownloads();
+      }
+    });
+
+    document.getElementById('pageDlActionCancel').addEventListener('click', closePageActionsModal);
+
+    document.getElementById('downloadPageActionsModal').addEventListener('click', (e) => {
+      if (e.target.id === 'downloadPageActionsModal') {
+        closePageActionsModal();
+      }
+    });
+
+    loadDownloads();
+  </script>
+</body>
+</html>
