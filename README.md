@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/thaaw-browser/thaaw/actions"><img src="https://img.shields.io/badge/build-passing-brightgreen.svg" alt="Build Status"/></a>
+  <a href="https://github.com/mdcolab/thaaw/actions"><img src="https://img.shields.io/badge/build-passing-brightgreen.svg" alt="Build Status"/></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-BSD--3--Clause-blue.svg" alt="License"/></a>
   <a href="docs/security/THREAT_MODEL.md"><img src="https://img.shields.io/badge/security-hardened-00D1FF.svg" alt="Security"/></a>
   <a href="SECURITY.md"><img src="https://img.shields.io/badge/security-policy-10B981.svg" alt="Security Policy"/></a>
